@@ -66,16 +66,16 @@
         "./commands/luna-postlaunch.md"
       ],
       "agents": [
-        "./agents/luna-requirements-analyzer.json",
-        "./agents/design-architect.json",
-        "./agents/luna-task-planner.json",
-        "./agents/luna-task-executor.json",
-        "./agents/luna-code-review.json",
-        "./agents/luna-testing-validation.json",
-        "./agents/luna-deployment.json",
-        "./agents/luna-documentation.json",
-        "./agents/luna-monitoring-observability.json",
-        "./agents/luna-post-launch-review.json"
+        "./agents/luna-requirements-analyzer.md",
+        "./agents/design-architect.md",
+        "./agents/luna-task-planner.md",
+        "./agents/luna-task-executor.md",
+        "./agents/luna-code-review.md",
+        "./agents/luna-testing-validation.md",
+        "./agents/luna-deployment.md",
+        "./agents/luna-documentation.md",
+        "./agents/luna-monitoring-observability.md",
+        "./agents/luna-post-launch-review.md"
       ],
       "hooks": {
         "SessionStart": [
