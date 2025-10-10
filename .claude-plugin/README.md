@@ -41,11 +41,27 @@ Luna Agents is a comprehensive Claude Code plugin that provides an end-to-end so
 
 ### Install Plugin
 
+**Option 1: Install via Marketplace (Recommended)**
+
+1. **Add marketplace source** in Claude Code:
+```bash
+/plugin marketplace add https://github.com/shacharsol/luna-agent
+```
+
+2. **Install the plugin**:
+```bash
+/plugin install luna-agents
+```
+
+3. **Restart Claude Code** to complete installation
+
+**Option 2: Manual Installation**
+
 1. **Download** the plugin folder to your Claude plugins directory:
 ```bash
 # Typical location
 mkdir -p ~/.claude/plugins
-cp -r luna-agents/plugin ~/.claude/plugins/luna-agents
+cp -r luna-agents/.claude-plugin ~/.claude/plugins/luna-agents
 ```
 
 2. **Enable** the plugin in Claude Code settings:
