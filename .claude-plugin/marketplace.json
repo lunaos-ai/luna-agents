@@ -1,420 +1,428 @@
 {
-  "id": "luna-agents",
   "name": "luna-agents",
-  "displayName": "🌙 Luna Agents - Complete AI Development Workflow",
-  "tagline": "AI-powered end-to-end development lifecycle management from requirements to post-launch monitoring",
-  "description": "Transform your development workflow with Luna's comprehensive AI-powered suite. From initial requirements analysis through design, implementation, testing, deployment, and monitoring - Luna automates and optimizes every phase of software development with specialized AI agents and integrated commands.",
-  "version": "1.0.0",
-  "author": {
+  "owner": {
     "name": "Shachar Solomon",
     "email": "info@finsavvyai.com",
-    "website": "https://finsavvyai.com"
+    "url": "https://github.com/shacharsol"
   },
-  "license": "MIT",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/luna-dev/luna-agents-plugin"
-  },
-  "homepage": "https://finsavvyai.com/claude-code-plugin",
-  "documentation": "https://docs.luna.dev/claude-code",
-  "support": {
-    "email": "support@finsavvyai.com",
-    "issues": "https://github.com/shacharsol/luna-agent/issues"
-  },
-  "categories": [
-    "development",
-    "productivity",
-    "workflow",
-    "ai-assistant",
-    "automation",
-    "testing",
-    "documentation"
-  ],
-  "tags": [
-    "ai",
-    "development",
-    "workflow",
-    "automation",
-    "requirements",
-    "design",
-    "testing",
-    "deployment",
-    "monitoring",
-    "documentation",
-    "code-review",
-    "lifecycle",
-    "full-stack",
-    "devops",
-    "architecture"
-  ],
-  "compatibility": {
-    "claude": {
-      "minVersion": "1.0.0",
-      "maxVersion": null
-    },
-    "platforms": [
-      "macos",
-      "windows",
-      "linux"
-    ]
-  },
-  "pricing": {
-    "type": "free",
-    "currency": "USD",
-    "amount": 0
-  },
-  "installation": {
-    "type": "plugin",
-    "size": "2.3MB",
-    "downloadUrl": "https://github.com/luna-dev/luna-agents-plugin/releases/latest/download/luna-agents.zip",
-    "checksum": "sha256:abc123def456...",
-    "dependencies": [],
-    "permissions": [
-      "file-system",
-      "shell",
-      "network"
-    ]
-  },
-  "features": [
+  "plugins": [
     {
-      "id": "requirements-analysis",
-      "name": "Requirements Analysis",
-      "description": "Automatically analyze codebase and generate comprehensive requirements documentation",
-      "icon": "🔍"
-    },
-    {
-      "id": "technical-design",
-      "name": "Technical Design",
-      "description": "Create detailed architecture specifications with component designs and API definitions",
-      "icon": "🏗️"
-    },
-    {
-      "id": "task-planning",
-      "name": "Task Planning",
-      "description": "Break down designs into actionable, dependency-ordered implementation tasks",
-      "icon": "📋"
-    },
-    {
-      "id": "code-implementation",
-      "name": "Code Implementation",
-      "description": "Implement tasks with quality standards, testing, and progress tracking",
-      "icon": "💻"
-    },
-    {
-      "id": "code-review",
-      "name": "Code Review",
-      "description": "Automated code quality assessments and security vulnerability checks",
-      "icon": "🔬"
-    },
-    {
-      "id": "testing-validation",
-      "name": "Testing & Validation",
-      "description": "Comprehensive test creation, execution, and requirements validation",
-      "icon": "🧪"
-    },
-    {
-      "id": "deployment",
-      "name": "Deployment",
-      "description": "Production-ready deployment with CI/CD pipelines and infrastructure setup",
-      "icon": "🚀"
-    },
-    {
-      "id": "documentation",
-      "name": "Documentation",
-      "description": "Automatic generation of comprehensive technical documentation",
-      "icon": "📚"
-    },
-    {
-      "id": "monitoring",
-      "name": "Monitoring & Observability",
-      "description": "Complete monitoring stack setup with dashboards and alerting",
-      "icon": "📊"
-    },
-    {
-      "id": "post-launch",
-      "name": "Post-Launch Review",
-      "description": "Performance analysis and optimization recommendations after deployment",
-      "icon": "📈"
-    }
-  ],
-  "commands": [
-    {
-      "name": "luna-requirements",
-      "displayName": "Luna Requirements",
-      "description": "Analyze project and generate requirements documentation",
-      "usage": "/luna-requirements",
-      "example": "Analyze entire project or specific feature requirements"
-    },
-    {
-      "name": "luna-design",
-      "displayName": "Luna Design",
-      "description": "Create technical design specifications",
-      "usage": "/luna-design",
-      "example": "Generate architecture diagrams and component designs"
-    },
-    {
-      "name": "luna-plan",
-      "displayName": "Luna Plan",
-      "description": "Break design into actionable tasks",
-      "usage": "/luna-plan",
-      "example": "Create implementation roadmap with task dependencies"
-    },
-    {
-      "name": "luna-execute",
-      "displayName": "Luna Execute",
-      "description": "Implement tasks with progress tracking",
-      "usage": "/luna-execute",
-      "example": "Complete development tasks one by one"
-    },
-    {
-      "name": "luna-review",
-      "displayName": "Luna Review",
-      "description": "Review code quality and security",
-      "usage": "/luna-review",
-      "example": "Automated code review and quality assessment"
-    },
-    {
-      "name": "luna-test",
-      "displayName": "Luna Test",
-      "description": "Create and run comprehensive tests",
-      "usage": "/luna-test",
-      "example": "Generate test suites and validate requirements"
-    },
-    {
-      "name": "luna-deploy",
-      "displayName": "Luna Deploy",
-      "description": "Deploy to production",
-      "usage": "/luna-deploy",
-      "example": "Production deployment with infrastructure setup"
-    },
-    {
-      "name": "luna-docs",
-      "displayName": "Luna Docs",
-      "description": "Generate documentation",
-      "usage": "/luna-docs",
-      "example": "Auto-generate comprehensive project documentation"
-    },
-    {
-      "name": "luna-monitor",
-      "displayName": "Luna Monitor",
-      "description": "Set up monitoring and observability",
-      "usage": "/luna-monitor",
-      "example": "Configure monitoring stack and dashboards"
-    },
-    {
-      "name": "luna-postlaunch",
-      "displayName": "Luna Post-Launch",
-      "description": "Post-launch analysis and recommendations",
-      "usage": "/luna-postlaunch",
-      "example": "Analyze production performance and suggest optimizations"
-    }
-  ],
-  "screenshots": [
-    {
-      "url": "https://raw.githubusercontent.com/luna-dev/luna-agents-plugin/main/screenshots/workflow-overview.png",
-      "caption": "Complete Luna development workflow from requirements to deployment"
-    },
-    {
-      "url": "https://raw.githubusercontent.com/luna-dev/luna-agents-plugin/main/screenshots/agent-interface.png",
-      "caption": "Luna agents working on technical design and implementation"
-    },
-    {
-      "url": "https://raw.githubusercontent.com/luna-dev/luna-agents-plugin/main/screenshots/progress-tracking.png",
-      "caption": "Task progress tracking with checkbox completion system"
-    },
-    {
-      "url": "https://raw.githubusercontent.com/luna-dev/luna-agents-plugin/main/screenshots/generated-docs.png",
-      "caption": "Automatically generated documentation and reports"
-    }
-  ],
-  "reviews": {
-    "average": 4.9,
-    "count": 127,
-    "distribution": {
-      "5": 108,
-      "4": 15,
-      "3": 3,
-      "2": 1,
-      "1": 0
-    }
-  },
-  "stats": {
-    "downloads": {
-      "total": 15420,
-      "monthly": 3240,
-      "weekly": 810
-    },
-    "installs": {
-      "total": 12890,
-      "monthly": 2890,
-      "weekly": 720
-    },
-    "rating": 4.9,
-    "lastUpdated": "2024-10-10T00:00:00Z"
-  },
-  "changelog": [
-    {
+      "name": "luna-agents",
+      "source": {
+        "source": "github",
+        "repo": "shacharsol/luna-agent"
+      },
+      "description": "🌙 Complete AI-powered development lifecycle management from requirements to post-launch monitoring",
       "version": "1.0.0",
-      "date": "2024-10-10",
-      "changes": [
-        "🎉 Initial release of Luna Agents Plugin",
-        "🤖 10 specialized AI agents for complete development lifecycle",
-        "⚡ 10 integrated Claude Code commands",
-        "📋 Comprehensive task planning and progress tracking",
-        "🏗️ Technical design and architecture generation",
-        "🧪 Automated testing and validation",
-        "🚀 Production deployment automation",
-        "📊 Monitoring and observability setup",
-        "📚 Automatic documentation generation",
-        "🔍 Post-launch analysis and optimization"
-      ]
+      "author": {
+        "name": "Shachar Solomon",
+        "email": "info@finsavvyai.com"
+      },
+      "homepage": "https://finsavvyai.com/claude-code-plugin",
+      "repository": "https://github.com/shacharsol/luna-agent",
+      "license": "MIT",
+      "keywords": [
+        "ai",
+        "development",
+        "workflow",
+        "automation",
+        "requirements",
+        "design",
+        "testing",
+        "deployment",
+        "monitoring",
+        "documentation",
+        "code-review",
+        "lifecycle",
+        "full-stack",
+        "devops",
+        "architecture",
+        "mcp",
+        "browser-automation",
+        "database",
+        "web-testing",
+        "monitoring",
+        "observability",
+        "infrastructure",
+        "git",
+        "playwright",
+        "puppeteer",
+        "postgresql",
+        "sqlite",
+        "grafana",
+        "sentry"
+      ],
+      "category": "development",
+      "commands": [
+        "./commands/luna-requirements.md",
+        "./commands/luna-design.md",
+        "./commands/luna-plan.md",
+        "./commands/luna-execute.md",
+        "./commands/luna-review.md",
+        "./commands/luna-test.md",
+        "./commands/luna-deploy.md",
+        "./commands/luna-docs.md",
+        "./commands/luna-monitor.md",
+        "./commands/luna-postlaunch.md"
+      ],
+      "agents": [
+        "./agents/luna-requirements-analyzer.json",
+        "./agents/design-architect.json",
+        "./agents/luna-task-planner.json",
+        "./agents/luna-task-executor.json",
+        "./agents/luna-code-review.json",
+        "./agents/luna-testing-validation.json",
+        "./agents/luna-deployment.json",
+        "./agents/luna-documentation.json",
+        "./agents/luna-monitoring-observability.json",
+        "./agents/luna-post-launch-review.json"
+      ],
+      "hooks": {
+        "SessionStart": [
+          {
+            "hooks": [
+              {
+                "type": "command",
+                "command": "${CLAUDE_PLUGIN_ROOT}/scripts/session-start.sh",
+                "description": "Initialize Luna session, load workspace state, and validate environment"
+              },
+              {
+                "type": "notification",
+                "command": "${CLAUDE_PLUGIN_ROOT}/scripts/session-notification.sh",
+                "description": "Welcome notification for new Luna session",
+                "config": {
+                  "title": "Luna Agents Started",
+                  "message": "Luna development workflow initialized successfully",
+                  "sound": false
+                }
+              }
+            ]
+          }
+        ],
+        "UserPromptSubmit": [
+          {
+            "hooks": [
+              {
+                "type": "command",
+                "command": "${CLAUDE_PLUGIN_ROOT}/scripts/prompt-analyzer.sh",
+                "description": "Analyze user prompt for Luna context and task identification"
+              },
+              {
+                "type": "command",
+                "command": "${CLAUDE_PLUGIN_ROOT}/scripts/workspace-check.sh",
+                "description": "Check if current directory is a valid Luna workspace"
+              }
+            ]
+          }
+        ],
+        "PreToolUse": [
+          {
+            "matcher": "Write|Edit",
+            "hooks": [
+              {
+                "type": "command",
+                "command": "${CLAUDE_PLUGIN_ROOT}/scripts/check-permissions.sh",
+                "description": "Check file permissions and production file protection",
+                "block": false
+              },
+              {
+                "type": "command",
+                "command": "${CLAUDE_PLUGIN_ROOT}/scripts/file-backup.sh",
+                "description": "Create backup of files before modification",
+                "block": false
+              }
+            ]
+          },
+          {
+            "matcher": "Bash|Shell",
+            "hooks": [
+              {
+                "type": "command",
+                "command": "${CLAUDE_PLUGIN_ROOT}/scripts/command-validator.sh",
+                "description": "Validate shell commands for safety and compliance",
+                "block": true
+              }
+            ]
+          }
+        ],
+        "PostToolUse": [
+          {
+            "matcher": "Write|Edit",
+            "hooks": [
+              {
+                "type": "command",
+                "command": "${CLAUDE_PLUGIN_ROOT}/scripts/luna-progress-tracker.sh",
+                "description": "Track Luna task progress and update implementation plan"
+              },
+              {
+                "type": "command",
+                "command": "${CLAUDE_PLUGIN_ROOT}/scripts/auto-format.sh",
+                "description": "Auto-format code files (prettier, gofmt, rustfmt, etc.)"
+              },
+              {
+                "type": "command",
+                "command": "${CLAUDE_PLUGIN_ROOT}/scripts/log-command.sh",
+                "description": "Log all executed commands for compliance and debugging"
+              },
+              {
+                "type": "command",
+                "command": "${CLAUDE_PLUGIN_ROOT}/scripts/feedback-check.sh",
+                "description": "Provide automated feedback on code quality and conventions"
+              },
+              {
+                "type": "command",
+                "command": "${CLAUDE_PLUGIN_ROOT}/scripts/vcs-sync.sh",
+                "description": "Sync changes with version control if configured"
+              }
+            ]
+          },
+          {
+            "matcher": "Bash|Shell",
+            "hooks": [
+              {
+                "type": "command",
+                "command": "${CLAUDE_PLUGIN_ROOT}/scripts/log-command.sh",
+                "description": "Log shell commands for debugging and audit"
+              },
+              {
+                "type": "command",
+                "command": "${CLAUDE_PLUGIN_ROOT}/scripts/result-analyzer.sh",
+                "description": "Analyze shell command results for Luna context"
+              }
+            ]
+          }
+        ],
+        "Notification": [
+          {
+            "hooks": [
+              {
+                "type": "command",
+                "command": "${CLAUDE_PLUGIN_ROOT}/scripts/notification-handler.sh",
+                "description": "Handle and log Claude Code notifications in Luna context"
+              }
+            ]
+          }
+        ],
+        "SubagentStop": [
+          {
+            "hooks": [
+              {
+                "type": "command",
+                "command": "${CLAUDE_PLUGIN_ROOT}/scripts/subagent-complete.sh",
+                "description": "Handle Luna subagent completion and results processing"
+              },
+              {
+                "type": "command",
+                "command": "${CLAUDE_PLUGIN_ROOT}/scripts/task-completion-check.sh",
+                "description": "Check if Luna tasks are complete and update status"
+              }
+            ]
+          }
+        ],
+        "PreCompact": [
+          {
+            "hooks": [
+              {
+                "type": "command",
+                "command": "${CLAUDE_PLUGIN_ROOT}/scripts/compact-prep.sh",
+                "description": "Prepare Luna workspace for Claude Code compact operation"
+              },
+              {
+                "type": "command",
+                "command": "${CLAUDE_PLUGIN_ROOT}/scripts/session-save.sh",
+                "description": "Save Luna session state before compact"
+              }
+            ]
+          }
+        ],
+        "Stop": [
+          {
+            "hooks": [
+              {
+                "type": "command",
+                "command": "${CLAUDE_PLUGIN_ROOT}/scripts/response-complete.sh",
+                "description": "Process Claude Code response completion for Luna workflow"
+              },
+              {
+                "type": "command",
+                "command": "${CLAUDE_PLUGIN_ROOT}/scripts/workspace-state.sh",
+                "description": "Update workspace state and progress indicators"
+              }
+            ]
+          }
+        ],
+        "SessionEnd": [
+          {
+            "hooks": [
+              {
+                "type": "command",
+                "command": "${CLAUDE_PLUGIN_ROOT}/scripts/session-end.sh",
+                "description": "Clean up Luna session, save final state, and generate summary"
+              },
+              {
+                "type": "command",
+                "command": "${CLAUDE_PLUGIN_ROOT}/scripts/session-report.sh",
+                "description": "Generate session completion report with statistics"
+              },
+              {
+                "type": "notification",
+                "command": "${CLAUDE_PLUGIN_ROOT}/scripts/session-end-notification.sh",
+                "description": "Session completion notification",
+                "config": {
+                  "title": "Luna Session Complete",
+                  "message": "Development session ended. Workspace state saved.",
+                  "sound": true,
+                  "urgency": "low"
+                }
+              }
+            ]
+          }
+        ],
+        "Error": [
+          {
+            "hooks": [
+              {
+                "type": "command",
+                "command": "${CLAUDE_PLUGIN_ROOT}/scripts/error-handler.sh",
+                "description": "Handle and log errors with Luna context and recovery suggestions"
+              },
+              {
+                "type": "command",
+                "command": "${CLAUDE_PLUGIN_ROOT}/scripts/error-recovery.sh",
+                "description": "Attempt automatic error recovery for Luna workflows"
+              },
+              {
+                "type": "notification",
+                "command": "${CLAUDE_PLUGIN_ROOT}/scripts/error-notification.sh",
+                "description": "Send critical error notifications",
+                "config": {
+                  "title": "Luna Error",
+                  "message": "An error occurred during Luna workflow",
+                  "sound": true,
+                  "urgency": "critical"
+                }
+              }
+            ]
+          }
+        ],
+        "AwaitingInput": [
+          {
+            "hooks": [
+              {
+                "type": "command",
+                "command": "${CLAUDE_PLUGIN_ROOT}/scripts/input-detector.sh",
+                "description": "Detect and log when Luna is awaiting user input"
+              },
+              {
+                "type": "notification",
+                "command": "${CLAUDE_PLUGIN_ROOT}/scripts/input-notification.sh",
+                "description": "Send notification when awaiting user input",
+                "config": {
+                  "title": "Luna Agents",
+                  "message": "Awaiting your input to continue...",
+                  "sound": true,
+                  "desktop": true,
+                  "timeout": 30000
+                }
+              }
+            ]
+          }
+        ],
+        "PermissionRequest": [
+          {
+            "hooks": [
+              {
+                "type": "command",
+                "command": "${CLAUDE_PLUGIN_ROOT}/scripts/permission-check.sh",
+                "description": "Validate permission requests against Luna security policies"
+              },
+              {
+                "type": "notification",
+                "command": "${CLAUDE_PLUGIN_ROOT}/scripts/permission-notification.sh",
+                "description": "Send notification for permission requests",
+                "config": {
+                  "title": "Luna Permission Required",
+                  "message": "Claude Code is requesting permission to run a command",
+                  "sound": true,
+                  "urgency": "normal"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "mcpServers": {
+        "luna-filesystem": {
+          "command": "npx",
+          "args": [
+            "-y",
+            "@modelcontextprotocol/server-filesystem",
+            "${CLAUDE_PLUGIN_ROOT}/projects"
+          ]
+        },
+        "luna-git": {
+          "command": "npx",
+          "args": [
+            "-y",
+            "@modelcontextprotocol/server-git",
+            "${CLAUDE_PLUGIN_ROOT}/projects"
+          ]
+        },
+        "luna-memory": {
+          "command": "npx",
+          "args": ["-y", "@modelcontextprotocol/server-memory"]
+        },
+        "luna-sequential-thinking": {
+          "command": "npx",
+          "args": ["-y", "@modelcontextprotocol/server-sequential-thinking"]
+        },
+        "luna-fetch": {
+          "command": "npx",
+          "args": ["-y", "@modelcontextprotocol/server-fetch"]
+        },
+        "luna-time": {
+          "command": "npx",
+          "args": ["-y", "@modelcontextprotocol/server-time"]
+        },
+        "luna-postgres": {
+          "command": "npx",
+          "args": ["-y", "@modelcontextprotocol/server-postgres"],
+          "env": {
+            "POSTGRES_CONNECTION_STRING": "${LUNA_DB_CONNECTION_STRING}"
+          }
+        },
+        "luna-sqlite": {
+          "command": "npx",
+          "args": ["-y", "@modelcontextprotocol/server-sqlite", "${CLAUDE_PLUGIN_ROOT}/data/luna.db"]
+        },
+        "luna-playwright": {
+          "command": "npx",
+          "args": ["-y", "@modelcontextprotocol/server-playwright"],
+          "env": {
+            "HEADLESS": "true"
+          }
+        },
+        "luna-puppeteer": {
+          "command": "npx",
+          "args": ["-y", "@puppeteer/mcp-server"]
+        },
+        "luna-grafana": {
+          "command": "mcp-grafana",
+          "env": {
+            "GRAFANA_URL": "${LUNA_GRAFANA_URL}",
+            "GRAFANA_SERVICE_ACCOUNT_TOKEN": "${LUNA_GRAFANA_TOKEN}"
+          }
+        },
+        "luna-sentry": {
+          "command": "node",
+          "args": ["-e", "require('https://mcp.sentry.dev/mcp')"],
+          "env": {
+            "SENTRY_DSN": "${LUNA_SENTRY_DSN}",
+            "SENTRY_AUTH_TOKEN": "${LUNA_SENTRY_TOKEN}"
+          }
+        }
+      },
+      "strict": false
     }
-  ],
-  "security": {
-    "verified": true,
-    "scanDate": "2024-10-10T00:00:00Z",
-    "vulnerabilities": 0,
-    "signature": "verified"
-  },
-  "quality": {
-    "codeQuality": "A+",
-    "documentation": "Complete",
-    "testCoverage": "95%",
-    "maintainability": "Excellent"
-  },
-  "workflow": {
-    "type": "sequential",
-    "steps": [
-      "requirements-analysis",
-      "technical-design",
-      "task-planning",
-      "code-implementation",
-      "code-review",
-      "testing-validation",
-      "deployment",
-      "documentation",
-      "monitoring",
-      "post-launch"
-    ]
-  },
-  "useCases": [
-    "New project development from scratch",
-    "Feature development in existing projects",
-    "Code quality improvement and refactoring",
-    "Documentation generation and maintenance",
-    "Testing automation and validation",
-    "Production deployment and monitoring",
-    "Post-launch performance optimization",
-    "Team collaboration and knowledge sharing"
-  ],
-  "targetAudience": [
-    "Software Developers",
-    "Development Teams",
-    "Technical Leads",
-    "DevOps Engineers",
-    "QA Engineers",
-    "Technical Writers",
-    "Project Managers",
-    "Software Architects"
-  ],
-  "languages": [
-    "TypeScript",
-    "JavaScript",
-    "Python",
-    "Java",
-    "Go",
-    "Rust",
-    "C#",
-    "PHP",
-    "Ruby",
-    "Swift",
-    "Kotlin"
-  ],
-  "frameworks": [
-    "React",
-    "Vue.js",
-    "Angular",
-    "Node.js",
-    "Django",
-    "Flask",
-    "Express",
-    "Spring Boot",
-    "Rails",
-    "Laravel",
-    "FastAPI",
-    "Next.js",
-    "Nuxt.js"
-  ],
-  "integrations": [
-    "Git",
-    "GitHub",
-    "GitLab",
-    "Docker",
-    "Kubernetes",
-    "AWS",
-    "Google Cloud",
-    "Azure",
-    "Jenkins",
-    "GitHub Actions",
-    "CircleCI",
-    "Slack",
-    "Jira"
-  ],
-  "recommendations": [
-    "claude-code-assistant",
-    "git-integration",
-    "docker-support",
-    "testing-framework",
-    "documentation-generator"
-  ],
-  "faq": [
-    {
-      "question": "Does Luna work with existing projects?",
-      "answer": "Yes! Luna can analyze any existing codebase and help improve it with requirements analysis, code review, testing, and documentation generation."
-    },
-    {
-      "question": "Can I use Luna for specific features only?",
-      "answer": "Absolutely! Luna supports both project-level and feature-level work. Just specify the feature name when prompted."
-    },
-    {
-      "question": "How does Luna track progress?",
-      "answer": "Luna uses a checkbox-based system in implementation-plan.md files, marking tasks as complete [x] as they're finished."
-    },
-    {
-      "question": "What programming languages are supported?",
-      "answer": "Luna works with virtually all programming languages and frameworks, analyzing code structure and generating appropriate solutions."
-    }
-  ],
-  "tutorials": [
-    {
-      "title": "Getting Started with Luna",
-      "url": "https://docs.luna.dev/getting-started",
-      "duration": "5 min"
-    },
-    {
-      "title": "Complete Project Development Workflow",
-      "url": "https://docs.luna.dev/full-workflow",
-      "duration": "15 min"
-    },
-    {
-      "title": "Feature Development with Luna",
-      "url": "https://docs.luna.dev/feature-development",
-      "duration": "10 min"
-    }
-  ],
-  "community": {
-    "website": "https://luna.dev",
-    "discord": "https://discord.gg/luna-dev",
-    "twitter": "https://twitter.com/lunadev",
-    "github": "https://github.com/luna-dev",
-    "youtube": "https://youtube.com/@lunadev"
-  },
-  "metadata": {
-    "created": "2024-10-10T00:00:00Z",
-    "updated": "2024-10-10T00:00:00Z",
-    "verified": true,
-    "featured": true,
-    "trending": true,
-    "editorPick": true
-  }
+  ]
 }
