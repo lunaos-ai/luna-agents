@@ -1,33 +1,25 @@
 {
   "id": "luna-agents",
-  "name": "Luna Agents",
+  "name": "luna-agents",
   "displayName": "🌙 Luna Agents - Complete AI Development Workflow",
   "tagline": "AI-powered end-to-end development lifecycle management from requirements to post-launch monitoring",
   "description": "Transform your development workflow with Luna's comprehensive AI-powered suite. From initial requirements analysis through design, implementation, testing, deployment, and monitoring - Luna automates and optimizes every phase of software development with specialized AI agents and integrated commands.",
   "version": "1.0.0",
   "author": {
-    "name": "Shahar Solomon",
-    "email": "shahar@luna.dev",
-    "website": "https://github.com/shacharsol"
+    "name": "Shachar Solomon",
+    "email": "info@finsavvyai.com",
+    "website": "https://finsavvyai.com"
   },
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/shacharsol/luna-agent"
+    "url": "https://github.com/luna-dev/luna-agents-plugin"
   },
-  "homepage": "https://github.com/shacharsol/luna-agent",
-  "documentation": "https://github.com/shacharsol/luna-agent/blob/main/plugin/README.md",
+  "homepage": "https://finsavvyai.com/claude-code-plugin",
+  "documentation": "https://docs.luna.dev/claude-code",
   "support": {
-    "email": "shahar@luna.dev",
+    "email": "support@finsavvyai.com",
     "issues": "https://github.com/shacharsol/luna-agent/issues"
-  },
-  "installation": {
-    "source": "github",
-    "repository": "https://github.com/shacharsol/luna-agent",
-    "branch": "main",
-    "pluginPath": "plugin",
-    "installCommand": "/plugin install luna-agents",
-    "marketplaceCommand": "/plugin marketplace"
   },
   "categories": [
     "development",
@@ -71,12 +63,17 @@
     "currency": "USD",
     "amount": 0
   },
-  "download": {
-    "type": "github",
-    "url": "https://github.com/shacharsol/luna-agent/archive/refs/heads/main.zip",
+  "installation": {
+    "type": "plugin",
     "size": "2.3MB",
+    "downloadUrl": "https://github.com/luna-dev/luna-agents-plugin/releases/latest/download/luna-agents.zip",
     "checksum": "sha256:abc123def456...",
-    "extractionPath": "luna-agent-main/plugin"
+    "dependencies": [],
+    "permissions": [
+      "file-system",
+      "shell",
+      "network"
+    ]
   },
   "features": [
     {
@@ -212,50 +209,21 @@
       "example": "Analyze production performance and suggest optimizations"
     }
   ],
-  "installation": {
-    "commands": {
-      "marketplace": "/plugin marketplace",
-      "install": "/plugin install luna-agents"
-    },
-    "source": {
-      "type": "github",
-      "repository": "https://github.com/shacharsol/luna-agent",
-      "path": "plugin",
-      "branch": "main"
-    },
-    "requirements": [
-      "Claude Code 1.0.0 or higher",
-      "Git access for repository cloning",
-      "File system permissions for plugin installation"
-    ],
-    "steps": [
-      "Add marketplace: /plugin marketplace https://github.com/shacharsol/luna-agent",
-      "Install plugin: /plugin install luna-agents",
-      "Restart Claude Code to complete installation"
-    ]
-  },
-  "marketplace": {
-    "source": "https://github.com/shacharsol/luna-agent",
-    "enabled": true,
-    "verified": true,
-    "featured": true,
-    "addedDate": "2024-10-10T00:00:00Z"
-  },
   "screenshots": [
     {
-      "url": "https://raw.githubusercontent.com/shacharsol/luna-agent/main/screenshots/workflow-overview.png",
+      "url": "https://raw.githubusercontent.com/luna-dev/luna-agents-plugin/main/screenshots/workflow-overview.png",
       "caption": "Complete Luna development workflow from requirements to deployment"
     },
     {
-      "url": "https://raw.githubusercontent.com/shacharsol/luna-agent/main/screenshots/agent-interface.png",
+      "url": "https://raw.githubusercontent.com/luna-dev/luna-agents-plugin/main/screenshots/agent-interface.png",
       "caption": "Luna agents working on technical design and implementation"
     },
     {
-      "url": "https://raw.githubusercontent.com/shacharsol/luna-agent/main/screenshots/progress-tracking.png",
+      "url": "https://raw.githubusercontent.com/luna-dev/luna-agents-plugin/main/screenshots/progress-tracking.png",
       "caption": "Task progress tracking with checkbox completion system"
     },
     {
-      "url": "https://raw.githubusercontent.com/shacharsol/luna-agent/main/screenshots/generated-docs.png",
+      "url": "https://raw.githubusercontent.com/luna-dev/luna-agents-plugin/main/screenshots/generated-docs.png",
       "caption": "Automatically generated documentation and reports"
     }
   ],
@@ -401,10 +369,6 @@
   ],
   "faq": [
     {
-      "question": "How do I install Luna Agents?",
-      "answer": "Run '/plugin marketplace https://github.com/shacharsol/luna-agent' to add the marketplace, then '/plugin install luna-agents' to install the plugin."
-    },
-    {
       "question": "Does Luna work with existing projects?",
       "answer": "Yes! Luna can analyze any existing codebase and help improve it with requirements analysis, code review, testing, and documentation generation."
     },
@@ -424,24 +388,26 @@
   "tutorials": [
     {
       "title": "Getting Started with Luna",
-      "url": "https://github.com/shacharsol/luna-agent/blob/main/plugin/README.md#quick-start",
+      "url": "https://docs.luna.dev/getting-started",
       "duration": "5 min"
     },
     {
       "title": "Complete Project Development Workflow",
-      "url": "https://github.com/shacharsol/luna-agent/blob/main/plugin/README.md#complete-workflow",
+      "url": "https://docs.luna.dev/full-workflow",
       "duration": "15 min"
     },
     {
-      "title": "Installation Guide",
-      "url": "https://github.com/shacharsol/luna-agent/blob/main/plugin/README.md#installation",
-      "duration": "3 min"
+      "title": "Feature Development with Luna",
+      "url": "https://docs.luna.dev/feature-development",
+      "duration": "10 min"
     }
   ],
   "community": {
-    "website": "https://github.com/shacharsol/luna-agent",
-    "github": "https://github.com/shacharsol/luna-agent",
-    "repository": "https://github.com/shacharsol/luna-agent"
+    "website": "https://luna.dev",
+    "discord": "https://discord.gg/luna-dev",
+    "twitter": "https://twitter.com/lunadev",
+    "github": "https://github.com/luna-dev",
+    "youtube": "https://youtube.com/@lunadev"
   },
   "metadata": {
     "created": "2024-10-10T00:00:00Z",
@@ -449,9 +415,6 @@
     "verified": true,
     "featured": true,
     "trending": true,
-    "editorPick": true,
-    "sourceType": "github",
-    "pluginId": "luna-agents",
-    "marketplaceSource": "https://github.com/shacharsol/luna-agent"
+    "editorPick": true
   }
 }
