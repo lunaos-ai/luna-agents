@@ -78,60 +78,19 @@
         "./agents/luna-post-launch-review.md"
       ],
       "hooks": {
-        "SessionStart": [
-          {
-            "matcher": "",
-            "hooks": [
-              {
-                "type": "command",
-                "command": "${CLAUDE_PLUGIN_ROOT}/scripts/session-start.sh",
-                "description": "Initialize Luna session, load workspace state, and validate environment"
-              },
-              {
-                "type": "notification",
-                "command": "${CLAUDE_PLUGIN_ROOT}/scripts/session-notification.sh",
-                "description": "Welcome notification for new Luna session",
-                "config": {
-                  "title": "Luna Agents Started",
-                  "message": "Luna development workflow initialized successfully",
-                  "sound": false
-                }
-              }
-            ]
-          }
-        ],
-        "UserPromptSubmit": [
-          {
-            "matcher": "",
-            "hooks": [
-              {
-                "type": "command",
-                "command": "${CLAUDE_PLUGIN_ROOT}/scripts/prompt-analyzer.sh",
-                "description": "Analyze user prompt for Luna context and task identification"
-              },
-              {
-                "type": "command",
-                "command": "${CLAUDE_PLUGIN_ROOT}/scripts/workspace-check.sh",
-                "description": "Check if current directory is a valid Luna workspace"
-              }
-            ]
-          }
-        ],
         "PreToolUse": [
           {
             "matcher": "Write|Edit",
             "hooks": [
               {
                 "type": "command",
-                "command": "${CLAUDE_PLUGIN_ROOT}/scripts/check-permissions.sh",
-                "description": "Check file permissions and production file protection",
-                "block": false
+                "command": "${CLAUDE_PLUGIN_ROOT}/scripts/auto-format.sh",
+                "description": "Auto-format code files (prettier, gofmt, rustfmt, etc.)"
               },
               {
                 "type": "command",
-                "command": "${CLAUDE_PLUGIN_ROOT}/scripts/file-backup.sh",
-                "description": "Create backup of files before modification",
-                "block": false
+                "command": "${CLAUDE_PLUGIN_ROOT}/scripts/feedback-check.sh",
+                "description": "Provide automated feedback on code quality and conventions"
               }
             ]
           },
@@ -147,183 +106,12 @@
             ]
           }
         ],
-        "PostToolUse": [
-          {
-            "matcher": "Write|Edit",
-            "hooks": [
-              {
-                "type": "command",
-                "command": "${CLAUDE_PLUGIN_ROOT}/scripts/luna-progress-tracker.sh",
-                "description": "Track Luna task progress and update implementation plan"
-              },
-              {
-                "type": "command",
-                "command": "${CLAUDE_PLUGIN_ROOT}/scripts/auto-format.sh",
-                "description": "Auto-format code files (prettier, gofmt, rustfmt, etc.)"
-              },
-              {
-                "type": "command",
-                "command": "${CLAUDE_PLUGIN_ROOT}/scripts/log-command.sh",
-                "description": "Log all executed commands for compliance and debugging"
-              },
-              {
-                "type": "command",
-                "command": "${CLAUDE_PLUGIN_ROOT}/scripts/feedback-check.sh",
-                "description": "Provide automated feedback on code quality and conventions"
-              },
-              {
-                "type": "command",
-                "command": "${CLAUDE_PLUGIN_ROOT}/scripts/vcs-sync.sh",
-                "description": "Sync changes with version control if configured"
-              }
-            ]
-          },
-          {
-            "matcher": "Bash|Shell",
-            "hooks": [
-              {
-                "type": "command",
-                "command": "${CLAUDE_PLUGIN_ROOT}/scripts/log-command.sh",
-                "description": "Log shell commands for debugging and audit"
-              },
-              {
-                "type": "command",
-                "command": "${CLAUDE_PLUGIN_ROOT}/scripts/result-analyzer.sh",
-                "description": "Analyze shell command results for Luna context"
-              }
-            ]
-          }
-        ],
         "Notification": [
           {
-            "matcher": "",
+            "matcher": "AwaitingInput",
             "hooks": [
               {
                 "type": "command",
-                "command": "${CLAUDE_PLUGIN_ROOT}/scripts/notification-handler.sh",
-                "description": "Handle and log Claude Code notifications in Luna context"
-              }
-            ]
-          }
-        ],
-        "SubagentStop": [
-          {
-            "matcher": "",
-            "hooks": [
-              {
-                "type": "command",
-                "command": "${CLAUDE_PLUGIN_ROOT}/scripts/subagent-complete.sh",
-                "description": "Handle Luna subagent completion and results processing"
-              },
-              {
-                "type": "command",
-                "command": "${CLAUDE_PLUGIN_ROOT}/scripts/task-completion-check.sh",
-                "description": "Check if Luna tasks are complete and update status"
-              }
-            ]
-          }
-        ],
-        "PreCompact": [
-          {
-            "matcher": "",
-            "hooks": [
-              {
-                "type": "command",
-                "command": "${CLAUDE_PLUGIN_ROOT}/scripts/compact-prep.sh",
-                "description": "Prepare Luna workspace for Claude Code compact operation"
-              },
-              {
-                "type": "command",
-                "command": "${CLAUDE_PLUGIN_ROOT}/scripts/session-save.sh",
-                "description": "Save Luna session state before compact"
-              }
-            ]
-          }
-        ],
-        "Stop": [
-          {
-            "matcher": "",
-            "hooks": [
-              {
-                "type": "command",
-                "command": "${CLAUDE_PLUGIN_ROOT}/scripts/response-complete.sh",
-                "description": "Process Claude Code response completion for Luna workflow"
-              },
-              {
-                "type": "command",
-                "command": "${CLAUDE_PLUGIN_ROOT}/scripts/workspace-state.sh",
-                "description": "Update workspace state and progress indicators"
-              }
-            ]
-          }
-        ],
-        "SessionEnd": [
-          {
-            "matcher": "",
-            "hooks": [
-              {
-                "type": "command",
-                "command": "${CLAUDE_PLUGIN_ROOT}/scripts/session-end.sh",
-                "description": "Clean up Luna session, save final state, and generate summary"
-              },
-              {
-                "type": "command",
-                "command": "${CLAUDE_PLUGIN_ROOT}/scripts/session-report.sh",
-                "description": "Generate session completion report with statistics"
-              },
-              {
-                "type": "notification",
-                "command": "${CLAUDE_PLUGIN_ROOT}/scripts/session-end-notification.sh",
-                "description": "Session completion notification",
-                "config": {
-                  "title": "Luna Session Complete",
-                  "message": "Development session ended. Workspace state saved.",
-                  "sound": true,
-                  "urgency": "low"
-                }
-              }
-            ]
-          }
-        ],
-        "Error": [
-          {
-            "matcher": "",
-            "hooks": [
-              {
-                "type": "command",
-                "command": "${CLAUDE_PLUGIN_ROOT}/scripts/error-handler.sh",
-                "description": "Handle and log errors with Luna context and recovery suggestions"
-              },
-              {
-                "type": "command",
-                "command": "${CLAUDE_PLUGIN_ROOT}/scripts/error-recovery.sh",
-                "description": "Attempt automatic error recovery for Luna workflows"
-              },
-              {
-                "type": "notification",
-                "command": "${CLAUDE_PLUGIN_ROOT}/scripts/error-notification.sh",
-                "description": "Send critical error notifications",
-                "config": {
-                  "title": "Luna Error",
-                  "message": "An error occurred during Luna workflow",
-                  "sound": true,
-                  "urgency": "critical"
-                }
-              }
-            ]
-          }
-        ],
-        "AwaitingInput": [
-          {
-            "matcher": "",
-            "hooks": [
-              {
-                "type": "command",
-                "command": "${CLAUDE_PLUGIN_ROOT}/scripts/input-detector.sh",
-                "description": "Detect and log when Luna is awaiting user input"
-              },
-              {
-                "type": "notification",
                 "command": "${CLAUDE_PLUGIN_ROOT}/scripts/input-notification.sh",
                 "description": "Send notification when awaiting user input",
                 "config": {
@@ -335,19 +123,12 @@
                 }
               }
             ]
-          }
-        ],
-        "PermissionRequest": [
+          },
           {
-            "matcher": "",
+            "matcher": "PermissionRequest",
             "hooks": [
               {
                 "type": "command",
-                "command": "${CLAUDE_PLUGIN_ROOT}/scripts/permission-check.sh",
-                "description": "Validate permission requests against Luna security policies"
-              },
-              {
-                "type": "notification",
                 "command": "${CLAUDE_PLUGIN_ROOT}/scripts/permission-notification.sh",
                 "description": "Send notification for permission requests",
                 "config": {
