@@ -27,11 +27,11 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/luna-dev/luna-agents-plugin"
+    "url": "https://github.com/shacharsol/luna-agents"
   },
-  "homepage": "https://github.com/luna-dev/luna-agents-plugin#readme",
+  "homepage": "https://github.com/shacharsol/luna-agents#readme",
   "bugs": {
-    "url": "https://github.com/luna-dev/luna-agents-plugin/issues"
+    "url": "https://github.com/shacharsol/luna-agents/issues"
   },
   "engines": {
     "claude": ">=1.0.0"
