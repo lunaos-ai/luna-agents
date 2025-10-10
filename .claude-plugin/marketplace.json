@@ -77,71 +77,7 @@
         "./agents/luna-monitoring-observability.md",
         "./agents/luna-post-launch-review.md"
       ],
-      "hooks": {
-        "PreToolUse": [
-          {
-            "matcher": "Write|Edit",
-            "hooks": [
-              {
-                "type": "command",
-                "command": "${CLAUDE_PLUGIN_ROOT}/scripts/auto-format.sh",
-                "description": "Auto-format code files (prettier, gofmt, rustfmt, etc.)"
-              },
-              {
-                "type": "command",
-                "command": "${CLAUDE_PLUGIN_ROOT}/scripts/feedback-check.sh",
-                "description": "Provide automated feedback on code quality and conventions"
-              }
-            ]
-          },
-          {
-            "matcher": "Bash|Shell",
-            "hooks": [
-              {
-                "type": "command",
-                "command": "${CLAUDE_PLUGIN_ROOT}/scripts/command-validator.sh",
-                "description": "Validate shell commands for safety and compliance",
-                "block": true
-              }
-            ]
-          }
-        ],
-        "Notification": [
-          {
-            "matcher": "AwaitingInput",
-            "hooks": [
-              {
-                "type": "command",
-                "command": "${CLAUDE_PLUGIN_ROOT}/scripts/input-notification.sh",
-                "description": "Send notification when awaiting user input",
-                "config": {
-                  "title": "Luna Agents",
-                  "message": "Awaiting your input to continue...",
-                  "sound": true,
-                  "desktop": true,
-                  "timeout": 30000
-                }
-              }
-            ]
-          },
-          {
-            "matcher": "PermissionRequest",
-            "hooks": [
-              {
-                "type": "command",
-                "command": "${CLAUDE_PLUGIN_ROOT}/scripts/permission-notification.sh",
-                "description": "Send notification for permission requests",
-                "config": {
-                  "title": "Luna Permission Required",
-                  "message": "Claude Code is requesting permission to run a command",
-                  "sound": true,
-                  "urgency": "normal"
-                }
-              }
-            ]
-          }
-        ]
-      },
+      
       "mcpServers": {
         "luna-filesystem": {
           "command": "npx",
