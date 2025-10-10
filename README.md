@@ -241,6 +241,7 @@ Luna Agents works seamlessly with Model Context Protocol (MCP) servers to enhanc
 
 ### 🗄️ Database & Data Management
 - **[PostgreSQL](https://github.com/modelcontextprotocol/servers/tree/main/src/postgres)** - Database operations and schema management
+- **[SQLite](https://github.com/modelcontextprotocol/servers/tree/main/src/sqlite)** - Lightweight database for local development
 - **[Supabase](https://github.com/supabase/mcp-supabase)** - Backend as a Service integration
 - **[MongoDB](https://github.com/mongodb/mcp-mongodb)** - NoSQL database operations
 
@@ -249,9 +250,21 @@ Luna Agents works seamlessly with Model Context Protocol (MCP) servers to enhanc
 - **[Git](https://github.com/modelcontextprotocol/servers/tree/main/src/git)** - Repository management and operations
 - **[GitHub](https://github.com/modelcontextprotocol/servers-archived/tree/main/src/github)** - GitHub API integration
 
-### 🧪 Testing & Quality
+### 🤖 Browser Automation & Testing
+- **[Playwright](https://github.com/modelcontextprotocol/servers/tree/main/src/playwright)** - Modern browser automation for E2E testing
+- **[Puppeteer](https://github.com/puppeteer/mcp-server)** - Headless Chrome automation and web scraping
+- **[Browser Automation](https://github.com/ModelContextProtocol/server-playwright)** - End-to-end testing and web interactions
+
+### 🌐 Web & Utility Services
+- **[Fetch](https://github.com/modelcontextprotocol/servers/tree/main/src/fetch)** - Web content fetching and HTTP requests
+- **[Memory](https://github.com/modelcontextprotocol/servers/tree/main/src/memory)** - Persistent memory and knowledge management
+- **[Sequential Thinking](https://github.com/modelcontextprotocol/servers/tree/main/src/sequentialthinking)** - Structured problem-solving and reasoning
+- **[Time](https://github.com/modelcontextprotocol/servers/tree/main/src/time)** - Time zone conversion and scheduling
+
+### 🧪 Testing & Quality Assurance
 - **[Browser Automation](https://github.com/ModelContextProtocol/server-playwright)** - End-to-end testing with Playwright
 - **[Postman](https://github.com/postmanlabs/postman-mcp-server)** - API testing and documentation
+- **[Web Testing](https://github.com/puppeteer/mcp-server)** - Automated web application testing
 
 ### 🔧 Development Tools
 - **[Stripe](https://github.com/stripe/stripe-mcp)** - Payment integration for billing features
@@ -264,7 +277,7 @@ Luna Agents works seamlessly with Model Context Protocol (MCP) servers to enhanc
 
 ### MCP Installation with Luna
 
-To enhance your Luna workflow with MCP servers, add them to your Claude Code configuration:
+To enhance your Luna workflow with MCP servers, add them to your Claude Code configuration using the proper format:
 
 ```json
 {
@@ -277,23 +290,106 @@ To enhance your Luna workflow with MCP servers, add them to your Claude Code con
       "command": "npx",
       "args": ["-y", "@modelcontextprotocol/server-git", "/path/to/your/projects"]
     },
-    "postgresql": {
+    "postgres": {
       "command": "npx",
       "args": ["-y", "@modelcontextprotocol/server-postgres"],
       "env": {
         "POSTGRES_CONNECTION_STRING": "postgresql://user:password@localhost:5432/yourdb"
       }
     },
+    "sqlite": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-sqlite", "/path/to/your/database.db"]
+    },
+    "playwright": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-playwright"],
+      "env": {
+        "HEADLESS": "true"
+      }
+    },
+    "puppeteer": {
+      "command": "npx",
+      "args": ["-y", "@puppeteer/mcp-server"]
+    },
+    "fetch": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-fetch"]
+    },
+    "memory": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-memory"]
+    },
+    "sequential-thinking": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-sequential-thinking"]
+    },
+    "time": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-time"]
+    },
     "grafana": {
       "command": "mcp-grafana",
       "env": {
         "GRAFANA_URL": "http://localhost:3000",
-        "GRAFANA_SERVICE_ACCOUNT_TOKEN": "your-token"
+        "GRAFANA_SERVICE_ACCOUNT_TOKEN": "your-service-account-token"
+      }
+    },
+    "sentry": {
+      "command": "node",
+      "args": ["-e", "require('https://mcp.sentry.dev/mcp')"],
+      "env": {
+        "SENTRY_DSN": "your-sentry-dsn",
+        "SENTRY_AUTH_TOKEN": "your-sentry-token"
       }
     },
     "terraform": {
       "command": "docker",
       "args": ["run", "-i", "--rm", "hashicorp/terraform-mcp-server:0.2.3"]
+    }
+  }
+}
+```
+
+### Installation Commands
+
+You can install these MCP servers using npm or docker:
+
+```bash
+# Core file and version control servers
+npm install -g @modelcontextprotocol/server-filesystem @modelcontextprotocol/server-git
+
+# Database servers
+npm install -g @modelcontextprotocol/server-postgres @modelcontextprotocol/server-sqlite
+
+# Browser automation servers
+npm install -g @modelcontextprotocol/server-playwright @puppeteer/mcp-server
+
+# Web and utility servers
+npm install -g @modelcontextprotocol/server-fetch @modelcontextprotocol/server-memory
+npm install -g @modelcontextprotocol/server-sequential-thinking @modelcontextprotocol/server-time
+
+# Monitoring and observability
+npm install -g mcp-grafana
+
+# Infrastructure
+docker pull hashicorp/terraform-mcp-server:0.2.3
+```
+
+### Quick Setup Example
+
+Here's a minimal working configuration for Luna:
+
+```json
+{
+  "mcpServers": {
+    "filesystem": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-filesystem", "~/projects"]
+    },
+    "git": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-git", "~/projects"]
     }
   }
 }
