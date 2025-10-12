@@ -1,0 +1,146 @@
+{
+  "name": "luna-agents",
+  "version": "1.0.0",
+  "description": "🌙 Complete AI-powered development lifecycle management - From requirements to post-launch monitoring",
+  "main": "index.js",
+  "keywords": [
+    "claude-code",
+    "plugin",
+    "development",
+    "workflow",
+    "ai",
+    "lifecycle",
+    "automation",
+    "requirements",
+    "design",
+    "testing",
+    "deployment",
+    "monitoring"
+  ],
+  "categories": [
+    "development",
+    "productivity",
+    "workflow",
+    "ai-assistant"
+  ],
+  "author": "Luna Development Team",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/shacharsol/luna-agents"
+  },
+  "homepage": "https://github.com/shacharsol/luna-agents#readme",
+  "bugs": {
+    "url": "https://github.com/shacharsol/luna-agents/issues"
+  },
+  "engines": {
+    "claude": ">=1.0.0"
+  },
+  "dependencies": {},
+  "devDependencies": {},
+  "peerDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "echo \"Error: no linter configured\" && exit 1",
+    "validate": "node scripts/validate-plugin.js"
+  },
+  "claude": {
+    "version": ">=1.0.0",
+    "permissions": [
+      "file-system",
+      "shell",
+      "network"
+    ],
+    "capabilities": [
+      "agent-execution",
+      "command-handling",
+      "file-generation",
+      "project-analysis"
+    ]
+  },
+  "plugin": {
+    "type": "workflow",
+    "framework": "claude-code",
+    "entryPoints": {
+      "agents": "./agents",
+      "commands": "./commands"
+    },
+    "configuration": {
+      "supportsMultiProject": true,
+      "supportsFeatureScoping": true,
+      "automaticProjectDetection": true,
+      "progressTracking": true
+    }
+  },
+  "agents": [
+    {
+      "name": "luna-requirements-analyzer",
+      "displayName": "Requirements Analyzer",
+      "category": "analysis"
+    },
+    {
+      "name": "luna-design-architect",
+      "displayName": "Design Architect",
+      "category": "architecture"
+    },
+    {
+      "name": "luna-task-planner",
+      "displayName": "Task Planner",
+      "category": "planning"
+    },
+    {
+      "name": "luna-task-executor",
+      "displayName": "Task Executor",
+      "category": "development"
+    },
+    {
+      "name": "luna-code-review",
+      "displayName": "Code Review",
+      "category": "quality"
+    },
+    {
+      "name": "luna-testing-validation",
+      "displayName": "Testing & Validation",
+      "category": "testing"
+    },
+    {
+      "name": "luna-deployment",
+      "displayName": "Deployment",
+      "category": "deployment"
+    },
+    {
+      "name": "luna-documentation",
+      "displayName": "Documentation",
+      "category": "documentation"
+    },
+    {
+      "name": "luna-monitoring-observability",
+      "displayName": "Monitoring & Observability",
+      "category": "monitoring"
+    },
+    {
+      "name": "luna-post-launch-review",
+      "displayName": "Post-Launch Review",
+      "category": "analysis"
+    }
+  ],
+  "commands": [
+    "luna-requirements",
+    "luna-design",
+    "luna-plan",
+    "luna-execute",
+    "luna-review",
+    "luna-test",
+    "luna-deploy",
+    "luna-docs",
+    "luna-monitor",
+    "luna-postlaunch"
+  ],
+  "files": [
+    "README.md",
+    "claude-plugin.json",
+    "agents/",
+    "commands/",
+    "scripts/"
+  ]
+}
