@@ -3,3 +3,16 @@ cli-tools/
 .DS_Store
 .idea/
 luna-agents.iml
+
+# IDE files
+*.iml
+.idea/
+.vscode/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Temporary documentation
+*_FIXED.md
+*_COMPLETE.md
