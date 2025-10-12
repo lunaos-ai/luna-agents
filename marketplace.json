@@ -8,11 +8,7 @@
   "plugins": [
     {
       "name": "luna-agents",
-      "source": {
-        "type": "github",
-        "repo": "shacharsol/luna-agents",
-        "path": ".claude-plugin"
-      },
+      "source": "https://github.com/shacharsol/luna-agents/tree/main/.claude-plugin",
       "description": "Complete AI-powered development lifecycle management",
       "version": "1.0.0",
       "author": {
