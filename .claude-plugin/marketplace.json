@@ -7,7 +7,7 @@
   },
   "plugins": [
     {
-      "name": "luna-agents",
+      "name": "luna-agent",
       "source": "./",
       "description": "Complete AI-powered development lifecycle management from requirements to post-launch monitoring",
       "version": "1.0.0",
@@ -16,7 +16,7 @@
         "email": "info@finsavvyai.com"
       },
       "homepage": "https://finsavvyai.com/claude-code-plugin",
-      "repository": "https://github.com/shacharsol/luna-agents",
+      "repository": "https://github.com/shacharsol/luna-agent",
       "license": "MIT",
       "keywords": [
         "ai",
@@ -32,7 +32,32 @@
         "code-review",
         "lifecycle"
       ],
-      "category": "development"
+      "category": "development",
+      "strict": false,
+      "commands": [
+        "./commands/luna-requirements.md",
+        "./commands/luna-design.md",
+        "./commands/luna-plan.md",
+        "./commands/luna-execute.md",
+        "./commands/luna-review.md",
+        "./commands/luna-test.md",
+        "./commands/luna-deploy.md",
+        "./commands/luna-docs.md",
+        "./commands/luna-monitor.md",
+        "./commands/luna-postlaunch.md"
+      ],
+      "agents": [
+        "./agents/luna-requirements-analyzer.md",
+        "./agents/luna-design-architect.md",
+        "./agents/luna-task-planner.md",
+        "./agents/luna-task-executor.md",
+        "./agents/luna-code-review.md",
+        "./agents/luna-testing-validation.md",
+        "./agents/luna-deployment.md",
+        "./agents/luna-documentation.md",
+        "./agents/luna-monitoring-observability.md",
+        "./agents/luna-post-launch-review.md"
+      ]
     }
   ]
 }
