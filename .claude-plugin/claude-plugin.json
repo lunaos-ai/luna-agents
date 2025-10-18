@@ -1,20 +1,44 @@
 {
   "name": "luna-agents",
-  "version": "1.0.0",
-  "description": "Luna Development Workflow - Complete AI-powered development lifecycle management",
+  "version": "2.0.0",
+  "description": "Luna Agents - AI-powered development workflow with semantic code search",
   "author": "Shachar Solomon",
   "license": "MIT",
   "type": "plugin",
   "main": "index.js",
-  "keywords": ["development", "workflow", "ai", "lifecycle", "automation"],
-  "categories": ["development", "productivity", "workflow"],
+  "keywords": [
+    "development",
+    "workflow",
+    "ai",
+    "lifecycle",
+    "automation",
+    "semantic-search",
+    "rag"
+  ],
+  "categories": [
+    "development",
+    "productivity",
+    "workflow"
+  ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/luna-dev/luna-agents"
+    "url": "https://github.com/yourusername/luna-agents"
   },
   "dependencies": {},
   "claude": {
     "version": ">=1.0.0",
-    "permissions": ["file-system", "shell", "network"]
+    "permissions": [
+      "file-system",
+      "shell",
+      "network"
+    ]
+  },
+  "credits": {
+    "nexa-sdk": {
+      "name": "Nexa SDK",
+      "url": "https://github.com/NexaAI/nexa-sdk",
+      "license": "MIT",
+      "description": "On-device inference framework used for embeddings in luna-nexa-rag"
+    }
   }
 }
