@@ -7,12 +7,14 @@
 
 module.exports = {
   name: 'luna-agents',
-  version: '1.0.0',
-  description: '🌙 Complete AI-powered development lifecycle management - From requirements to post-launch monitoring',
+  version: '2.0.0',
+  description: '🌙 Complete AI-powered development lifecycle management with comprehensive skills reference - From requirements to post-launch monitoring',
 
   // Plugin initialization
   initialize: async function() {
-    console.log('Luna Agents plugin initialized');
+    console.log('🌙 Luna Agents v2.0.0 plugin initialized');
+    console.log('📚 Skills reference included: 50+ development topics');
+    console.log('🚀 Ready for complete development lifecycle management');
   },
 
   // Plugin cleanup

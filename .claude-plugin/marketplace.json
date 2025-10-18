@@ -7,56 +7,55 @@
   },
   "plugins": [
     {
-      "name": "luna-agent",
-      "source": "./",
-      "description": "Complete AI-powered development lifecycle management from requirements to post-launch monitoring",
-      "version": "1.0.0",
+      "name": "luna-agents",
+      "source": "https://github.com/shacharsol/luna-agent",
+      "description": "🌙 Complete AI-powered development lifecycle management with comprehensive skills reference - From requirements to post-launch monitoring",
+      "version": "2.0.0",
       "author": {
         "name": "Shachar Solomon",
         "email": "info@finsavvyai.com"
       },
-      "homepage": "https://finsavvyai.com/claude-code-plugin",
+      "homepage": "https://github.com/shacharsol/luna-agent#readme",
       "repository": "https://github.com/shacharsol/luna-agent",
       "license": "MIT",
       "keywords": [
-        "ai",
+        "claude-code",
+        "plugin",
         "development",
         "workflow",
+        "ai",
+        "lifecycle",
         "automation",
         "requirements",
         "design",
         "testing",
         "deployment",
         "monitoring",
-        "documentation",
-        "code-review",
-        "lifecycle"
+        "full-stack",
+        "web-development",
+        "backend",
+        "frontend",
+        "api",
+        "database",
+        "architecture",
+        "security",
+        "performance",
+        "skills-reference",
+        "best-practices"
       ],
       "category": "development",
       "strict": false,
-      "commands": [
-        "./commands/luna-requirements.md",
-        "./commands/luna-design.md",
-        "./commands/luna-plan.md",
-        "./commands/luna-execute.md",
-        "./commands/luna-review.md",
-        "./commands/luna-test.md",
-        "./commands/luna-deploy.md",
-        "./commands/luna-docs.md",
-        "./commands/luna-monitor.md",
-        "./commands/luna-postlaunch.md"
+      "main": "index.js",
+      "permissions": [
+        "file-system",
+        "shell",
+        "network"
       ],
-      "agents": [
-        "./agents/luna-requirements-analyzer.md",
-        "./agents/luna-design-architect.md",
-        "./agents/luna-task-planner.md",
-        "./agents/luna-task-executor.md",
-        "./agents/luna-code-review.md",
-        "./agents/luna-testing-validation.md",
-        "./agents/luna-deployment.md",
-        "./agents/luna-documentation.md",
-        "./agents/luna-monitoring-observability.md",
-        "./agents/luna-post-launch-review.md"
+      "files": [
+        "index.js",
+        "claude-plugin.json",
+        "package.json",
+        "skills.md"
       ]
     }
   ]
