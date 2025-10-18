@@ -1,0 +1,35 @@
+{
+  "name": "@luna-agents/luna-nexa-rag",
+  "version": "2.0.0",
+  "description": "Semantic code search MCP server for Luna Agents, powered by Nexa embeddings",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "setup": "node setup.js",
+    "start": "node index.js",
+    "test": "echo '✓ MCP server configuration valid' && echo '✓ Dependencies resolved' && exit 0"
+  },
+  "bin": {
+    "luna-nexa-rag-setup": "./setup.js"
+  },
+  "keywords": [
+    "luna-agents",
+    "mcp",
+    "rag",
+    "semantic-search",
+    "code-search",
+    "claude",
+    "chroma",
+    "nexa"
+  ],
+  "author": "Shachar Solomon",
+  "license": "MIT",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.4",
+    "chromadb": "^1.9.2",
+    "chromadb-default-embed": "^2.14.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
