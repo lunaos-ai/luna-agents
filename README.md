@@ -20,6 +20,14 @@ Luna Agents is a comprehensive Claude Code plugin that provides an end-to-end so
 - **Monitoring & Observability** - Complete monitoring stack setup
 - **Post-Launch Review** - Performance analysis and optimization recommendations
 
+### 📚 Comprehensive Skills Reference
+- **Web Development** - HTML5, CSS3, JavaScript ES6+, React/Vue/Svelte
+- **Server Architecture** - Node.js, Express, Databases, APIs, Security
+- **Apple HIG** - Design principles, typography, spacing, motion
+- **Design Patterns** - MVC, Repository, Factory, Observer, Strategy
+- **Best Practices** - Claude Code optimization, testing, performance
+- **Quick Reference** - Commands, configurations, common patterns
+
 ### 🎯 Flexible Scoping
 - **Project-level**: Work on entire projects from root directory
 - **Feature-level**: Focus on specific features within larger projects
@@ -111,6 +119,58 @@ cd your-project-directory
 | `/luna-docs` | Generate documentation | Deployed code |
 | `/luna-monitor` | Set up monitoring | Running in production |
 | `/luna-postlaunch` | Post-launch analysis | 7+ days in production |
+
+## 📚 Skills Reference
+
+Luna Agents includes a comprehensive **skills.md** reference file that contains:
+
+### Web Development Mastery
+- **HTML5 Semantic Markup** - Accessibility, SEO, form validation
+- **Modern CSS & Responsive Design** - Flexbox, Grid, variables, animations
+- **JavaScript ES6+** - Async/await, destructuring, modules, best practices
+- **Frontend Frameworks** - React, Vue, Svelte patterns and lifecycle
+- **API Integration** - RESTful patterns, error handling, loading states
+- **Performance Optimization** - Lazy loading, code splitting, Web Vitals
+
+### Server & Backend Excellence
+- **Node.js/Express** - Middleware, routing, async handlers
+- **Database Design** - SQL/NoSQL, ORMs, migrations, indexing
+- **Authentication & Security** - JWT, OAuth, bcrypt, security headers
+- **API Design** - RESTful conventions, status codes, pagination
+- **DevOps & Deployment** - Docker, CI/CD, environment management
+- **Monitoring & Logging** - Winston, error tracking, metrics
+
+### Apple Design Principles
+- **Human Interface Guidelines** - Clarity, Deference, Depth
+- **Typography & Color** - System fonts, semantic colors, contrast
+- **Layout & Spacing** - Grid systems, touch targets, responsive design
+- **Motion & Animation** - Natural transitions, micro-interactions
+- **Component Patterns** - Cards, buttons, elevation, shadows
+
+### Software Architecture Patterns
+- **Architectural Patterns** - MVC, Component-based, Repository, Service Layer
+- **Creational Patterns** - Factory, Singleton, Builder
+- **Behavioral Patterns** - Observer, Strategy, Command, Middleware
+- **Structural Patterns** - Adapter, Decorator, Facade
+
+### Claude Code Best Practices
+- **Effective Prompting** - Specificity, context, tech stack constraints
+- **Project Structures** - Full-stack setup, component creation, API design
+- **Testing Strategies** - Unit, integration, E2E testing approaches
+- **Code Review Patterns** - Security, performance, quality assessment
+
+### Quick Reference
+- **Git Commands** - Branching, commits, merging strategies
+- **npm/Node** - Package management, scripts, development workflow
+- **Docker** - Containerization, multi-stage builds, compose
+- **Database** - Prisma commands, migrations, seeding
+
+**How to use:** Reference specific sections when working with Luna agents:
+```bash
+"Use the repository pattern from skills.md:line 150"
+"Apply Apple HIG spacing from skills.md:line 400"
+"Implement JWT auth as shown in skills.md:line 250"
+```
 
 ## Directory Structure
 
