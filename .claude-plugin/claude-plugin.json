@@ -13,7 +13,21 @@
     "lifecycle",
     "automation",
     "semantic-search",
-    "rag"
+    "rag",
+    "full-stack",
+    "web-development",
+    "backend",
+    "frontend",
+    "api",
+    "database",
+    "architecture",
+    "security",
+    "performance",
+    "skills-reference",
+    "best-practices",
+    "apple-hig",
+    "design-patterns",
+    "claude-code"
   ],
   "categories": [
     "development",
@@ -40,5 +54,44 @@
       "license": "MIT",
       "description": "On-device inference framework used for embeddings in luna-nexa-rag"
     }
+  },
+  "features": [
+    "Complete AI-powered development lifecycle management",
+    "10 specialized agents for different development phases",
+    "Comprehensive skills reference with best practices",
+    "Apple Human Interface Guidelines integration",
+    "Semantic code search with RAG capabilities",
+    "Automated workflow orchestration",
+    "Requirements analysis and technical design",
+    "Code review and quality assurance",
+    "Testing and validation automation",
+    "Deployment and monitoring setup",
+    "Documentation generation"
+  ],
+  "skillsReference": {
+    "included": true,
+    "file": "skills.md",
+    "sections": 50,
+    "topics": [
+      "HTML5 Semantic Markup",
+      "Modern CSS & Responsive Design",
+      "JavaScript ES6+",
+      "Frontend Frameworks",
+      "API Integration",
+      "Node.js/Express",
+      "Database Design",
+      "Authentication & Security",
+      "Docker & DevOps",
+      "Apple Design Principles",
+      "Design Patterns",
+      "Claude Code Best Practices"
+    ]
+  },
+  "documentation": {
+    "README": "Complete setup and usage guide",
+    "skills": "Comprehensive development reference",
+    "CHANGELOG": "Version history and release notes",
+    "QUICK_START": "Rapid onboarding guide",
+    "INSTALL": "Detailed installation instructions"
   }
 }
