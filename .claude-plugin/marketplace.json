@@ -8,7 +8,7 @@
   "plugins": [
     {
       "name": "luna-agents",
-      "source": "https://github.com/shacharsol/luna-agent",
+      "source": "./",
       "description": "🌙 Complete AI-powered development lifecycle management with comprehensive skills reference - From requirements to post-launch monitoring",
       "version": "2.0.0",
       "author": {
@@ -44,19 +44,7 @@
         "best-practices"
       ],
       "category": "development",
-      "strict": false,
-      "main": "index.js",
-      "permissions": [
-        "file-system",
-        "shell",
-        "network"
-      ],
-      "files": [
-        "index.js",
-        "claude-plugin.json",
-        "package.json",
-        "skills.md"
-      ]
+      "strict": false
     }
   ]
 }
