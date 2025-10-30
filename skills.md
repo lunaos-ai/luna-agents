@@ -1081,3 +1081,533 @@ When working with Luna Agents, reference specific sections of this guide:
 - `"Use the factory pattern example from skills.md:line 600"`
 
 This creates a shared vocabulary and consistent approach across all development tasks managed by Luna Agents.
+
+## Mobile Development Skills
+
+### 1. React Native Development
+- Cross-platform mobile app development with single codebase
+- Component-based architecture following React patterns
+- Navigation with React Navigation (Stack, Tab, Drawer)
+- Platform-specific code with Platform.OS and platform modules
+- State management with Redux, Zustand, or Context API
+- Performance optimization with FlatList, memoization, and lazy loading
+
+**Key Concepts:**
+```javascript
+import { View, Text, StyleSheet, Platform } from 'react-native';
+
+const Component = () => {
+  return (
+    <View style={styles.container}>
+      <Text>Platform: {Platform.OS}</Text>
+    </View>
+  );
+};
+```
+
+### 2. Flutter Development
+- Dart programming language fundamentals
+- Widget-based UI architecture (StatelessWidget, StatefulWidget)
+- Material Design and Cupertino widget libraries
+- State management solutions (Provider, BLoC, Riverpod)
+- Package management with pub.dev
+- Platform channels for native integration
+
+### 3. Progressive Web Apps (PWA)
+- Service Workers for offline functionality
+- Web App Manifest for installation
+- Responsive design for mobile-first experience
+- Push notifications with Web Push API
+- Background sync for data synchronization
+- App Shell architecture for instant loading
+
+**PWA Manifest Example:**
+```json
+{
+  "name": "My PWA App",
+  "short_name": "PWA",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#007AFF"
+}
+```
+
+### 4. Mobile-First Responsive Design
+- Touch-friendly UI elements (44px minimum touch targets)
+- Viewport meta tag optimization
+- Flexible typography and spacing
+- Device orientation handling
+- Gesture recognition and touch events
+- Performance optimization for mobile networks
+
+## Cloud Services Skills
+
+### 1. Amazon Web Services (AWS)
+- **Compute**: EC2 instances, Lambda functions, ECS/EKS containers
+- **Storage**: S3 buckets, EBS volumes, CloudFront CDN
+- **Database**: RDS (MySQL/PostgreSQL), DynamoDB NoSQL
+- **Networking**: VPC, Route 53, Load Balancers
+- **Security**: IAM roles, Security Groups, Cognito
+- **Serverless**: API Gateway, Step Functions, EventBridge
+
+**AWS SDK Example:**
+```javascript
+import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
+
+const s3Client = new S3Client({ region: 'us-east-1' });
+
+const uploadFile = async (bucket, key, body) => {
+  const command = new PutObjectCommand({ Bucket: bucket, Key: key, Body: body });
+  return await s3Client.send(command);
+};
+```
+
+### 2. Google Cloud Platform (GCP)
+- **Compute**: Compute Engine, Cloud Functions, GKE containers
+- **Storage**: Cloud Storage, Cloud CDN, Filestore
+- **Database**: Cloud SQL, Firestore, BigQuery
+- **AI/ML**: Vertex AI, Cloud Vision, Natural Language API
+- **Networking**: VPC, Cloud Load Balancing, Cloud DNS
+- **Serverless**: Cloud Run, Cloud Functions, Pub/Sub
+
+### 3. Microsoft Azure
+- **Compute**: Virtual Machines, Azure Functions, AKS
+- **Storage**: Blob Storage, Azure CDN, Disk Storage
+- **Database**: Azure SQL, Cosmos DB, Database for MySQL/PostgreSQL
+- **AI/ML**: Azure Machine Learning, Cognitive Services
+- **Networking**: Virtual Network, Application Gateway, Azure DNS
+- **DevOps**: Azure DevOps, GitHub Actions integration
+
+### 4. Cloud Architecture Patterns
+- Microservices with container orchestration
+- Serverless event-driven architectures
+- Multi-region deployment strategies
+- Hybrid cloud solutions
+- Cloud cost optimization strategies
+- Disaster recovery and backup planning
+
+## Database Technologies Skills
+
+### 1. Relational Databases (SQL)
+- **PostgreSQL**: Advanced features, JSONB, extensions, full-text search
+- **MySQL**: Performance tuning, replication, clustering
+- **SQLite**: Embedded databases, mobile apps, local storage
+- **SQL Server**: Enterprise features, reporting, analytics
+- Database normalization and denormalization strategies
+- Query optimization and indexing strategies
+
+**Advanced SQL Example:**
+```sql
+-- PostgreSQL JSONB query
+SELECT users.name,
+       jsonb_array_elements(settings.preferences)->>'theme' as theme
+FROM users
+WHERE settings->>'notifications' = 'true'
+  AND created_at > NOW() - INTERVAL '30 days';
+```
+
+### 2. NoSQL Databases
+- **MongoDB**: Document modeling, aggregation pipeline, sharding
+- **Cassandra**: Wide-column stores, distributed architecture
+- **Redis**: In-memory caching, data structures, pub/sub
+- **Couchbase**: Document database with mobile sync
+- Consistency models and CAP theorem
+- Data modeling for non-relational databases
+
+### 3. Graph Databases
+- **Neo4j**: Cypher query language, graph algorithms
+- **Amazon Neptune**: Managed graph database service
+- Relationship modeling and traversal optimization
+- Graph database vs relational database use cases
+- Social network and recommendation engine patterns
+
+### 4. Database Design Patterns
+- Entity-Relationship modeling
+- Database migration strategies
+- Data versioning and schema evolution
+- Multi-tenancy data isolation
+- Event sourcing and CQRS patterns
+- Database connection pooling and scaling
+
+## DevOps & Infrastructure Skills
+
+### 1. Containerization & Orchestration
+- **Docker**: Multi-stage builds, Docker Compose, networking
+- **Kubernetes**: Pods, Services, Deployments, ConfigMaps
+- Container security best practices
+- Helm charts for package management
+- Service mesh with Istio or Linkerd
+- Container monitoring and logging
+
+**Dockerfile Example:**
+```dockerfile
+FROM node:18-alpine AS builder
+WORKDIR /app
+COPY package*.json ./
+RUN npm ci --only=production
+
+FROM node:18-alpine AS runtime
+WORKDIR /app
+COPY --from=builder /app/node_modules ./node_modules
+COPY . .
+EXPOSE 3000
+CMD ["npm", "start"]
+```
+
+### 2. Infrastructure as Code
+- **Terraform**: Multi-cloud provisioning, state management, modules
+- **AWS CloudFormation**: Stack management, nested stacks
+- **Pulumi**: Programming languages for infrastructure
+- Ansible for configuration management
+- Infrastructure testing and validation
+- Cost estimation and budgeting
+
+### 3. CI/CD Pipelines
+- **GitHub Actions**: Workflow automation, self-hosted runners
+- **GitLab CI**: Multi-stage pipelines, artifacts
+- **Jenkins**: Plugin ecosystem, pipeline as code
+- Build automation and artifact management
+- Automated testing integration
+- Deployment strategies (blue-green, canary, rolling)
+
+### 4. Monitoring & Observability
+- **Prometheus**: Metrics collection, alerting rules
+- **Grafana**: Dashboard creation, visualization
+- **ELK Stack**: Elasticsearch, Logstash, Kibana
+- OpenTelemetry for distributed tracing
+- Application Performance Monitoring (APM)
+- Error tracking and alerting systems
+
+## Security Skills
+
+### 1. Application Security
+- **OWASP Top 10**: Injection, XSS, CSRF, security misconfigurations
+- Input validation and sanitization
+- Secure authentication and session management
+- Authorization and access control patterns
+- Secure API design and rate limiting
+- Security headers and CSP implementation
+
+**Security Middleware Example:**
+```javascript
+import helmet from 'helmet';
+import rateLimit from 'express-rate-limit';
+
+app.use(helmet({
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'self'"],
+      scriptSrc: ["'self'", "'unsafe-inline'"],
+    }
+  }
+}));
+
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100 // limit each IP to 100 requests
+});
+app.use('/api/', limiter);
+```
+
+### 2. Cryptography & Encryption
+- Hashing algorithms (SHA-256, bcrypt for passwords)
+- Symmetric encryption (AES-256)
+- Asymmetric encryption (RSA, ECC)
+- Digital signatures and certificates
+- Key management best practices
+- Transport layer security (TLS/SSL)
+
+### 3. Identity & Access Management
+- JWT (JSON Web Tokens) implementation
+- OAuth 2.0 and OpenID Connect
+- Multi-factor authentication (MFA)
+- Role-based access control (RBAC)
+- Single Sign-On (SSO) implementation
+- API authentication strategies
+
+### 4. Security Testing & Compliance
+- Penetration testing methodologies
+- Static and dynamic security analysis
+- Dependency vulnerability scanning
+- Security code review practices
+- Compliance frameworks (GDPR, HIPAA, SOC 2)
+- Security incident response procedures
+
+## AI/ML Integration Skills
+
+### 1. OpenAI API Integration
+- **GPT Models**: Chat completions, function calling, embeddings
+- **Fine-tuning**: Custom model training, data preparation
+- **Rate limiting and cost optimization**
+- **Prompt engineering** best practices
+- **Async processing** and streaming responses
+- **Error handling** and retry strategies
+
+**OpenAI Integration Example:**
+```javascript
+import OpenAI from 'openai';
+
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY,
+});
+
+const chatCompletion = await openai.chat.completions.create({
+  model: 'gpt-4',
+  messages: [
+    { role: 'system', content: 'You are a helpful assistant.' },
+    { role: 'user', content: 'Explain microservices architecture.' }
+  ],
+  temperature: 0.7,
+  max_tokens: 1000
+});
+```
+
+### 2. LangChain Framework
+- **Chains**: Sequential processing, memory integration
+- **Agents**: Tool usage, decision making
+- **Document loaders**: PDF, web pages, databases
+- **Text splitters**: Chunking strategies
+- **Vector stores**: Embedding storage and similarity search
+- **Retrieval Augmented Generation (RAG)**
+
+### 3. Vector Databases & Search
+- **Pinecone**: Managed vector database service
+- **Weaviate**: GraphQL-based vector database
+- **ChromaDB**: Open-source embedding database
+- Embedding models and similarity search
+- Semantic search implementation
+- RAG (Retrieval Augmented Generation) patterns
+
+### 4. Machine Learning Operations
+- Model deployment and serving
+- Model monitoring and drift detection
+- A/B testing for ML models
+- Feature engineering pipelines
+- Model versioning and experimentation
+- Edge AI deployment considerations
+
+## Microservices Architecture Skills
+
+### 1. Service Design Patterns
+- **API Gateway**: Centralized routing, authentication, rate limiting
+- **Service Discovery**: Consul, Eureka, etcd
+- **Circuit Breaker**: Fault tolerance, resilience patterns
+- **Bulkhead**: Isolation patterns for failure containment
+- **Saga Pattern**: Distributed transaction management
+- **Event-Driven Architecture**: Message brokers, event sourcing
+
+### 2. Communication Protocols
+- **REST/HTTP**: Synchronous communication, RESTful design
+- **gRPC**: High-performance RPC, Protocol Buffers
+- **GraphQL**: Query language, schema stitching
+- **Message Queues**: RabbitMQ, AWS SQS, Google Pub/Sub
+- **Event Streams**: Apache Kafka, Apache Pulsar
+- **WebSockets**: Real-time bidirectional communication
+
+**gRPC Service Definition:**
+```protobuf
+syntax = "proto3";
+
+service UserService {
+  rpc GetUser(GetUserRequest) returns (User);
+  rpc ListUsers(ListUsersRequest) returns (ListUsersResponse);
+}
+
+message GetUserRequest {
+  string user_id = 1;
+}
+
+message User {
+  string id = 1;
+  string name = 2;
+  string email = 3;
+}
+```
+
+### 3. Data Management
+- **Database per Service**: Data isolation patterns
+- **Event Sourcing**: Immutable event logs, state reconstruction
+- **CQRS**: Command Query Responsibility Segregation
+- **Change Data Capture**: Real-time data synchronization
+- **Distributed Caching**: Redis clusters, CDN strategies
+- **Data Consistency**: Eventually consistent models
+
+### 4. Service Mesh & Observability
+- **Istio**: Traffic management, security, observability
+- **Linkerd**: Lightweight service mesh
+- **Distributed Tracing**: Jaeger, Zipkin
+- **Service Metrics**: Prometheus, custom instrumentation
+- **Log Aggregation**: Fluentd, Fluent Bit
+- **Health Checks**: Readiness, liveness, startup probes
+
+## Modern Frontend Development Skills
+
+### 1. Next.js Framework
+- **App Router**: React Server Components, layouts, routing
+- **Server Components**: Data fetching, SEO optimization
+- **Client Components**: Interactivity, state management
+- **API Routes**: Backend endpoints, middleware
+- **Static Site Generation (SSG)**: Build-time optimization
+- **Incremental Static Regeneration (ISR)**: Periodic updates
+
+**Next.js App Router Structure:**
+```javascript
+// app/layout.js
+export default function RootLayout({ children }) {
+  return (
+    <html lang="en">
+      <body>{children}</body>
+    </html>
+  );
+}
+
+// app/posts/[slug]/page.js
+export default async function PostPage({ params }) {
+  const post = await getPost(params.slug);
+  return <article>{post.content}</article>;
+}
+```
+
+### 2. TypeScript Mastery
+- **Advanced Types**: Generics, conditional types, utility types
+- **Type Guards**: Runtime type checking, type predicates
+- **Module System**: Imports/exports, declaration files
+- **Configuring tsconfig.json**: Strict mode, path mapping
+- **Integration with Frameworks**: React types, Next.js types
+- **Type-safe API Calls**: OpenAPI generation, validation
+
+### 3. State Management Solutions
+- **Zustand**: Lightweight state management, TypeScript support
+- **Redux Toolkit**: Modern Redux, RTK Query, createAsyncThunk
+- **React Query (TanStack Query)**: Server state management, caching
+- **Jotai**: Atomic state management, TypeScript first
+- **Valtio**: Proxy-based state management, devtools
+- **Context API Optimization**: Provider patterns, memoization
+
+### 4. Performance Optimization
+- **Code Splitting**: Dynamic imports, route-based splitting
+- **Lazy Loading**: React.lazy, Suspense boundaries
+- **Memoization**: React.memo, useMemo, useCallback
+- **Bundle Optimization**: Tree shaking, minification, compression
+- **Image Optimization**: Next.js Image, WebP format, lazy loading
+- **Runtime Performance**: Virtual scrolling, debouncing, throttling
+
+## Testing Frameworks Skills
+
+### 1. Jest Testing Framework
+- **Unit Testing**: Test structure, assertions, mocking
+- **Integration Testing**: Component testing, API testing
+- **Test Doubles**: Mocks, stubs, spies, fakes
+- **Snapshot Testing**: Component snapshots, serialization
+- **Coverage Reports**: Statement, branch, function coverage
+- **Test Organization**: Describe blocks, test suites, setup/teardown
+
+**Jest Test Example:**
+```javascript
+import { render, screen, fireEvent } from '@testing-library/react';
+import UserCard from './UserCard';
+
+describe('UserCard Component', () => {
+  const mockUser = {
+    id: 1,
+    name: 'John Doe',
+    email: 'john@example.com'
+  };
+
+  test('renders user information correctly', () => {
+    render(<UserCard user={mockUser} />);
+
+    expect(screen.getByText('John Doe')).toBeInTheDocument();
+    expect(screen.getByText('john@example.com')).toBeInTheDocument();
+  });
+
+  test('calls onDelete when delete button is clicked', () => {
+    const mockOnDelete = jest.fn();
+    render(<UserCard user={mockUser} onDelete={mockOnDelete} />);
+
+    fireEvent.click(screen.getByRole('button', { name: 'Delete' }));
+    expect(mockOnDelete).toHaveBeenCalledWith(mockUser.id);
+  });
+});
+```
+
+### 2. Cypress End-to-End Testing
+- **E2E Testing**: User flows, critical paths, cross-browser testing
+- **Cypress Commands**: Custom commands, page object model
+- **Test Data Management**: Fixtures, data factories
+- **API Testing**: cy.request(), response assertions
+- **Visual Testing**: Screenshot comparison, visual regression
+- **CI/CD Integration**: Headless mode, parallel execution
+
+### 3. Playwright Testing
+- **Multi-Browser Testing**: Chromium, Firefox, WebKit support
+- **Auto-Waiting**: Smart element waiting, retry mechanisms
+- **Network Interception**: Mocking API responses, latency simulation
+- **Mobile Testing**: Device emulation, touch gestures
+- **Trace Viewer**: Execution traces, performance analysis
+- **Code Generation**: Test recording, code suggestions
+
+### 4. Testing Strategies & Best Practices
+- **Testing Pyramid**: Unit, integration, E2E test balance
+- **Test-Driven Development (TDD)**: Red-Green-Refactor cycle
+- **Behavior-Driven Development (BDD)**: Gherkin syntax, user stories
+- **Contract Testing**: Consumer-driven contracts, Pact
+- **Accessibility Testing**: Axe-core, screen reader testing
+- **Performance Testing**: Lighthouse CI, Core Web Vitals
+
+## Performance & Monitoring Skills
+
+### 1. Application Performance Monitoring (APM)
+- **DataDog**: Real-time metrics, distributed tracing, log management
+- **New Relic**: Application monitoring, error tracking, user experience
+- **Dynatrace**: Full-stack monitoring, AI-powered insights
+- **AppDynamics**: Application performance, business metrics
+- **Custom Metrics**: Prometheus integration, Grafana dashboards
+- **Performance Budgets**: Setting and monitoring thresholds
+
+### 2. Frontend Performance Optimization
+- **Core Web Vitals**: LCP, FID, CLS optimization
+- **Bundle Analysis**: Webpack Bundle Analyzer, size optimization
+- **Runtime Performance**: Rendering optimization, memory management
+- **Network Performance**: Resource optimization, HTTP/2, CDN usage
+- **Image Optimization**: Formats, lazy loading, responsive images
+- **Performance Measurement**: Performance API, Lighthouse audits
+
+**Performance Monitoring Example:**
+```javascript
+// Core Web Vitals measurement
+import { getCLS, getFID, getFCP, getLCP, getTTFB } from 'web-vitals';
+
+getCLS(console.log);
+getFID(console.log);
+getFCP(console.log);
+getLCP(console.log);
+getTTFB(console.log);
+
+// Custom performance marks
+performance.mark('component-render-start');
+// ... component logic
+performance.mark('component-render-end');
+performance.measure('component-render', 'component-render-start', 'component-render-end');
+```
+
+### 3. Backend Performance Monitoring
+- **Database Performance**: Query optimization, connection pooling
+- **API Response Times**: Request latency, throughput monitoring
+- **Memory Management**: Heap usage, garbage collection
+- **CPU Utilization**: Process monitoring, load balancing
+- **Cache Performance**: Hit ratios, invalidation strategies
+- **Async Operations**: Queue monitoring, task processing times
+
+### 4. Infrastructure Monitoring
+- **System Metrics**: CPU, memory, disk, network utilization
+- **Container Monitoring**: Docker stats, Kubernetes metrics
+- **Cloud Monitoring**: AWS CloudWatch, GCP Cloud Monitoring
+- **Log Aggregation**: Centralized logging, log analysis
+- **Alert Management**: Threshold alerts, anomaly detection
+- **Capacity Planning**: Resource scaling, trend analysis
+
+---
+
+This comprehensive skills reference now covers **50+ sections** across **10 major categories**, providing complete coverage for modern full-stack development, cloud architecture, security, AI integration, and DevOps practices.

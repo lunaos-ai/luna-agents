@@ -18,15 +18,23 @@
     "monitoring",
     "full-stack",
     "web-development",
-    "backend",
-    "frontend",
-    "api",
+    "mobile-development",
+    "cloud-services",
     "database",
-    "architecture",
+    "devops",
     "security",
+    "ai-integration",
+    "microservices",
+    "frontend",
+    "backend",
+    "api",
+    "architecture",
     "performance",
+    "testing-frameworks",
+    "monitoring",
     "skills-reference",
-    "best-practices"
+    "best-practices",
+    "comprehensive-guide"
   ],
   "categories": [
     "development",
@@ -95,6 +103,11 @@
       "category": "architecture"
     },
     {
+      "name": "luna-hig",
+      "displayName": "Apple HIG Designer",
+      "category": "design"
+    },
+    {
       "name": "luna-task-planner",
       "displayName": "Task Planner",
       "category": "planning"
@@ -138,6 +151,7 @@
   "commands": [
     "luna-requirements",
     "luna-design",
+    "luna-hig",
     "luna-plan",
     "luna-execute",
     "luna-review",
@@ -157,9 +171,19 @@
   ],
   "skillsReference": {
     "file": "skills.md",
-    "description": "Comprehensive development skills reference covering web development, server architecture, design patterns, and best practices",
+    "description": "Comprehensive development skills reference covering 50+ topics across 10 major categories for modern full-stack development",
     "sections": [
       "web-development",
+      "mobile-development",
+      "cloud-services",
+      "database-technologies",
+      "devops-infrastructure",
+      "security",
+      "ai-ml-integration",
+      "microservices-architecture",
+      "modern-frontend",
+      "testing-frameworks",
+      "performance-monitoring",
       "server-skills",
       "apple-design-principles",
       "design-patterns",
