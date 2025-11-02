@@ -344,6 +344,91 @@ class LunaNexaRAGServer {
               }
             }
           }
+        },
+        {
+          name: 'setup_database',
+          description: 'Generate database schema, migrations, and ORM configuration',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              database: {
+                type: 'string',
+                description: 'Database type (e.g., "postgresql", "mysql", "mongodb", "sqlite")',
+                default: 'postgresql'
+              },
+              orm: {
+                type: 'string',
+                description: 'ORM choice (e.g., "prisma", "drizzle", "typeorm")',
+                default: 'prisma'
+              }
+            }
+          }
+        },
+        {
+          name: 'generate_api',
+          description: 'Generate REST API with routes, controllers, and documentation',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              framework: {
+                type: 'string',
+                description: 'API framework (e.g., "nextjs", "express", "fastify")',
+                default: 'nextjs'
+              },
+              apiType: {
+                type: 'string',
+                description: 'API type (e.g., "rest", "graphql", "trpc")',
+                default: 'rest'
+              }
+            }
+          }
+        },
+        {
+          name: 'setup_authentication',
+          description: 'Implement authentication with JWT, OAuth, and RBAC',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              authStrategy: {
+                type: 'string',
+                description: 'Auth strategy (e.g., "nextauth", "passport", "auth0")',
+                default: 'nextauth'
+              }
+            }
+          }
+        },
+        {
+          name: 'setup_analytics',
+          description: 'Integrate analytics and monitoring (GA4, PostHog, Sentry)',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              analytics: {
+                type: 'string',
+                description: 'Analytics platform (e.g., "ga4", "posthog", "mixpanel")',
+                default: 'ga4'
+              },
+              monitoring: {
+                type: 'string',
+                description: 'Monitoring tool (e.g., "sentry", "datadog", "newrelic")',
+                default: 'sentry'
+              }
+            }
+          }
+        },
+        {
+          name: 'optimize_seo',
+          description: 'Implement SEO optimization with meta tags, sitemaps, and structured data',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              scope: {
+                type: 'string',
+                description: 'SEO scope (e.g., "complete", "meta-tags", "performance")',
+                default: 'complete'
+              }
+            }
+          }
         }
       ]
     }));
@@ -395,6 +480,21 @@ class LunaNexaRAGServer {
 
           case 'create_openai_app':
             return await this.createOpenAIApp(args.appType, args.model);
+
+          case 'setup_database':
+            return await this.setupDatabase(args.database, args.orm);
+
+          case 'generate_api':
+            return await this.generateAPI(args.framework, args.apiType);
+
+          case 'setup_authentication':
+            return await this.setupAuthentication(args.authStrategy);
+
+          case 'setup_analytics':
+            return await this.setupAnalytics(args.analytics, args.monitoring);
+
+          case 'optimize_seo':
+            return await this.optimizeSEO(args.scope);
 
           default:
             throw new Error(`Unknown tool: ${name}`);
@@ -959,6 +1059,174 @@ class LunaNexaRAGServer {
         {
           type: 'text',
           text: `🤖 OpenAI App Plan:\n\n${JSON.stringify(appPlan, null, 2)}\n\nRefer to luna-openai-app agent for AI integration.`
+        }
+      ]
+    };
+  }
+
+  async setupDatabase(database, orm) {
+    console.error(`🗄️ Setting up database (db: ${database}, orm: ${orm})`);
+    
+    const dbPlan = {
+      database: database || 'postgresql',
+      orm: orm || 'prisma',
+      components: {
+        schema: 'Database schema with relationships',
+        migrations: 'Migration system for version control',
+        client: 'Type-safe database client',
+        operations: 'CRUD operations and queries',
+        seeding: 'Seed data for development'
+      },
+      features: [
+        'Type-safe queries',
+        'Automatic migrations',
+        'Relationship management',
+        'Transactions support',
+        'Full-text search',
+        'Soft deletes'
+      ]
+    };
+
+    return {
+      content: [
+        {
+          type: 'text',
+          text: `🗄️ Database Setup Plan:\n\n${JSON.stringify(dbPlan, null, 2)}\n\nRefer to luna-database agent for complete setup.`
+        }
+      ]
+    };
+  }
+
+  async generateAPI(framework, apiType) {
+    console.error(`🚀 Generating API (framework: ${framework}, type: ${apiType})`);
+    
+    const apiPlan = {
+      framework: framework || 'nextjs',
+      apiType: apiType || 'rest',
+      components: {
+        routes: 'RESTful routes with proper HTTP methods',
+        controllers: 'Business logic handlers',
+        middleware: 'Auth, validation, error handling',
+        documentation: 'OpenAPI/Swagger docs',
+        testing: 'API tests with Jest/Supertest'
+      },
+      features: [
+        'Input validation with Zod',
+        'Authentication middleware',
+        'Rate limiting',
+        'CORS configuration',
+        'Error handling',
+        'Pagination support',
+        'API versioning'
+      ]
+    };
+
+    return {
+      content: [
+        {
+          type: 'text',
+          text: `🚀 API Generation Plan:\n\n${JSON.stringify(apiPlan, null, 2)}\n\nRefer to luna-api-generator agent for implementation.`
+        }
+      ]
+    };
+  }
+
+  async setupAuthentication(authStrategy) {
+    console.error(`🔐 Setting up authentication (strategy: ${authStrategy})`);
+    
+    const authPlan = {
+      strategy: authStrategy || 'nextauth',
+      components: {
+        providers: 'OAuth (Google, GitHub) + Credentials',
+        session: 'JWT-based session management',
+        rbac: 'Role-based access control',
+        middleware: 'Protected routes and API endpoints',
+        ui: 'Login/signup components'
+      },
+      features: [
+        'Multiple auth providers',
+        'JWT token management',
+        'Password hashing with bcrypt',
+        'Email verification',
+        'Password reset flow',
+        'Two-factor authentication',
+        'Session management',
+        'CSRF protection'
+      ]
+    };
+
+    return {
+      content: [
+        {
+          type: 'text',
+          text: `🔐 Authentication Setup Plan:\n\n${JSON.stringify(authPlan, null, 2)}\n\nRefer to luna-auth agent for secure auth implementation.`
+        }
+      ]
+    };
+  }
+
+  async setupAnalytics(analytics, monitoring) {
+    console.error(`📊 Setting up analytics (analytics: ${analytics}, monitoring: ${monitoring})`);
+    
+    const analyticsPlan = {
+      analytics: analytics || 'ga4',
+      monitoring: monitoring || 'sentry',
+      components: {
+        tracking: 'Event tracking and page views',
+        performance: 'Core Web Vitals monitoring',
+        errors: 'Error tracking and reporting',
+        logging: 'Server-side logging',
+        dashboard: 'Analytics dashboard API'
+      },
+      trackedEvents: [
+        'User actions (signup, login)',
+        'Page views',
+        'Button clicks',
+        'Form submissions',
+        'E-commerce events',
+        'Performance metrics'
+      ]
+    };
+
+    return {
+      content: [
+        {
+          type: 'text',
+          text: `📊 Analytics Setup Plan:\n\n${JSON.stringify(analyticsPlan, null, 2)}\n\nRefer to luna-analytics agent for complete tracking.`
+        }
+      ]
+    };
+  }
+
+  async optimizeSEO(scope) {
+    console.error(`🔍 Optimizing SEO (scope: ${scope})`);
+    
+    const seoPlan = {
+      scope: scope || 'complete',
+      components: {
+        metadata: 'Meta tags, Open Graph, Twitter Cards',
+        sitemap: 'Dynamic sitemap generation',
+        robots: 'Robots.txt configuration',
+        structuredData: 'JSON-LD schema markup',
+        performance: 'Core Web Vitals optimization'
+      },
+      features: [
+        'SEO-friendly meta tags',
+        'Open Graph for social sharing',
+        'Automatic sitemap generation',
+        'Structured data (Schema.org)',
+        'Image optimization',
+        'Lazy loading',
+        'Code splitting',
+        'Fast page loads (<3s)'
+      ]
+    };
+
+    return {
+      content: [
+        {
+          type: 'text',
+          text: `🔍 SEO Optimization Plan:\n\n${JSON.stringify(seoPlan, null, 2)}\n\nRefer to luna-seo agent for complete optimization.`
         }
       ]
     };
