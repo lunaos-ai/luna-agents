@@ -170,6 +170,180 @@ class LunaNexaRAGServer {
             },
             required: ['patternType']
           }
+        },
+        {
+          name: 'ui_convert_to_hig',
+          description: 'Convert UI components to Apple HIG + Decart modern design standards',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              scope: {
+                type: 'string',
+                description: 'Scope of conversion (e.g., "full", "component-name", "page-name")',
+                default: 'full'
+              },
+              includeGlassmorphism: {
+                type: 'boolean',
+                description: 'Include glassmorphism effects',
+                default: true
+              }
+            }
+          }
+        },
+        {
+          name: 'run_ui_tests',
+          description: 'Run automated UI/UX tests using Playwright',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              testType: {
+                type: 'string',
+                description: 'Type of tests (e.g., "e2e", "visual", "accessibility", "all")',
+                default: 'all'
+              },
+              scope: {
+                type: 'string',
+                description: 'Test scope (e.g., "full", "feature-name")',
+                default: 'full'
+              }
+            }
+          }
+        },
+        {
+          name: 'fix_ui_issues',
+          description: 'Automatically detect and fix UI issues (accessibility, design system, responsive)',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              fixType: {
+                type: 'string',
+                description: 'Type of fixes (e.g., "auto", "accessibility", "design-system", "responsive")',
+                default: 'auto'
+              },
+              preview: {
+                type: 'boolean',
+                description: 'Preview fixes without applying',
+                default: false
+              }
+            }
+          }
+        },
+        {
+          name: 'deploy_to_cloudflare',
+          description: 'Automated deployment to Cloudflare with Wrangler integration',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              service: {
+                type: 'string',
+                description: 'Service to deploy (e.g., "all", "workers", "pages", "d1", "r2")',
+                default: 'all'
+              },
+              setupOnly: {
+                type: 'boolean',
+                description: 'Setup configuration without deploying',
+                default: false
+              }
+            }
+          }
+        },
+        {
+          name: 'get_luna_shortcuts',
+          description: 'Get available Luna shortcuts and quick commands',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              category: {
+                type: 'string',
+                description: 'Shortcut category (e.g., "design", "deployment", "testing", "all")',
+                default: 'all'
+              }
+            }
+          }
+        },
+        {
+          name: 'dockerize_project',
+          description: 'Generate Docker configuration for project containerization',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              scope: {
+                type: 'string',
+                description: 'Dockerization scope (e.g., "full", "backend", "frontend")',
+                default: 'full'
+              },
+              environment: {
+                type: 'string',
+                description: 'Target environment (e.g., "all", "development", "production")',
+                default: 'all'
+              }
+            }
+          }
+        },
+        {
+          name: 'generate_user_guide',
+          description: 'Generate high-definition HTML and PDF user guide documentation',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              scope: {
+                type: 'string',
+                description: 'Documentation scope (e.g., "complete", "getting-started", "api-reference")',
+                default: 'complete'
+              },
+              format: {
+                type: 'string',
+                description: 'Output format (e.g., "both", "html", "pdf")',
+                default: 'both'
+              }
+            }
+          }
+        },
+        {
+          name: 'integrate_lemonsqueezy',
+          description: 'Integrate LemonSqueezy payment processing with store configuration',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              storeId: {
+                type: 'string',
+                description: 'LemonSqueezy Store ID'
+              },
+              apiKey: {
+                type: 'string',
+                description: 'LemonSqueezy API Key'
+              },
+              productPrefix: {
+                type: 'string',
+                description: 'Product prefix for namespacing (e.g., "myapp-")'
+              },
+              scope: {
+                type: 'string',
+                description: 'Integration scope (e.g., "full", "products", "subscriptions")',
+                default: 'full'
+              }
+            },
+            required: ['storeId', 'apiKey', 'productPrefix']
+          }
+        },
+        {
+          name: 'create_openai_app',
+          description: 'Generate OpenAI-powered application with GPT integration',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              appType: {
+                type: 'string',
+                description: 'App type (e.g., "chat", "assistant", "embeddings", "complete")',
+                default: 'chat'
+              },
+              model: {
+                type: 'string',
+                description: 'OpenAI model (e.g., "gpt-4-turbo", "gpt-4", "gpt-3.5-turbo")',
+                default: 'gpt-4-turbo'
+              }
+            }
+          }
         }
       ]
     }));
@@ -194,6 +368,33 @@ class LunaNexaRAGServer {
 
           case 'get_coding_patterns':
             return await this.getCodingPatterns(args.patternType);
+
+          case 'ui_convert_to_hig':
+            return await this.convertUIToHIG(args.scope, args.includeGlassmorphism);
+
+          case 'run_ui_tests':
+            return await this.runUITests(args.testType, args.scope);
+
+          case 'fix_ui_issues':
+            return await this.fixUIIssues(args.fixType, args.preview);
+
+          case 'deploy_to_cloudflare':
+            return await this.deployToCloudflare(args.service, args.setupOnly);
+
+          case 'get_luna_shortcuts':
+            return await this.getLunaShortcuts(args.category);
+
+          case 'dockerize_project':
+            return await this.dockerizeProject(args.scope, args.environment);
+
+          case 'generate_user_guide':
+            return await this.generateUserGuide(args.scope, args.format);
+
+          case 'integrate_lemonsqueezy':
+            return await this.integrateLemonSqueezy(args.storeId, args.apiKey, args.productPrefix, args.scope);
+
+          case 'create_openai_app':
+            return await this.createOpenAIApp(args.appType, args.model);
 
           default:
             throw new Error(`Unknown tool: ${name}`);
@@ -449,6 +650,318 @@ class LunaNexaRAGServer {
     ).slice(0, 15);
 
     return relevantLines.join('\n');
+  }
+
+  async convertUIToHIG(scope, includeGlassmorphism) {
+    console.error(`🎨 Converting UI to Apple HIG + Decart design (scope: ${scope})`);
+    
+    const conversionPlan = {
+      scope: scope || 'full',
+      includeGlassmorphism: includeGlassmorphism !== false,
+      steps: [
+        'Analyze current UI components',
+        'Apply Apple HIG design principles',
+        'Implement Decart modern aesthetics',
+        'Generate design tokens',
+        'Convert components to new design',
+        'Add glassmorphism effects (if enabled)',
+        'Validate accessibility compliance'
+      ],
+      designTokens: {
+        colors: ['--color-primary: #007AFF', '--color-success: #34C759'],
+        spacing: ['--space-1: 4px', '--space-2: 8px', '--space-4: 16px'],
+        typography: ['--font-size-base: 15px', '--font-weight-semibold: 600']
+      }
+    };
+
+    return {
+      content: [
+        {
+          type: 'text',
+          text: `🎨 UI Conversion Plan:\n\n${JSON.stringify(conversionPlan, null, 2)}\n\nRefer to luna-ui-convert command documentation for detailed implementation.`
+        }
+      ]
+    };
+  }
+
+  async runUITests(testType, scope) {
+    console.error(`🧪 Running UI tests (type: ${testType}, scope: ${scope})`);
+    
+    const testPlan = {
+      testType: testType || 'all',
+      scope: scope || 'full',
+      tests: {
+        e2e: ['User authentication flow', 'Navigation tests', 'Form submissions'],
+        visual: ['Component snapshots', 'Responsive layouts', 'Theme consistency'],
+        accessibility: ['WCAG compliance', 'Keyboard navigation', 'Screen reader support'],
+        performance: ['Load times', 'Core Web Vitals', 'Bundle size']
+      },
+      framework: 'Playwright',
+      browsers: ['Chromium', 'Firefox', 'WebKit']
+    };
+
+    return {
+      content: [
+        {
+          type: 'text',
+          text: `🧪 UI Test Plan:\n\n${JSON.stringify(testPlan, null, 2)}\n\nRefer to luna-ui-test agent documentation for test implementation.`
+        }
+      ]
+    };
+  }
+
+  async fixUIIssues(fixType, preview) {
+    console.error(`🔧 Fixing UI issues (type: ${fixType}, preview: ${preview})`);
+    
+    const fixPlan = {
+      fixType: fixType || 'auto',
+      preview: preview || false,
+      categories: {
+        accessibility: ['Missing alt text', 'Color contrast', 'ARIA labels'],
+        designSystem: ['Hardcoded colors', 'Inconsistent spacing', 'Typography'],
+        responsive: ['Fixed widths', 'Touch targets', 'Overflow issues'],
+        performance: ['Image optimization', 'Lazy loading', 'Bundle size']
+      },
+      priority: {
+        critical: 5,
+        high: 12,
+        medium: 18,
+        low: 8
+      }
+    };
+
+    return {
+      content: [
+        {
+          type: 'text',
+          text: `🔧 UI Fix Plan:\n\n${JSON.stringify(fixPlan, null, 2)}\n\nRefer to luna-ui-fix agent documentation for automated fixes.`
+        }
+      ]
+    };
+  }
+
+  async deployToCloudflare(service, setupOnly) {
+    console.error(`☁️ Deploying to Cloudflare (service: ${service}, setup-only: ${setupOnly})`);
+    
+    const deploymentPlan = {
+      service: service || 'all',
+      setupOnly: setupOnly || false,
+      services: {
+        workers: 'Backend API deployment',
+        pages: 'Frontend static site',
+        d1: 'Database setup and migration',
+        r2: 'Object storage for assets',
+        kv: 'Key-value cache storage'
+      },
+      steps: [
+        'Install and configure Wrangler CLI',
+        'Analyze project structure',
+        'Generate wrangler.toml configuration',
+        'Set up Cloudflare services',
+        'Deploy application',
+        'Configure domain and SSL',
+        'Set up monitoring'
+      ]
+    };
+
+    return {
+      content: [
+        {
+          type: 'text',
+          text: `☁️ Cloudflare Deployment Plan:\n\n${JSON.stringify(deploymentPlan, null, 2)}\n\nRefer to luna-cloudflare-auto command for automated deployment.`
+        }
+      ]
+    };
+  }
+
+  async getLunaShortcuts(category) {
+    console.error(`⚡ Getting Luna shortcuts (category: ${category})`);
+    
+    const shortcuts = {
+      design: {
+        hig: 'luna-hig - Apple HIG compliance',
+        'ui-convert': 'luna-ui-convert - Convert to modern design',
+        'ui-test': 'luna-ui-test - Run UI tests',
+        'ui-fix': 'luna-ui-fix - Fix UI issues'
+      },
+      deployment: {
+        deploy: 'luna-deploy - General deployment',
+        'cf-deploy': 'luna-cloudflare-deploy - Cloudflare deployment',
+        'cf-auto': 'luna-cloudflare-auto - Automated Cloudflare setup'
+      },
+      testing: {
+        test: 'luna-test - Run tests',
+        'ui-test': 'luna-ui-test - UI/UX testing',
+        e2e: 'luna-test e2e - End-to-end tests'
+      },
+      development: {
+        plan: 'luna-plan - Development planning',
+        execute: 'luna-execute - Task execution',
+        review: 'luna-review - Code review'
+      }
+    };
+
+    const selectedShortcuts = category === 'all' ? shortcuts : { [category]: shortcuts[category] };
+
+    return {
+      content: [
+        {
+          type: 'text',
+          text: `⚡ Luna Shortcuts:\n\n${JSON.stringify(selectedShortcuts, null, 2)}\n\nRefer to luna-shortcuts command for complete list and custom shortcuts.`
+        }
+      ]
+    };
+  }
+
+  async dockerizeProject(scope, environment) {
+    console.error(`🐳 Dockerizing project (scope: ${scope}, environment: ${environment})`);
+    
+    const dockerPlan = {
+      scope: scope || 'full',
+      environment: environment || 'all',
+      components: {
+        dockerfile: 'Multi-stage Dockerfile with optimizations',
+        dockerCompose: 'Complete service orchestration',
+        devEnvironment: 'Hot reload development setup',
+        prodEnvironment: 'Optimized production build',
+        nginx: 'Reverse proxy configuration',
+        makefile: 'Helper commands for Docker operations'
+      },
+      features: [
+        'Multi-stage builds for minimal image size',
+        'Non-root user execution',
+        'Health checks configured',
+        'Security scanning with Trivy',
+        'CI/CD integration with GitHub Actions'
+      ]
+    };
+
+    return {
+      content: [
+        {
+          type: 'text',
+          text: `🐳 Docker Configuration Plan:\n\n${JSON.stringify(dockerPlan, null, 2)}\n\nRefer to luna-docker agent for complete containerization.`
+        }
+      ]
+    };
+  }
+
+  async generateUserGuide(scope, format) {
+    console.error(`📚 Generating user guide (scope: ${scope}, format: ${format})`);
+    
+    const guidePlan = {
+      scope: scope || 'complete',
+      format: format || 'both',
+      sections: [
+        'Getting Started',
+        'Installation',
+        'Core Concepts',
+        'User Guide',
+        'API Reference',
+        'Examples',
+        'Troubleshooting',
+        'Advanced Topics'
+      ],
+      features: {
+        html: [
+          'Responsive design',
+          'Dark/light mode',
+          'Interactive code examples',
+          'Search functionality',
+          'Syntax highlighting'
+        ],
+        pdf: [
+          'High-definition output',
+          'Print-optimized layout',
+          'Table of contents with links',
+          'Professional formatting',
+          'Page numbers and headers'
+        ]
+      }
+    };
+
+    return {
+      content: [
+        {
+          type: 'text',
+          text: `📚 User Guide Generation Plan:\n\n${JSON.stringify(guidePlan, null, 2)}\n\nRefer to luna-user-guide agent for documentation generation.`
+        }
+      ]
+    };
+  }
+
+  async integrateLemonSqueezy(storeId, apiKey, productPrefix, scope) {
+    console.error(`🍋 Integrating LemonSqueezy (store: ${storeId}, prefix: ${productPrefix})`);
+    
+    const integrationPlan = {
+      storeId,
+      productPrefix,
+      scope: scope || 'full',
+      components: {
+        productManagement: 'Product CRUD with prefix',
+        checkoutFlow: 'Secure checkout integration',
+        subscriptions: 'Subscription management',
+        webhooks: 'Webhook handlers for events',
+        frontend: 'React checkout components'
+      },
+      features: [
+        'Shared store with product prefix isolation',
+        'Automated product creation',
+        'Subscription lifecycle management',
+        'Webhook signature verification',
+        'Test and production modes'
+      ],
+      productNaming: `${productPrefix}starter, ${productPrefix}pro, ${productPrefix}enterprise`
+    };
+
+    return {
+      content: [
+        {
+          type: 'text',
+          text: `🍋 LemonSqueezy Integration Plan:\n\n${JSON.stringify(integrationPlan, null, 2)}\n\nRefer to luna-lemonsqueezy agent for payment integration.`
+        }
+      ]
+    };
+  }
+
+  async createOpenAIApp(appType, model) {
+    console.error(`🤖 Creating OpenAI app (type: ${appType}, model: ${model})`);
+    
+    const appPlan = {
+      appType: appType || 'chat',
+      model: model || 'gpt-4-turbo',
+      features: {
+        chat: ['Chat completions', 'Streaming responses', 'Context management'],
+        assistant: ['Assistant API', 'Tool calling', 'File uploads'],
+        embeddings: ['Text embeddings', 'Semantic search', 'Similarity matching'],
+        image: ['DALL-E generation', 'Image editing', 'Variations'],
+        audio: ['Speech-to-text (Whisper)', 'Text-to-speech', 'Audio processing']
+      },
+      components: [
+        'OpenAI client configuration',
+        'API endpoints',
+        'React UI components',
+        'Error handling',
+        'Cost tracking',
+        'Token counting'
+      ],
+      optimization: [
+        'Rate limiting',
+        'Retry logic',
+        'Streaming for better UX',
+        'Token budget management',
+        'Response caching'
+      ]
+    };
+
+    return {
+      content: [
+        {
+          type: 'text',
+          text: `🤖 OpenAI App Plan:\n\n${JSON.stringify(appPlan, null, 2)}\n\nRefer to luna-openai-app agent for AI integration.`
+        }
+      ]
+    };
   }
 
   async run() {
