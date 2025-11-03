@@ -429,6 +429,25 @@ class LunaNexaRAGServer {
               }
             }
           }
+        },
+        {
+          name: 'run_and_test_project',
+          description: 'Run development server and execute comprehensive UI/UX tests',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              testScope: {
+                type: 'string',
+                description: 'Test scope (e.g., "complete", "quick", "visual", "performance")',
+                default: 'complete'
+              },
+              mode: {
+                type: 'string',
+                description: 'Execution mode (e.g., "headless", "headed", "watch")',
+                default: 'headless'
+              }
+            }
+          }
         }
       ]
     }));
@@ -495,6 +514,9 @@ class LunaNexaRAGServer {
 
           case 'optimize_seo':
             return await this.optimizeSEO(args.scope);
+
+          case 'run_and_test_project':
+            return await this.runAndTestProject(args.testScope, args.mode);
 
           default:
             throw new Error(`Unknown tool: ${name}`);
@@ -1227,6 +1249,67 @@ class LunaNexaRAGServer {
         {
           type: 'text',
           text: `🔍 SEO Optimization Plan:\n\n${JSON.stringify(seoPlan, null, 2)}\n\nRefer to luna-seo agent for complete optimization.`
+        }
+      ]
+    };
+  }
+
+  async runAndTestProject(testScope, mode) {
+    console.error(`🚀 Running and testing project (scope: ${testScope}, mode: ${mode})`);
+    
+    const runPlan = {
+      testScope: testScope || 'complete',
+      mode: mode || 'headless',
+      phases: {
+        detection: 'Auto-detect framework and configuration',
+        server: 'Start development server',
+        e2e: 'End-to-end functionality tests',
+        accessibility: 'WCAG 2.1 AA compliance checks',
+        visual: 'Visual regression testing',
+        performance: 'Lighthouse performance audit'
+      },
+      tests: {
+        e2e: [
+          'Homepage loads correctly',
+          'Navigation works',
+          'Forms are functional',
+          'Buttons are clickable',
+          'Images load properly'
+        ],
+        accessibility: [
+          'WCAG 2.1 AA compliance',
+          'All images have alt text',
+          'All inputs have labels',
+          'Keyboard navigation works',
+          'Color contrast meets standards'
+        ],
+        visual: [
+          'Mobile screenshot (375x667)',
+          'Tablet screenshot (768x1024)',
+          'Desktop screenshot (1920x1080)',
+          'Cumulative Layout Shift < 0.1'
+        ],
+        performance: [
+          'Lighthouse score > 90',
+          'First Contentful Paint < 1.8s',
+          'Largest Contentful Paint < 2.5s',
+          'Time to Interactive < 3.8s',
+          'Total Blocking Time < 200ms'
+        ]
+      },
+      output: {
+        screenshots: 'Visual snapshots at different viewports',
+        reports: 'Detailed HTML reports',
+        json: 'Machine-readable test results',
+        summary: 'Pass/fail summary with metrics'
+      }
+    };
+
+    return {
+      content: [
+        {
+          type: 'text',
+          text: `🚀 Run & Test Plan:\n\n${JSON.stringify(runPlan, null, 2)}\n\nRefer to luna-run agent for automated testing.`
         }
       ]
     };

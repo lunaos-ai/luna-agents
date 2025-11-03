@@ -22,7 +22,7 @@ class LunaAPIClient {
       // Load configuration from multiple sources
       this.baseURL = config.baseURL ||
                      process.env.LUNA_API_URL ||
-                     'http://localhost:3000/api/v1';
+                     'https://luna-rag-api-prod.broad-dew-49ad.workers.dev/api/v1';
 
       this.apiKey = config.apiKey ||
                   process.env.LUNA_API_KEY ||
@@ -215,7 +215,7 @@ class LunaAPIClient {
   }
 
   /**
-   * RAG (Context) management
+   * RAG (Context) management - Enhanced with comprehensive repository processing
    */
   async indexProject(indexOptions = {}) {
     const payload = {
@@ -225,13 +225,118 @@ class LunaAPIClient {
     return this.makeRequest('POST', '/rag/index', payload);
   }
 
+  async indexRepository(repositoryPath, options = {}) {
+    const payload = {
+      repositoryPath,
+      projectId: this.projectId,
+      filePatterns: options.filePatterns || [
+        '**/*.ts',
+        '**/*.js',
+        '**/*.tsx',
+        '**/*.jsx',
+        '**/*.py',
+        '**/*.java',
+        '**/*.go',
+        '**/*.rs',
+        '**/*.cpp',
+        '**/*.c',
+        '**/*.md',
+        '**/*.json',
+        '**/*.yaml',
+        '**/*.yml'
+      ],
+      excludePatterns: options.excludePatterns || [
+        '**/node_modules/**',
+        '**/dist/**',
+        '**/build/**',
+        '**/.git/**',
+        '**/.next/**',
+        '**/coverage/**'
+      ],
+      metadata: {
+        ...options.metadata,
+        projectId: this.projectId,
+        indexedAt: new Date().toISOString(),
+        indexingVersion: '2.0.0'
+      }
+    };
+    return this.makeRequest('POST', '/rag/repository/index', payload);
+  }
+
+  async indexFile(filePath, content, metadata = {}) {
+    const payload = {
+      filePath,
+      content,
+      projectId: this.projectId,
+      metadata: {
+        ...metadata,
+        projectId: this.projectId,
+        indexedAt: new Date().toISOString()
+      }
+    };
+    return this.makeRequest('POST', '/rag/file/index', payload);
+  }
+
   async queryRAG(query, options = {}) {
     const payload = {
       query,
       projectId: this.projectId,
-      ...options
+      maxResults: options.maxResults || 5,
+      temperature: options.temperature || 0.7,
+      filters: {
+        ...options.filters,
+        projectId: this.projectId
+      },
+      includeContext: options.includeContext !== false,
+      includeSources: options.includeSources !== false
     };
     return this.makeRequest('POST', '/rag/query', payload);
+  }
+
+  async searchDocuments(query, options = {}) {
+    const payload = {
+      query,
+      projectId: this.projectId,
+      maxResults: options.maxResults || 10,
+      filters: options.filters || {}
+    };
+    return this.makeRequest('POST', '/rag/search', payload);
+  }
+
+  async getRAGStatus() {
+    const params = new URLSearchParams({
+      projectId: this.projectId
+    });
+    return this.makeRequest('GET', `/rag/status?${params}`);
+  }
+
+  async getRAGStatistics() {
+    const params = new URLSearchParams({
+      projectId: this.projectId
+    });
+    return this.makeRequest('GET', `/rag/statistics?${params}`);
+  }
+
+  async deleteDocuments(documentIds) {
+    const payload = {
+      documentIds,
+      projectId: this.projectId
+    };
+    return this.makeRequest('DELETE', '/rag/documents', payload);
+  }
+
+  async getConversationHistory(limit = 10) {
+    const params = new URLSearchParams({
+      projectId: this.projectId,
+      limit: limit.toString()
+    });
+    return this.makeRequest('GET', `/rag/conversation/history?${params}`);
+  }
+
+  async clearConversationHistory() {
+    return this.makeRequest('DELETE', '/rag/conversation/history', {
+      projectId: this.projectId
+    });
   }
 
   async getTokenUsage() {
