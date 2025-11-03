@@ -6,12 +6,14 @@
  */
 
 const LunaAPIClient = require('./lib/api-client');
+const RAGUtils = require('./lib/rag-utils');
 const path = require('path');
 const fs = require('fs');
 
 class LunaAgentsPlugin {
   constructor() {
     this.apiClient = new LunaAPIClient();
+    this.ragUtils = null; // Will be initialized after API client
     this.config = {};
     this.initialized = false;
   }
@@ -29,6 +31,9 @@ class LunaAgentsPlugin {
 
       // Initialize API client
       await this.apiClient.initialize(this.config.api);
+
+      // Initialize RAG utilities
+      this.ragUtils = new RAGUtils(this.apiClient);
 
       // Setup plugin capabilities
       this.setupCapabilities();
@@ -135,9 +140,25 @@ class LunaAgentsPlugin {
       createTask: this.apiClient.createTask.bind(this.apiClient),
       getTasks: this.apiClient.getTasks.bind(this.apiClient),
 
-      // RAG and context
+      // Enhanced RAG and context management
       indexProject: this.apiClient.indexProject.bind(this.apiClient),
+      indexRepository: this.apiClient.indexRepository.bind(this.apiClient),
+      indexFile: this.apiClient.indexFile.bind(this.apiClient),
       queryRAG: this.apiClient.queryRAG.bind(this.apiClient),
+      searchDocuments: this.apiClient.searchDocuments.bind(this.apiClient),
+      getRAGStatus: this.apiClient.getRAGStatus.bind(this.apiClient),
+      getRAGStatistics: this.apiClient.getRAGStatistics.bind(this.apiClient),
+      deleteDocuments: this.apiClient.deleteDocuments.bind(this.apiClient),
+      getConversationHistory: this.apiClient.getConversationHistory.bind(this.apiClient),
+      clearConversationHistory: this.apiClient.clearConversationHistory.bind(this.apiClient),
+      getTokenUsage: this.apiClient.getTokenUsage.bind(this.apiClient),
+
+      // Enhanced RAG utilities
+      indexCurrentProject: this.ragUtils ? this.ragUtils.indexCurrentProject.bind(this.ragUtils) : null,
+      interactiveIndexing: this.ragUtils ? this.ragUtils.interactiveIndexing.bind(this.ragUtils) : null,
+      searchWithEnhancement: this.ragUtils ? this.ragUtils.searchWithEnhancement.bind(this.ragUtils) : null,
+      getSystemStatus: this.ragUtils ? this.ragUtils.getSystemStatus.bind(this.ragUtils) : null,
+      contextualQuery: this.ragUtils ? this.ragUtils.contextualQuery.bind(this.ragUtils) : null,
 
       // AI generation
       generateText: this.apiClient.generateText.bind(this.apiClient),
