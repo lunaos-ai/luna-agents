@@ -6,7 +6,7 @@ A comprehensive collection of AI-powered development agents for building product
 
 ---
 
-## 📦 All Available Agents (13 Total)
+## 📦 All Available Agents (15 Total)
 
 ### 🐳 Infrastructure & DevOps
 
@@ -120,9 +120,37 @@ A comprehensive collection of AI-powered development agents for building product
 
 ---
 
+### 🧠 AI Intelligence & Context
+
+#### 10. **luna-rag** - Retrieval-Augmented Generation
+- Advanced context extraction and indexing
+- Multi-vector database support (Pinecone, Weaviate, Qdrant, Chroma)
+- Intelligent token optimization (40%+ savings)
+- Multi-provider AI integration (OpenAI, Anthropic, DeepSeek, Google)
+- Real-time context updates and synchronization
+- Cost-optimized RAG with budget management
+- **MCP Tool**: `setup_rag_system`, `query_context`, `chat_with_context`
+
+---
+
+### 🧪 Testing & Automation
+
+#### 11. **luna-run** - Project Execution & Testing
+- Auto-detect framework (Next.js, React, Vue, Svelte, Express)
+- Start development server automatically
+- E2E testing with Playwright
+- Accessibility testing (WCAG 2.1 AA)
+- Visual regression testing (mobile/tablet/desktop)
+- Performance testing with Lighthouse
+- Watch mode for continuous testing
+- Comprehensive test reports
+- **MCP Tool**: `run_and_test_project`
+
+---
+
 ### 🎨 UI/UX
 
-#### 10. **luna-ui-convert** - Apple HIG Modern Design
+#### 12. **luna-ui-convert** - Apple HIG Modern Design
 - Convert UI to Apple Human Interface Guidelines
 - Decart website aesthetics
 - Glassmorphism effects
@@ -130,7 +158,7 @@ A comprehensive collection of AI-powered development agents for building product
 - Responsive design
 - **MCP Tool**: `ui_convert_to_hig`
 
-#### 11. **luna-ui-test** - UI/UX Testing
+#### 13. **luna-ui-test** - UI/UX Testing
 - Playwright E2E testing
 - Visual regression testing
 - Accessibility testing (WCAG)
@@ -139,7 +167,7 @@ A comprehensive collection of AI-powered development agents for building product
 - Cross-browser testing
 - **MCP Tool**: `run_ui_tests`
 
-#### 12. **luna-ui-fix** - Automated UI Fixes
+#### 14. **luna-ui-fix** - Automated UI Fixes
 - Accessibility fixes
 - Design system enforcement
 - Responsive layout fixes
@@ -151,7 +179,7 @@ A comprehensive collection of AI-powered development agents for building product
 
 ### ☁️ Deployment
 
-#### 13. **luna-cloudflare** - Cloudflare Deployment
+#### 15. **luna-cloudflare** - Cloudflare Deployment
 - Cloudflare Workers deployment
 - Cloudflare Pages for static sites
 - D1 database integration
@@ -273,7 +301,7 @@ luna-agents/
 
 ## 🔧 MCP Server Tools
 
-All 13 agents are integrated into the Luna Nexa RAG MCP server:
+All 15 agents are integrated into the Luna Nexa RAG MCP server:
 
 1. `dockerize_project` - Docker containerization
 2. `generate_user_guide` - HTML/PDF documentation
@@ -284,10 +312,14 @@ All 13 agents are integrated into the Luna Nexa RAG MCP server:
 7. `setup_authentication` - Auth implementation
 8. `setup_analytics` - Analytics & monitoring
 9. `optimize_seo` - SEO optimization
-10. `ui_convert_to_hig` - UI modernization
-11. `run_ui_tests` - UI testing
-12. `fix_ui_issues` - Automated fixes
-13. `deploy_to_cloudflare` - Cloud deployment
+10. `setup_rag_system` - RAG context management
+11. `query_context` - Intelligent context retrieval
+12. `chat_with_context` - AI with project knowledge
+13. `run_and_test_project` - Run server & test
+14. `ui_convert_to_hig` - UI modernization
+15. `run_ui_tests` - UI testing
+16. `fix_ui_issues` - Automated fixes
+17. `deploy_to_cloudflare` - Cloud deployment
 
 ---
 
