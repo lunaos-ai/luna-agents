@@ -1,0 +1,89 @@
+{
+  "version": "1.0.0",
+  "created": "2025-11-05T11:09:53.905Z",
+  "shortcuts": {
+    "le": {
+      "name": "le",
+      "command": "/luna-execute",
+      "description": "Execute Luna agent",
+      "category": "claude-code",
+      "builtin": true
+    },
+    "lr": {
+      "name": "lr",
+      "command": "/luna-review",
+      "description": "Review code with Luna",
+      "category": "claude-code",
+      "builtin": true
+    },
+    "lh": {
+      "name": "lh",
+      "command": "/luna-hig",
+      "description": "Apple HIG analysis",
+      "category": "claude-code",
+      "builtin": true
+    },
+    "ld": {
+      "name": "ld",
+      "command": "/luna-deploy",
+      "description": "Deploy with Luna",
+      "category": "claude-code",
+      "builtin": true
+    },
+    "lp": {
+      "name": "lp",
+      "command": "/luna-plan",
+      "description": "Plan with Luna",
+      "category": "claude-code",
+      "builtin": true
+    },
+    "lt": {
+      "name": "lt",
+      "command": "/luna-test",
+      "description": "Test with Luna",
+      "category": "claude-code",
+      "builtin": true
+    },
+    "ldoc": {
+      "name": "ldoc",
+      "command": "/luna-docs",
+      "description": "Generate documentation",
+      "category": "claude-code",
+      "builtin": true
+    },
+    "lm": {
+      "name": "lm",
+      "command": "/luna-monitor",
+      "description": "Monitor with Luna",
+      "category": "claude-code",
+      "builtin": true
+    }
+  },
+  "user_shortcuts": {
+    "deploy": {
+      "name": "deploy",
+      "command": "/luna-deploy --prod",
+      "description": "Quick deploy to production",
+      "category": "user",
+      "created": "2025-11-05T11:10:47.702Z"
+    },
+    "quick": {
+      "name": "quick",
+      "command": "/luna-execute --fast",
+      "description": "Fast execution",
+      "category": "user",
+      "created": "2025-11-05T11:10:53.702Z"
+    }
+  },
+  "stats": {
+    "total_uses": 9,
+    "shortcut_uses": {
+      "le": 2,
+      "lr": 2,
+      "lh": 2,
+      "ld": 1,
+      "deploy": 1,
+      "quick": 1
+    }
+  }
+}
