@@ -1,0 +1,153 @@
+{
+  "summary": {
+    "total": 14,
+    "passed": 14,
+    "failed": 0,
+    "skipped": 0,
+    "successRate": 100,
+    "duration": 278
+  },
+  "suites": {
+    "Luna Shortcuts Tests": {
+      "results": {
+        "summary": {
+          "total": 5,
+          "passed": 5,
+          "failed": 0,
+          "skipped": 0,
+          "successRate": 100
+        },
+        "results": [
+          {
+            "suite": "Luna Shortcuts",
+            "test": "should load luna-shortcuts script",
+            "status": "passed",
+            "duration": 1,
+            "error": null
+          },
+          {
+            "suite": "Luna Shortcuts",
+            "test": "should execute help command",
+            "status": "passed",
+            "duration": 71,
+            "error": null
+          },
+          {
+            "suite": "Luna Shortcuts",
+            "test": "should create test directory structure",
+            "status": "passed",
+            "duration": 1,
+            "error": null
+          },
+          {
+            "suite": "Luna Shortcuts",
+            "test": "should handle basic command execution",
+            "status": "passed",
+            "duration": 111,
+            "error": null
+          },
+          {
+            "suite": "Luna Shortcuts",
+            "test": "should validate script syntax",
+            "status": "passed",
+            "duration": 4,
+            "error": null
+          }
+        ],
+        "suites": [
+          "Luna Shortcuts"
+        ]
+      },
+      "duration": 199,
+      "passed": 5,
+      "failed": 0,
+      "skipped": 0,
+      "total": 5
+    },
+    "Luna All Commands Tests": {
+      "results": {
+        "summary": {
+          "total": 9,
+          "passed": 9,
+          "failed": 0,
+          "skipped": 0,
+          "successRate": 100
+        },
+        "results": [
+          {
+            "suite": "Luna All Commands",
+            "test": "should have all command documentation files",
+            "status": "passed",
+            "duration": 4,
+            "error": null
+          },
+          {
+            "suite": "Luna All Commands",
+            "test": "should have valid markdown format",
+            "status": "passed",
+            "duration": 52,
+            "error": null
+          },
+          {
+            "suite": "Luna All Commands",
+            "test": "should have luna-shortcuts implementation",
+            "status": "passed",
+            "duration": 3,
+            "error": null
+          },
+          {
+            "suite": "Luna All Commands",
+            "test": "should have validate-plugin implementation",
+            "status": "passed",
+            "duration": 0,
+            "error": null
+          },
+          {
+            "suite": "Luna All Commands",
+            "test": "should have link-plugin implementation",
+            "status": "passed",
+            "duration": 1,
+            "error": null
+          },
+          {
+            "suite": "Luna All Commands",
+            "test": "should have valid AGENTS_OVERVIEW.md",
+            "status": "passed",
+            "duration": 2,
+            "error": null
+          },
+          {
+            "suite": "Luna All Commands",
+            "test": "should have agents directory with files",
+            "status": "passed",
+            "duration": 1,
+            "error": null
+          },
+          {
+            "suite": "Luna All Commands",
+            "test": "should have consistent naming conventions",
+            "status": "passed",
+            "duration": 1,
+            "error": null
+          },
+          {
+            "suite": "Luna All Commands",
+            "test": "should have reasonable file sizes",
+            "status": "passed",
+            "duration": 11,
+            "error": null
+          }
+        ],
+        "suites": [
+          "Luna All Commands"
+        ]
+      },
+      "duration": 77,
+      "passed": 9,
+      "failed": 0,
+      "skipped": 0,
+      "total": 9
+    }
+  },
+  "timestamp": "2025-11-04T21:55:15.764Z"
+}

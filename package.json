@@ -48,7 +48,8 @@
   },
   "workspaces": [
     ".claude-plugin",
-    "mcp-servers/luna-nexa-rag"
+    "mcp-servers/luna-nexa-rag",
+    "mcp-servers/luna-glm-vision"
   ],
   "devDependencies": {
     "concurrently": "^8.2.2"

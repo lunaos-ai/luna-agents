@@ -1,0 +1,154 @@
+{
+  "version": "1.0.0",
+  "created": "2025-11-05T09:49:44.264Z",
+  "shortcuts": {
+    "hig": {
+      "name": "hig",
+      "description": "Run Apple HIG analysis",
+      "command": "luna-agents:luna-hig",
+      "category": "ui",
+      "tags": [
+        "apple",
+        "design",
+        "hig"
+      ],
+      "usage_count": 0,
+      "created": "2025-11-05T09:49:44.268Z"
+    },
+    "ui-pipeline": {
+      "name": "ui-pipeline",
+      "description": "Run complete UI analysis and fixes",
+      "command": "luna-agents:luna-hig && luna-agents:luna-ui-fix",
+      "category": "ui",
+      "tags": [
+        "ui",
+        "pipeline",
+        "analysis"
+      ],
+      "usage_count": 0,
+      "created": "2025-11-05T09:49:44.268Z"
+    },
+    "full-setup": {
+      "name": "full-setup",
+      "description": "Complete project setup and deployment",
+      "command": "npm install && npm run build && npm run test && npm run deploy",
+      "category": "workflow",
+      "tags": [
+        "setup",
+        "build",
+        "test",
+        "deploy"
+      ],
+      "usage_count": 0,
+      "created": "2025-11-05T10:47:35.937Z"
+    },
+    "dev-setup": {
+      "name": "dev-setup",
+      "description": "Start development server",
+      "command": "npm run dev",
+      "category": "development",
+      "tags": [
+        "dev",
+        "start"
+      ],
+      "usage_count": 0,
+      "created": "2025-11-05T10:47:54.043Z"
+    },
+    "test-all": {
+      "name": "test-all",
+      "description": "Run all test suites",
+      "command": "npm run test:unit && npm run test:integration && npm run test:e2e",
+      "category": "testing",
+      "tags": [
+        "test",
+        "unit",
+        "integration",
+        "e2e"
+      ],
+      "usage_count": 0,
+      "created": "2025-11-05T10:48:00.598Z"
+    },
+    "quick-test": {
+      "name": "quick-test",
+      "description": "Run tests in watch mode",
+      "command": "npm test --watch",
+      "category": "development",
+      "tags": [
+        "test",
+        "watch"
+      ],
+      "usage_count": 0,
+      "created": "2025-11-05T10:50:12.867Z"
+    },
+    "clean-build": {
+      "name": "clean-build",
+      "description": "Clean build from scratch",
+      "command": "rm -rf node_modules package-lock.json && npm install && npm run build",
+      "category": "maintenance",
+      "tags": [
+        "clean",
+        "build"
+      ],
+      "usage_count": 0,
+      "created": "2025-11-05T10:50:17.709Z"
+    },
+    "le": {
+      "name": "le",
+      "description": "Execute Luna agent (shortcut for /luna-execute)",
+      "command": "/luna-execute",
+      "category": "claude-code",
+      "tags": [
+        "claude",
+        "execute",
+        "luna"
+      ],
+      "usage_count": 0,
+      "created": "2025-11-05T11:08:13.624Z"
+    },
+    "lr": {
+      "name": "lr",
+      "description": "Review code with Luna (shortcut for /luna-review)",
+      "command": "/luna-review",
+      "category": "claude-code",
+      "tags": [
+        "claude",
+        "review",
+        "luna"
+      ],
+      "usage_count": 0,
+      "created": "2025-11-05T11:08:18.171Z"
+    },
+    "lh": {
+      "name": "lh",
+      "description": "Apple HIG analysis (shortcut for /luna-hig)",
+      "command": "/luna-hig",
+      "category": "claude-code",
+      "tags": [
+        "claude",
+        "hig",
+        "design"
+      ],
+      "usage_count": 0,
+      "created": "2025-11-05T11:08:23.153Z"
+    },
+    "ld": {
+      "name": "ld",
+      "description": "Deploy with Luna (shortcut for /luna-deploy)",
+      "command": "/luna-deploy",
+      "category": "claude-code",
+      "tags": [
+        "claude",
+        "deploy",
+        "luna"
+      ],
+      "usage_count": 0,
+      "created": "2025-11-05T11:08:46.539Z"
+    }
+  },
+  "workflows": {},
+  "history": [],
+  "config": {
+    "max_history": 100,
+    "auto_save": true
+  }
+}
