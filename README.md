@@ -1,10 +1,10 @@
-# Luna Agents Plugin for Claude Desktop & Windsurf
+# Luna Agents - AI-Powered Development Lifecycle
 
-🌙 **Complete AI-powered development lifecycle management in a single plugin**
+🌙 **Complete AI-powered development lifecycle management with MCP integration**
 
 ## Overview
 
-Luna Agents is a comprehensive plugin for Claude Desktop and Windsurf (Claude Code) that provides an end-to-end software development workflow powered by specialized AI agents. From requirements analysis to post-launch monitoring, Luna automates and streamlines every phase of your development process.
+Luna Agents is a comprehensive development workflow system powered by specialized AI agents. Works with any MCP-compatible platform including Claude Desktop, Windsurf, and other AI coding assistants. From requirements analysis to post-launch monitoring, Luna automates and streamlines every phase of your development process.
 
 ## Features
 
@@ -25,7 +25,7 @@ Luna Agents is a comprehensive plugin for Claude Desktop and Windsurf (Claude Co
 - **Server Architecture** - Node.js, Express, Databases, APIs, Security
 - **Apple HIG** - Design principles, typography, spacing, motion
 - **Design Patterns** - MVC, Repository, Factory, Observer, Strategy
-- **Best Practices** - Claude Desktop & Windsurf optimization, testing, performance
+- **Best Practices** - AI coding assistant optimization, testing, performance
 - **Quick Reference** - Commands, configurations, common patterns
 
 ### 🎯 Flexible Scoping
@@ -43,7 +43,7 @@ Luna Agents is a comprehensive plugin for Claude Desktop and Windsurf (Claude Co
 ## Installation
 
 ### Requirements
-- **Claude Desktop** (latest version) OR **Windsurf** (Claude Code)
+- **Any MCP-compatible platform** (Claude Desktop, Windsurf, Cline, Roo Cline, etc.)
 - Node.js 18+ (for Luna Nexa RAG)
 - Python 3 (for auto-configuration)
 - Git (for version control)
@@ -58,17 +58,17 @@ cd luna-agent
 # Run automated setup
 ./setup.sh
 
-# Restart Claude Desktop or Windsurf
+# Restart your AI coding assistant
 ```
 
-**That's it!** Everything is configured automatically for both platforms.
+**That's it!** Everything is configured automatically.
 
 ### What Gets Installed
 
 ✅ **Luna Agents Plugin** - 10 AI agents for complete development lifecycle  
 ✅ **Luna Nexa RAG** - Local semantic code search MCP server  
 ✅ **Luna Vision RAG™** - Cloud-based GUI testing (11 tools, no local process!)  
-✅ **Auto-Configuration** - Claude Desktop config updated automatically  
+✅ **Auto-Configuration** - MCP config updated automatically  
 ✅ **Quick Start Guide** - Ready-to-use documentation  
 
 ### What Happens During Setup
@@ -76,21 +76,21 @@ cd luna-agent
 1. ✅ Checks prerequisites (Node.js, Git, npm)
 2. ✅ Installs Luna Nexa RAG dependencies
 3. ✅ Configures Luna Nexa RAG MCP server
-4. ✅ Installs Luna Agents plugin to Claude Desktop
+4. ✅ Installs Luna Agents plugin
 5. ✅ **Configures Luna Vision RAG cloud MCP server** (no local process needed!)
-6. ✅ Updates `~/Library/Application Support/Claude/claude_desktop_config.json`
+6. ✅ Updates MCP configuration file
 7. ✅ Creates `QUICK_START.md` guide
 
 ### Verify Installation
 
-After restarting Claude Desktop or Windsurf, verify everything works:
+After restarting your AI coding assistant, verify everything works:
 
 ```
-In Claude Desktop or Windsurf, type:
+In your AI assistant, type:
 "Use the health_check tool"
 ```
 
-Claude should call the Luna Vision RAG cloud MCP server and return a healthy status.
+Your assistant should call the Luna Vision RAG cloud MCP server and return a healthy status.
 
 ### Zero Local Processes! ⭐
 
@@ -98,7 +98,7 @@ Unlike traditional MCP servers, Luna Vision RAG runs entirely in the cloud:
 - ❌ No `node index.js` in a separate terminal
 - ❌ No local server management
 - ❌ No port configuration
-- ✅ Just restart and it works in both Claude Desktop and Windsurf!
+- ✅ Just restart and it works in any MCP-compatible platform!
 
 ## Quick Start
 
@@ -176,7 +176,7 @@ Luna Agents includes a comprehensive **skills.md** reference file that contains:
 - **Behavioral Patterns** - Observer, Strategy, Command, Middleware
 - **Structural Patterns** - Adapter, Decorator, Facade
 
-### Claude Desktop & Windsurf Best Practices
+### AI Coding Assistant Best Practices
 - **Effective Prompting** - Specificity, context, tech stack constraints
 - **Project Structures** - Full-stack setup, component creation, API design
 - **Testing Strategies** - Unit, integration, E2E testing approaches
@@ -360,10 +360,13 @@ Luna Agents works seamlessly with Model Context Protocol (MCP) servers to enhanc
 
 ### MCP Installation with Luna
 
-To enhance your Luna workflow with MCP servers, add them to your configuration file using the proper format:
+To enhance your Luna workflow with MCP servers, add them to your MCP configuration file:
 
-**Claude Desktop**: `~/Library/Application Support/Claude/claude_desktop_config.json`  
-**Windsurf**: `~/Library/Application Support/Windsurf/config.json`
+**Common Config Locations:**
+- **Claude Desktop**: `~/Library/Application Support/Claude/claude_desktop_config.json`
+- **Windsurf**: `~/Library/Application Support/Windsurf/config.json`
+- **Cline/Roo Cline**: VSCode settings or MCP config
+- **Other platforms**: Check your platform's MCP documentation
 
 ```json
 {
@@ -522,7 +525,7 @@ Luna Agents automatically leverages available MCP servers:
 **Command not found**
 - Ensure plugin is properly installed and enabled
 - Check that command files are in the correct directory
-- Restart Claude Desktop or Windsurf if needed
+- Restart your AI coding assistant if needed
 
 **Missing prerequisites**
 - Run commands in the correct order
