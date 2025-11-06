@@ -74,6 +74,8 @@ Open http://localhost:8000
 
 Your site will be live at: `https://yourusername.github.io/luna-agent/`
 
+**Production Site**: https://agent.lunaos.ai
+
 ### Netlify
 
 1. Drag and drop the `website` folder to Netlify

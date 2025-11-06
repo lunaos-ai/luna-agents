@@ -6,4 +6,4 @@ bucket = "."
 
 [env.production]
 name = "luna-agents-website"
-route = "lunaagents.ai/*"
+route = "agent.lunaos.ai/*"
