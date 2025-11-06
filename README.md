@@ -1,10 +1,10 @@
-# Luna Agents Plugin for Claude Desktop
+# Luna Agents Plugin for Claude Desktop & Windsurf
 
 🌙 **Complete AI-powered development lifecycle management in a single plugin**
 
 ## Overview
 
-Luna Agents is a comprehensive Claude Desktop plugin that provides an end-to-end software development workflow powered by specialized AI agents. From requirements analysis to post-launch monitoring, Luna automates and streamlines every phase of your development process.
+Luna Agents is a comprehensive plugin for Claude Desktop and Windsurf (Claude Code) that provides an end-to-end software development workflow powered by specialized AI agents. From requirements analysis to post-launch monitoring, Luna automates and streamlines every phase of your development process.
 
 ## Features
 
@@ -25,7 +25,7 @@ Luna Agents is a comprehensive Claude Desktop plugin that provides an end-to-end
 - **Server Architecture** - Node.js, Express, Databases, APIs, Security
 - **Apple HIG** - Design principles, typography, spacing, motion
 - **Design Patterns** - MVC, Repository, Factory, Observer, Strategy
-- **Best Practices** - Claude Desktop optimization, testing, performance
+- **Best Practices** - Claude Desktop & Windsurf optimization, testing, performance
 - **Quick Reference** - Commands, configurations, common patterns
 
 ### 🎯 Flexible Scoping
@@ -43,7 +43,7 @@ Luna Agents is a comprehensive Claude Desktop plugin that provides an end-to-end
 ## Installation
 
 ### Requirements
-- Claude Desktop (latest version)
+- **Claude Desktop** (latest version) OR **Windsurf** (Claude Code)
 - Node.js 18+ (for Luna Nexa RAG)
 - Python 3 (for auto-configuration)
 - Git (for version control)
@@ -58,10 +58,10 @@ cd luna-agent
 # Run automated setup
 ./setup.sh
 
-# Restart Claude Desktop
+# Restart Claude Desktop or Windsurf
 ```
 
-**That's it!** Everything is configured automatically.
+**That's it!** Everything is configured automatically for both platforms.
 
 ### What Gets Installed
 
@@ -83,10 +83,10 @@ cd luna-agent
 
 ### Verify Installation
 
-After restarting Claude Desktop, verify everything works:
+After restarting Claude Desktop or Windsurf, verify everything works:
 
 ```
-In Claude Desktop, type:
+In Claude Desktop or Windsurf, type:
 "Use the health_check tool"
 ```
 
@@ -98,7 +98,7 @@ Unlike traditional MCP servers, Luna Vision RAG runs entirely in the cloud:
 - ❌ No `node index.js` in a separate terminal
 - ❌ No local server management
 - ❌ No port configuration
-- ✅ Just restart Claude Desktop and it works!
+- ✅ Just restart and it works in both Claude Desktop and Windsurf!
 
 ## Quick Start
 
@@ -176,7 +176,7 @@ Luna Agents includes a comprehensive **skills.md** reference file that contains:
 - **Behavioral Patterns** - Observer, Strategy, Command, Middleware
 - **Structural Patterns** - Adapter, Decorator, Facade
 
-### Claude Desktop Best Practices
+### Claude Desktop & Windsurf Best Practices
 - **Effective Prompting** - Specificity, context, tech stack constraints
 - **Project Structures** - Full-stack setup, component creation, API design
 - **Testing Strategies** - Unit, integration, E2E testing approaches
@@ -360,7 +360,10 @@ Luna Agents works seamlessly with Model Context Protocol (MCP) servers to enhanc
 
 ### MCP Installation with Luna
 
-To enhance your Luna workflow with MCP servers, add them to your Claude Desktop configuration using the proper format:
+To enhance your Luna workflow with MCP servers, add them to your configuration file using the proper format:
+
+**Claude Desktop**: `~/Library/Application Support/Claude/claude_desktop_config.json`  
+**Windsurf**: `~/Library/Application Support/Windsurf/config.json`
 
 ```json
 {
@@ -519,7 +522,7 @@ Luna Agents automatically leverages available MCP servers:
 **Command not found**
 - Ensure plugin is properly installed and enabled
 - Check that command files are in the correct directory
-- Restart Claude Desktop if needed
+- Restart Claude Desktop or Windsurf if needed
 
 **Missing prerequisites**
 - Run commands in the correct order
