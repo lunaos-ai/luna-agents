@@ -126,6 +126,58 @@ if [ -n "$CLAUDE_CONFIG_DIR" ]; then
     
     ln -s "$PROJECT_ROOT/.claude-plugin" "$PLUGIN_DEST"
     print_success "Plugin installed to $PLUGIN_DEST"
+    
+    # Configure Luna Vision RAG MCP Server
+    print_info "Configuring Luna Vision RAG MCP Server..."
+    CLAUDE_CONFIG_FILE="$CLAUDE_CONFIG_DIR/claude_desktop_config.json"
+    
+    # Create config file if it doesn't exist
+    if [ ! -f "$CLAUDE_CONFIG_FILE" ]; then
+        echo '{"mcpServers":{}}' > "$CLAUDE_CONFIG_FILE"
+        print_success "Created Claude Desktop config file"
+    fi
+    
+    # Add Luna Vision RAG MCP server to config
+    # Using cloud-based MCP server (no local process needed)
+    python3 -c "
+import json
+import sys
+
+config_file = '$CLAUDE_CONFIG_FILE'
+try:
+    with open(config_file, 'r') as f:
+        config = json.load(f)
+except:
+    config = {}
+
+if 'mcpServers' not in config:
+    config['mcpServers'] = {}
+
+# Add Luna Vision RAG cloud MCP server
+config['mcpServers']['luna-vision-rag'] = {
+    'url': 'https://luna-vision-rag-mcp.broad-dew-49ad.workers.dev/mcp'
+}
+
+with open(config_file, 'w') as f:
+    json.dump(config, f, indent=2)
+
+print('✓ Luna Vision RAG MCP server configured')
+" 2>/dev/null || {
+    # Fallback if python3 is not available
+    print_info "Python3 not found, skipping automatic MCP configuration"
+    print_info "Please manually add to $CLAUDE_CONFIG_FILE:"
+    echo ""
+    echo '{
+  "mcpServers": {
+    "luna-vision-rag": {
+      "url": "https://luna-vision-rag-mcp.broad-dew-49ad.workers.dev/mcp"
+    }
+  }
+}'
+    echo ""
+}
+    
+    print_success "Luna Vision RAG MCP server configured"
 fi
 
 # Create quick start guide
@@ -137,7 +189,8 @@ cat > QUICK_START.md << 'EOF'
 
 Luna Agents provides:
 - **10 AI Agents** for complete development lifecycle
-- **MCP Server** for semantic code search
+- **Luna Nexa RAG** - Semantic code search MCP server
+- **Luna Vision RAG™** - Context-aware GUI testing (cloud-based)
 - **Commands** for workflow automation
 
 ## Usage
@@ -181,13 +234,24 @@ Luna Agents provides:
 - `/luna-monitor` - Setup monitoring
 - `/luna-review-launch` - Post-launch review
 
-### Semantic Code Search:
+### Semantic Code Search (Luna Nexa RAG):
 
 The MCP server provides:
 - `index_codebase` - Index your project
 - `search_context` - Search semantically
 - `get_similar_implementations` - Find similar code
 - `get_coding_patterns` - Extract patterns
+
+### Context-Aware GUI Testing (Luna Vision RAG™):
+
+11 powerful tools for testing:
+- `rag_query` - Query codebase with natural language
+- `rag_setup` - Configure RAG for projects
+- `glm_analyze` - AI-powered UI analysis
+- `glm_capture` - Screenshot capture
+- `integration_generate` - Generate automated tests
+- `integration_validate` - Validate UI vs code
+- And 5 more tools...
 
 ## Configuration
 
