@@ -365,6 +365,7 @@ To enhance your Luna workflow with MCP servers, add them to your MCP configurati
 **Common Config Locations:**
 - **Claude Desktop**: `~/Library/Application Support/Claude/claude_desktop_config.json`
 - **Windsurf**: `~/Library/Application Support/Windsurf/config.json`
+- **Zed**: `~/.config/zed/settings.json` - See [ZED_SETUP.md](./ZED_SETUP.md) for detailed instructions
 - **Cline/Roo Cline**: VSCode settings or MCP config
 - **Other platforms**: Check your platform's MCP documentation
 
