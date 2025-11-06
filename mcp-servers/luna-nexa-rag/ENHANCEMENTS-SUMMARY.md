@@ -1,8 +1,8 @@
-# 🎉 Luna Nexa RAG - Enhancement Summary
+# 🎉 Luna RAG - Enhancement Summary
 
 ## What Was Added
 
-Your Luna Nexa RAG server has been **massively enhanced** with **15 new AI-powered capabilities** using **LangChain**!
+Your Luna RAG server has been **massively enhanced** with **15 new AI-powered capabilities** using **LangChain**!
 
 ---
 
@@ -416,7 +416,7 @@ PRs welcome! The architecture is modular and extensible.
 
 ## 🎉 Congratulations!
 
-Your Luna Nexa RAG server is now a **comprehensive AI-powered development assistant** with capabilities that rival commercial tools!
+Your Luna RAG server is now a **comprehensive AI-powered development assistant** with capabilities that rival commercial tools!
 
 **Features you now have:**
 - ✅ Semantic code search (RAG)

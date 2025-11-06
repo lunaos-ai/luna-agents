@@ -21,7 +21,7 @@ A responsive, single-page marketing website showcasing Luna Agents' features, to
 
 1. **Hero** - Eye-catching introduction with animated terminal
 2. **Features** - 10 development lifecycle phases
-3. **Tools** - Luna Vision RAG™ and Luna Nexa RAG tools
+3. **Tools** - Luna Vision RAG™ and Luna RAG tools
 4. **Platforms** - Compatible AI coding assistants
 5. **Installation** - Quick 3-command setup
 6. **Benefits** - Why choose Luna Agents
@@ -31,8 +31,7 @@ A responsive, single-page marketing website showcasing Luna Agents' features, to
 
 ## Tech Stack
 
-- **HTML5** - Semantic markup
-- **CSS3** - Modern styling with CSS Grid and Flexbox
+- **Luna RAG**: Semantic code search and intelligent codebase indexing with CSS Grid and Flexbox
 - **Vanilla JavaScript** - No dependencies
 - **Google Fonts** - Inter font family
 

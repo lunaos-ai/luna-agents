@@ -88,12 +88,21 @@ In Zed's AI assistant:
 Use the health_check tool to verify Luna Vision RAG is working
 ```
 
-### Test Luna Nexa RAG (Local)
+### Test Luna RAG (Local)
 
 In Zed's AI assistant:
 ```
 Use the index_codebase tool to index my current project
 ```
+
+## Available MCP Servers
+
+Luna Agents provides two powerful MCP servers:
+
+1. **Luna RAG** - Local semantic code search
+   - Runs on your machine
+   - Requires Node.js
+   - Full codebase indexing
 
 ## Available Tools
 
@@ -118,7 +127,7 @@ Use the index_codebase tool to index my current project
 - `health_check` - Check API health
 - `api_info` - Get endpoint information
 
-### Luna Nexa RAG (Local - 4 Tools)
+### Luna RAG (Local - 4 Tools)
 
 - `index_codebase` - Index your project
 - `search_context` - Search semantically
@@ -150,7 +159,7 @@ Use the index_codebase tool to index my current project
    - Reopen Zed
    - Wait a few seconds for servers to initialize
 
-### Luna Nexa RAG Not Working
+### Luna RAG Not Working
 
 1. **Ensure it's built**:
    ```bash
@@ -246,7 +255,7 @@ If you only want Luna Vision RAG (no local process):
 
 ✅ **Fast Performance** - Zed's native speed + cloud MCP  
 ✅ **No Local Process** - Luna Vision RAG runs in the cloud  
-✅ **Semantic Search** - Luna Nexa RAG for code understanding  
+✅ **Semantic Search** - Luna RAG for code understanding  
 ✅ **GUI Testing** - Luna Vision RAG for visual testing  
 ✅ **11 + 4 Tools** - 15 total tools available  
 

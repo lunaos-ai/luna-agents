@@ -1,9 +1,9 @@
 #!/bin/bash
 
-# Luna Nexa RAG Complete Setup Script
+# Luna RAG Complete Setup Script
 # Run from: luna-agents/mcp-servers/luna-nexa-rag/
 
-echo "🌙 Creating Luna Nexa RAG files..."
+echo "🌙 Creating Luna RAG files..."
 echo ""
 
 # Create config-manager.js
@@ -60,7 +60,7 @@ function question(query) {
 }
 
 async function setup() {
-  console.log('\n🌙 Luna Nexa RAG Configuration Setup\n');
+  console.log('\n🌙 Luna RAG Configuration Setup\n');
   console.log('This will create a config file at:', getConfigPath(), '\n');
 
   const existingConfig = await loadConfig();

@@ -2,7 +2,7 @@
 
 ## What Was Added
 
-Your **Luna Nexa RAG** server now includes **comprehensive UI/UX testing capabilities** with **Apple Human Interface Guidelines (HIG) compliance**!
+Your **Luna RAG** server now includes **comprehensive UI/UX testing capabilities** with **Apple Human Interface Guidelines (HIG) compliance**!
 
 ---
 
@@ -395,7 +395,7 @@ ui_generate_test_report({
 
 ## 🎉 Summary
 
-Your Luna Nexa RAG server now has **professional-grade UI/UX testing capabilities**!
+Your Luna RAG server now has **professional-grade UI/UX testing capabilities**!
 
 ### What You Can Do Now:
 ✅ Capture screenshots of any URL

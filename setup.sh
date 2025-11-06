@@ -67,7 +67,7 @@ PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "$PROJECT_ROOT"
 
 # Setup MCP Server
-print_info "Setting up Luna Nexa RAG MCP Server..."
+print_info "🔍 Luna RAG Tools: MCP Server..."
 cd mcp-servers/luna-nexa-rag
 
 if [ -f "package.json" ]; then
@@ -189,7 +189,7 @@ cat > QUICK_START.md << 'EOF'
 
 Luna Agents provides:
 - **10 AI Agents** for complete development lifecycle
-- **Luna Nexa RAG** - Semantic code search MCP server
+- **Luna RAG** - Semantic code search MCP server
 - **Luna Vision RAG™** - Context-aware GUI testing (cloud-based)
 - **Commands** for workflow automation
 
@@ -234,7 +234,7 @@ Luna Agents provides:
 - `/luna-monitor` - Setup monitoring
 - `/luna-review-launch` - Post-launch review
 
-### Semantic Code Search (Luna Nexa RAG):
+### Semantic Code Search (Luna RAG):
 
 The MCP server provides:
 - `index_codebase` - Index your project

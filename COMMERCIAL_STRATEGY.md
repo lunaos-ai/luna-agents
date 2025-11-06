@@ -5,14 +5,16 @@
 ### Freemium Model (Recommended)
 
 **Free Tier** - Limited features to attract users
-- ✅ Basic Luna Agents plugin (10 agents)
-- ✅ Luna Nexa RAG (local, limited indexing)
-- ❌ Luna Vision RAG™ (premium only)
+- ✅### Product Lineup:
+- **Luna Agents** - Main plugin (10 AI agents)
+- **Luna RAG** - Local semantic code search
+- ❌ **Luna Vision RAG™** - Cloud-based GUI testing (premium only)
 - ❌ Priority support
 - ❌ Advanced features
 
 **Pro Tier** - $29/month
 - ✅ Everything in Free
+- ✅ **Luna Vision RAG™** - Cloud-based GUI testing
 - ✅ Luna Vision RAG™ (cloud-based GUI testing)
 - ✅ Unlimited indexing
 - ✅ Priority support
@@ -311,7 +313,7 @@ Usage Grant:
 **Protect Your Brand:**
 - Luna Agents™
 - Luna Vision RAG™
-- Luna Nexa RAG™
+- Luna RAG™
 
 ---
 

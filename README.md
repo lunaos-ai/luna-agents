@@ -44,7 +44,7 @@ Luna Agents is a comprehensive development workflow system powered by specialize
 
 ### Requirements
 - **Any MCP-compatible platform** (Claude Desktop, Windsurf, Cline, Roo Cline, etc.)
-- Node.js 18+ (for Luna Nexa RAG)
+- Node.js 18+ (for Luna RAG)
 - Python 3 (for auto-configuration)
 - Git (for version control)
 
@@ -63,19 +63,22 @@ cd luna-agent
 
 **That's it!** Everything is configured automatically.
 
+### Available MCP Servers
+
+1. **Luna RAG** - Semantic code search and RAG capabilities
+2. **Luna Vision RAG™** - Cloud-based GUI testing and visual analysis (no local setup required!)  
+
 ### What Gets Installed
 
 ✅ **Luna Agents Plugin** - 10 AI agents for complete development lifecycle  
-✅ **Luna Nexa RAG** - Local semantic code search MCP server  
-✅ **Luna Vision RAG™** - Cloud-based GUI testing (11 tools, no local process!)  
 ✅ **Auto-Configuration** - MCP config updated automatically  
 ✅ **Quick Start Guide** - Ready-to-use documentation  
 
 ### What Happens During Setup
 
 1. ✅ Checks prerequisites (Node.js, Git, npm)
-2. ✅ Installs Luna Nexa RAG dependencies
-3. ✅ Configures Luna Nexa RAG MCP server
+2. ✅ Installs Luna RAG dependencies
+3. ✅ Configures Luna RAG MCP server
 4. ✅ Installs Luna Agents plugin
 5. ✅ **Configures Luna Vision RAG cloud MCP server** (no local process needed!)
 6. ✅ Updates MCP configuration file

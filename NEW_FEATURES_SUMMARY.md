@@ -186,7 +186,7 @@ luna-ui-fix preview               # Preview fixes (dry-run)
 
 ### Updated Tools
 
-The Luna Nexa RAG MCP server (`/mcp-servers/luna-nexa-rag/index.js`) has been updated with new tools:
+The Luna RAG MCP server (`/mcp-servers/luna-nexa-rag/index.js`) has been updated with new tools:
 
 #### 1. ui_convert_to_hig
 Convert UI components to Apple HIG + Decart modern design standards.
