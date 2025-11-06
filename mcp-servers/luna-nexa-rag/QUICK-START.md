@@ -1,8 +1,8 @@
-# 🚀 Luna Nexa RAG - Quick Start Guide
+# 🚀 Luna RAG - Quick Start Guide
 
 ## What's New? 🎉
 
-Luna Nexa RAG now has **15+ AI-powered tools** beyond basic RAG!
+Luna RAG now has **15+ AI-powered tools** beyond basic RAG!
 
 ### AI Capabilities Added:
 

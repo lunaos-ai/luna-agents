@@ -1,8 +1,8 @@
-# 🤖 Luna Nexa RAG - AI Capabilities
+# 🤖 Luna RAG - AI Capabilities
 
 ## Overview
 
-Luna Nexa RAG now includes **15+ AI-powered tools** beyond basic RAG, leveraging **LangChain** for advanced code analysis, documentation, and natural language processing.
+Luna RAG now includes **15+ AI-powered tools** beyond basic RAG, leveraging **LangChain** for advanced code analysis, documentation, and natural language processing.
 
 ## 🚀 Core Technologies
 

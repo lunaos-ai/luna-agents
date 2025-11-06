@@ -6,7 +6,7 @@
 "Nexa" is a trademarked name that could cause legal issues. We need to rebrand to protect your IP.
 
 ### Solution
-Rename "Luna Nexa RAG" to simply "Luna RAG" or "Luna Code RAG"
+Rename "Luna RAG" to simply "Luna RAG" or "Luna Code RAG"
 
 ---
 
@@ -16,7 +16,7 @@ Rename "Luna Nexa RAG" to simply "Luna RAG" or "Luna Code RAG"
 
 | Old Name | New Name | Reason |
 |----------|----------|--------|
-| Luna Nexa RAG | **Luna RAG** | Simpler, no trademark issues |
+| Luna RAG | **Luna RAG** | Simpler, no trademark issues |
 | luna-nexa-rag | **luna-rag** | Consistent with new branding |
 | @luna-agents/luna-nexa-rag | **@luna-agents/luna-rag** | Package name update |
 
@@ -167,12 +167,12 @@ Clean, simple, and no trademark conflicts!
 ## 📢 Announcement Template
 
 ```markdown
-# Luna Nexa RAG is now Luna RAG!
+# Luna RAG is now Luna RAG!
 
 We're simplifying our branding to make it easier to remember and avoid any trademark confusion.
 
 **What's changing:**
-- Luna Nexa RAG → **Luna RAG**
+- Luna RAG → **Luna RAG**
 - Same great semantic code search
 - No functionality changes
 - Cleaner, simpler name

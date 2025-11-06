@@ -301,7 +301,7 @@ luna-agents/
 
 ## 🔧 MCP Server Tools
 
-All 15 agents are integrated into the Luna Nexa RAG MCP server:
+All 15 agents are integrated into the Luna RAG MCP server:
 
 1. `dockerize_project` - Docker containerization
 2. `generate_user_guide` - HTML/PDF documentation

@@ -2,7 +2,7 @@
 
 ## Overview
 
-Luna Nexa RAG now includes comprehensive UI/UX testing capabilities with a focus on **Apple Human Interface Guidelines (HIG)** compliance, screenshot analysis, and responsiveness testing.
+Luna RAG now includes comprehensive UI/UX testing capabilities with a focus on **Apple Human Interface Guidelines (HIG)** compliance, screenshot analysis, and responsiveness testing.
 
 ---
 

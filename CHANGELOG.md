@@ -22,7 +22,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Monitoring & Observability
   - Post-Launch Review
 - 10 slash commands for workflow automation
-- Semantic code search via Luna Nexa RAG MCP server
+- Semantic code search via Luna RAG MCP server
 - Comprehensive project setup and installation scripts
 - Production documentation and quick start guides
 

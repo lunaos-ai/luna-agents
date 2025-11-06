@@ -58,7 +58,7 @@ cd luna-agent
 ### **What Happens Automatically**
 
 1. ✅ Installs Luna Agents plugin
-2. ✅ Configures Luna Nexa RAG (local semantic search)
+2. ✅ Configures Luna RAG (local semantic search)
 3. ✅ **Configures Luna Vision RAG (cloud MCP server)**
 4. ✅ Updates `claude_desktop_config.json`
 5. ✅ Creates quick start guide

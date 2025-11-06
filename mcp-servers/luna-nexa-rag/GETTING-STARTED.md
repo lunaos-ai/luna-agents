@@ -1,8 +1,8 @@
-# 🚀 Getting Started with Luna Nexa RAG
+# 🚀 Getting Started with Luna RAG
 
 ## ⚠️ Prerequisites
 
-Before using Luna Nexa RAG, you need:
+Before using Luna RAG, you need:
 
 1. **Docker Desktop** - For running ChromaDB
 2. **Node.js 18+** - Already installed ✅
@@ -47,7 +47,7 @@ node rag-demo.js
 - **Runs on**: http://localhost:8000
 - **Storage**: Stores code embeddings for fast similarity search
 
-### Luna Nexa RAG Server
+### Luna RAG Server
 - **Purpose**: MCP server that provides RAG tools
 - **Runs on**: stdio (communicates with your IDE)
 - **Tools**: 26 tools including semantic search, UI testing, code analysis
@@ -174,7 +174,7 @@ node rag-demo.js
 
 Expected output:
 ```
-🌙 Luna Nexa RAG Demo
+🌙 Luna RAG Demo
 
 ✅ Configuration loaded
    Project: /path/to/your/project
@@ -241,6 +241,6 @@ Expected output:
 
 ---
 
-**You're ready to use Luna Nexa RAG! 🎉**
+**You're ready to use Luna RAG! 🎉**
 
 Start with: `./start-chroma.sh` then `node rag-demo.js`
