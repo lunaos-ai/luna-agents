@@ -43,39 +43,62 @@ Luna Agents is a comprehensive Claude Code plugin that provides an end-to-end so
 ## Installation
 
 ### Requirements
-- Claude Code (latest version)
-- Node.js 16+ (for some features)
+- Claude Desktop (latest version)
+- Node.js 18+ (for Luna Nexa RAG)
+- Python 3 (for auto-configuration)
 - Git (for version control)
 
-### Install Plugin
+### 🚀 One-Command Installation
 
-**Option 1: Install via Marketplace (Recommended)**
-
-1. **Add marketplace source** in Claude Code:
 ```bash
-/plugin marketplace add https://github.com/shacharsol/luna-agent
+# Clone the repository
+git clone https://github.com/shacharsol/luna-agent.git
+cd luna-agent
+
+# Run automated setup
+./setup.sh
+
+# Restart Claude Desktop
 ```
 
-2. **Install the plugin**:
-```bash
-/plugin install luna-agents
+**That's it!** Everything is configured automatically.
+
+### What Gets Installed
+
+✅ **Luna Agents Plugin** - 10 AI agents for complete development lifecycle  
+✅ **Luna Nexa RAG** - Local semantic code search MCP server  
+✅ **Luna Vision RAG™** - Cloud-based GUI testing (11 tools, no local process!)  
+✅ **Auto-Configuration** - Claude Desktop config updated automatically  
+✅ **Quick Start Guide** - Ready-to-use documentation  
+
+### What Happens During Setup
+
+1. ✅ Checks prerequisites (Node.js, Git, npm)
+2. ✅ Installs Luna Nexa RAG dependencies
+3. ✅ Configures Luna Nexa RAG MCP server
+4. ✅ Installs Luna Agents plugin to Claude Desktop
+5. ✅ **Configures Luna Vision RAG cloud MCP server** (no local process needed!)
+6. ✅ Updates `~/Library/Application Support/Claude/claude_desktop_config.json`
+7. ✅ Creates `QUICK_START.md` guide
+
+### Verify Installation
+
+After restarting Claude Desktop, verify everything works:
+
+```
+In Claude Desktop, type:
+"Use the health_check tool"
 ```
 
-3. **Restart Claude Code** to complete installation
+Claude should call the Luna Vision RAG cloud MCP server and return a healthy status.
 
-**Option 2: Manual Installation**
+### Zero Local Processes! ⭐
 
-1. **Download** the plugin folder to your Claude plugins directory:
-```bash
-# Typical location
-mkdir -p ~/.claude/plugins
-cp -r luna-agents/.claude-plugin ~/.claude/plugins/luna-agents
-```
-
-2. **Enable** the plugin in Claude Code settings:
-   - Open Claude Code
-   - Go to Settings → Plugins
-   - Enable "Luna Agents"
+Unlike traditional MCP servers, Luna Vision RAG runs entirely in the cloud:
+- ❌ No `node index.js` in a separate terminal
+- ❌ No local server management
+- ❌ No port configuration
+- ✅ Just restart Claude Desktop and it works!
 
 ## Quick Start
 
