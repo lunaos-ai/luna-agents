@@ -1,10 +1,10 @@
-# Luna Agents Plugin for Claude Code
+# Luna Agents Plugin for Claude Desktop
 
 🌙 **Complete AI-powered development lifecycle management in a single plugin**
 
 ## Overview
 
-Luna Agents is a comprehensive Claude Code plugin that provides an end-to-end software development workflow powered by specialized AI agents. From requirements analysis to post-launch monitoring, Luna automates and streamlines every phase of your development process.
+Luna Agents is a comprehensive Claude Desktop plugin that provides an end-to-end software development workflow powered by specialized AI agents. From requirements analysis to post-launch monitoring, Luna automates and streamlines every phase of your development process.
 
 ## Features
 
@@ -25,7 +25,7 @@ Luna Agents is a comprehensive Claude Code plugin that provides an end-to-end so
 - **Server Architecture** - Node.js, Express, Databases, APIs, Security
 - **Apple HIG** - Design principles, typography, spacing, motion
 - **Design Patterns** - MVC, Repository, Factory, Observer, Strategy
-- **Best Practices** - Claude Code optimization, testing, performance
+- **Best Practices** - Claude Desktop optimization, testing, performance
 - **Quick Reference** - Commands, configurations, common patterns
 
 ### 🎯 Flexible Scoping
@@ -176,7 +176,7 @@ Luna Agents includes a comprehensive **skills.md** reference file that contains:
 - **Behavioral Patterns** - Observer, Strategy, Command, Middleware
 - **Structural Patterns** - Adapter, Decorator, Facade
 
-### Claude Code Best Practices
+### Claude Desktop Best Practices
 - **Effective Prompting** - Specificity, context, tech stack constraints
 - **Project Structures** - Full-stack setup, component creation, API design
 - **Testing Strategies** - Unit, integration, E2E testing approaches
@@ -360,7 +360,7 @@ Luna Agents works seamlessly with Model Context Protocol (MCP) servers to enhanc
 
 ### MCP Installation with Luna
 
-To enhance your Luna workflow with MCP servers, add them to your Claude Code configuration using the proper format:
+To enhance your Luna workflow with MCP servers, add them to your Claude Desktop configuration using the proper format:
 
 ```json
 {
@@ -519,7 +519,7 @@ Luna Agents automatically leverages available MCP servers:
 **Command not found**
 - Ensure plugin is properly installed and enabled
 - Check that command files are in the correct directory
-- Restart Claude Code if needed
+- Restart Claude Desktop if needed
 
 **Missing prerequisites**
 - Run commands in the correct order
