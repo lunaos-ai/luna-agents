@@ -1,0 +1,67 @@
+name = "luna-rag-backend"
+main = "src/index.js"
+compatibility_date = "2024-05-12"
+compatibility_flags = ["nodejs_compat"]
+
+# Environment variables
+[vars]
+ENVIRONMENT = "development"
+LEMONSQUEEZY_STORE_ID = "214097"
+JWT_EXPIRES_IN = "7d"
+API_VERSION = "v1"
+
+# D1 Database
+[[d1_databases]]
+binding = "DB"
+database_name = "luna-rag-db"
+database_id = "luna-rag-db-id" # Will be set after first deployment
+
+# KV Storage for caching
+[[kv_namespaces]]
+binding = "CACHE"
+id = "luna-rag-cache"
+preview_id = "luna-rag-cache-preview"
+
+# Queue for email processing
+[[queues.producers]]
+binding = "EMAIL_QUEUE"
+queue = "luna-rag-email-queue"
+
+# Environment-specific configurations
+[env.staging]
+name = "luna-rag-backend-staging"
+vars = { ENVIRONMENT = "staging" }
+
+[env.production]
+name = "luna-rag-backend"
+vars = { ENVIRONMENT = "production" }
+
+# Route configuration (for custom domain)
+# [[routes]]
+# pattern = "api.lunaos.ai/*"
+# zone_name = "lunaos.ai"
+
+# Limits and quotas
+[limits]
+cpu_ms = 50000
+
+# Build configuration
+[build]
+command = ""
+
+# Deployment configuration
+[deploy]
+compatibility_date = "2024-05-12"
+
+# Analytics Engine (optional - for detailed metrics)
+# [[analytics_engine_datasets]]
+# binding = "ANALYTICS"
+
+# Secrets (set via: wrangler secret put <SECRET_NAME>)
+# Required secrets:
+# - LEMONSQUEEZY_API_KEY
+# - LEMONSQUEEZY_WEBHOOK_SECRET
+# - JWT_SECRET
+# - SENDGRID_API_KEY
+# - EMAIL_FROM
+# - EMAIL_SUPPORT

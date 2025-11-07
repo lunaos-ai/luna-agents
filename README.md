@@ -152,6 +152,66 @@ Unlike traditional MCP servers, Luna Vision RAG runs entirely in the cloud:
 - ❌ No port configuration
 - ✅ Just restart and it works in any MCP-compatible platform!
 
+## 🌙 Luna RAG Backend Setup (Optional)
+
+For full Luna RAG functionality with premium features, deploy the backend:
+
+### Quick Backend Deployment
+
+```bash
+# Navigate to backend directory
+cd backend
+
+# Deploy to AWS Lambda
+./deploy.sh
+```
+
+### What the Backend Provides
+
+- **User Authentication** - API key generation and JWT validation
+- **Usage Tracking** - Free tier limits and Pro analytics
+- **Payment Processing** - LemonSqueezy subscription management
+- **Email Services** - Welcome emails, trial notifications, payment confirmations
+- **Webhook Handling** - Real-time payment and subscription updates
+- **Database Storage** - User data and usage analytics (DynamoDB)
+
+### Backend Requirements
+
+- AWS Account with Lambda, API Gateway, and DynamoDB access
+- LemonSqueezy account with products configured
+- AWS CLI configured with credentials
+
+### Configure Environment
+
+1. **Store secrets in AWS Systems Manager:**
+
+```bash
+# Store LemonSqueezy API key
+aws ssm put-parameter \
+  --name "/luna-rag/lemonsqueezy-api-key" \
+  --value "your-api-key" \
+  --type "SecureString"
+
+# Store webhook secret
+aws ssm put-parameter \
+  --name "/luna-rag/webhook-secret" \
+  --value "your-webhook-secret" \
+  --type "SecureString"
+```
+
+2. **Configure LemonSqueezy Webhooks:**
+
+- Webhook URL: `[YOUR_API_ENDPOINT]/webhook`
+- Events: Order created, Subscription created, Payment succeeded, Subscription cancelled
+
+3. **Update API Configuration:**
+
+Your Claude Code plugin will automatically detect and use the deployed backend for premium features.
+
+### Manual Backend Setup
+
+For detailed setup instructions, see: [Backend Deployment Guide](backend/DEPLOYMENT.md)
+
 ## Quick Start
 
 ### Start New Project
