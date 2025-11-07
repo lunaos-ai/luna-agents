@@ -137,13 +137,15 @@ if [ -n "$CLAUDE_CONFIG_DIR" ]; then
         print_success "Created Claude Desktop config file"
     fi
     
-    # Add Luna Vision RAG MCP server to config
-    # Using cloud-based MCP server (no local process needed)
+    # Add Luna RAG MCP servers to config
     python3 -c "
 import json
 import sys
+import os
 
 config_file = '$CLAUDE_CONFIG_FILE'
+project_root = '$PROJECT_ROOT'
+
 try:
     with open(config_file, 'r') as f:
         config = json.load(f)
@@ -153,15 +155,30 @@ except:
 if 'mcpServers' not in config:
     config['mcpServers'] = {}
 
-# Add Luna Vision RAG cloud MCP server
+# Add Luna RAG local MCP server (for free tier)
+config['mcpServers']['luna-nexa-rag'] = {
+    'command': 'node',
+    'args': [os.path.join(project_root, 'mcp-servers/luna-nexa-rag/index.js')],
+    'startOnLaunch': False,
+    'disabled': True  # Disabled by default, user can enable
+}
+
+# Add Luna Vision RAG cloud MCP server (premium features)
 config['mcpServers']['luna-vision-rag'] = {
     'url': 'https://luna-vision-rag-mcp.broad-dew-49ad.workers.dev/mcp'
+}
+
+# Add Luna GLM Vision cloud MCP server (premium features)
+config['mcpServers']['luna-glm-vision'] = {
+    'url': 'https://luna-glm-vision-mcp.broad-dew-49ad.workers.dev/mcp'
 }
 
 with open(config_file, 'w') as f:
     json.dump(config, f, indent=2)
 
-print('✓ Luna Vision RAG MCP server configured')
+print('✓ Luna RAG MCP servers configured')
+print('✓ Luna Vision RAG cloud server configured')
+print('✓ Luna GLM Vision cloud server configured')
 " 2>/dev/null || {
     # Fallback if python3 is not available
     print_info "Python3 not found, skipping automatic MCP configuration"
@@ -169,15 +186,45 @@ print('✓ Luna Vision RAG MCP server configured')
     echo ""
     echo '{
   "mcpServers": {
+    "luna-nexa-rag": {
+      "command": "node",
+      "args": ["'$PROJECT_ROOT'/mcp-servers/luna-nexa-rag/index.js"],
+      "startOnLaunch": false,
+      "disabled": true
+    },
     "luna-vision-rag": {
       "url": "https://luna-vision-rag-mcp.broad-dew-49ad.workers.dev/mcp"
+    },
+    "luna-glm-vision": {
+      "url": "https://luna-glm-vision-mcp.broad-dew-49ad.workers.dev/mcp"
     }
   }
 }'
     echo ""
 }
-    
-    print_success "Luna Vision RAG MCP server configured"
+
+    print_success "Luna RAG MCP servers configured"
+
+# Setup ChromaDB for local RAG (optional, for free tier)
+print_info "Setting up ChromaDB for local RAG (optional)..."
+if command -v docker &> /dev/null; then
+    if docker ps | grep -q luna-chroma; then
+        print_success "ChromaDB already running"
+    else
+        print_info "Starting ChromaDB container..."
+        docker run -d --name luna-chroma -p 8000:8000 chromadb/chroma 2>/dev/null || {
+            print_info "Docker not running or ChromaDB failed to start"
+            print_info "Run this command later to enable local RAG:"
+            echo "  docker run -d --name luna-chroma -p 8000:8000 chromadb/chroma"
+        }
+        if [ $? -eq 0 ]; then
+            print_success "ChromaDB started on port 8000"
+        fi
+    fi
+else
+    print_info "Docker not installed - local RAG requires ChromaDB"
+    print_info "Install Docker or use cloud-based RAG features"
+fi
 fi
 
 # Create quick start guide
@@ -234,12 +281,31 @@ Luna Agents provides:
 - `/luna-monitor` - Setup monitoring
 - `/luna-review-launch` - Post-launch review
 
-### Semantic Code Search (Luna RAG):
+### 🧠 Semantic Code Search (Luna RAG) - Built into Claude Code!
 
-The MCP server provides:
-- `index_codebase` - Index your project
-- `search_context` - Search semantically
-- `get_similar_implementations` - Find similar code
+RAG works automatically in Claude Code - no manual commands needed! Just ask questions:
+
+**Examples:**
+- "How does authentication work in this project?"
+- "Find similar implementations to user profiles"
+- "What are the error handling patterns?"
+- "Search for database connection code"
+- "Show me examples of API endpoints"
+
+**What's Available:**
+- **Free Tier**: Local RAG with ChromaDB (auto-installed)
+- **Premium**: Cloud-based Luna Vision RAG™ + GLM Vision
+
+**To enable local RAG (Free Tier):**
+1. Ensure Docker is running
+2. Run: `docker run -d --name luna-chroma -p 8000:8000 chromadb/chroma`
+3. Restart Claude Desktop
+4. Start asking questions about your code!
+
+**Premium Features:**
+- Get API key: https://agent.lunaos.ai/pricing
+- Luna Vision RAG™: Screenshot analysis + code context
+- GLM Vision: Advanced visual AI testing
 - `get_coding_patterns` - Extract patterns
 
 ### Context-Aware GUI Testing (Luna Vision RAG™):
