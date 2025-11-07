@@ -15,10 +15,51 @@ Luna Agents is a comprehensive development workflow system powered by specialize
 - **Task Execution** - Implement code with quality standards and progress tracking
 - **Code Review** - Automated code quality and security assessments
 - **Testing & Validation** - Comprehensive test creation and requirements validation
-- **Deployment** - Production-ready deployment with infrastructure setup
+- **UI/UX Testing** - End-to-end visual testing with Playwright integration
+- **Deployment** - Production-ready deployment with Cloudflare automation
 - **Documentation** - Auto-generated technical documentation
 - **Monitoring & Observability** - Complete monitoring stack setup
 - **Post-Launch Review** - Performance analysis and optimization recommendations
+
+### 🎨 UI/UX Design & Testing
+- **Apple HIG Compliance** - Convert UI to Apple Human Interface Guidelines
+- **Modern Design System** - Decart-inspired glassmorphism and neumorphism
+- **Automated UI Testing** - Visual regression and accessibility testing
+- **UI Issue Detection** - Automatically fix responsive and accessibility issues
+- **Cross-browser Testing** - Chromium, Firefox, WebKit compatibility
+- **Performance Optimization** - Core Web Vitals and bundle size optimization
+
+### 🚀 Cloud Deployment & Infrastructure
+- **Cloudflare Workers** - Serverless API deployment
+- **Cloudflare Pages** - Static site hosting with CI/CD
+- **Automated Deployment** - One-command full-stack deployment
+- **API Authentication** - Premium feature access control
+- **Custom Domains** - Automatic SSL and DNS configuration
+- **Global CDN** - Automatic geographic distribution
+
+### 🔍 Search & Intelligence Commands
+- **Luna RAG™** - Intelligent semantic code search with single guided flow
+- **Natural Language Queries** - Ask questions about your codebase naturally
+- **Pattern Recognition** - Find coding patterns and best practices automatically
+- **Vision Analysis** - Screenshot-to-code analysis with context understanding
+- **Usage Analytics** - Track search patterns and codebase insights
+
+### ⚡ Quick Shortcuts System
+- **Command Aliases** - Quick access to all Luna features
+- **Workflow Shortcuts** - Multi-command sequences
+- **Category-based Navigation** - Design, deployment, testing groups
+- **Custom Shortcuts** - Create your own command aliases
+- **Git-style Commands** - Familiar command patterns
+
+### 💎 Premium Features (Pro/Enterprise)
+- **Luna Vision RAG™** - Cloud-based GUI testing and screenshot analysis
+- **Luna GLM Vision** - Advanced visual AI testing automation
+- **Unlimited Search & Indexing** - No limits on codebase size or queries
+- **Priority Support** - 24-hour response time for Pro users
+- **Team Collaboration** - Enterprise-grade sharing and analytics
+- **Priority Support** - Fast-track assistance
+- **Advanced Analytics** - Usage metrics and insights
+- **Custom Integrations** - Tailored solutions
 
 ### 📚 Comprehensive Skills Reference
 - **Web Development** - HTML5, CSS3, JavaScript ES6+, React/Vue/Svelte
@@ -43,7 +84,7 @@ Luna Agents is a comprehensive development workflow system powered by specialize
 ## Installation
 
 ### Requirements
-- **Any MCP-compatible platform** (Claude Desktop, Windsurf, Cline, Roo Cline, etc.)
+- **Any MCP-compatible platform** (Claude Desktop, Windsurf, Cline, Roo Cline, Zed, etc.)
 - Node.js 18+ (for Luna RAG)
 - Python 3 (for auto-configuration)
 - Git (for version control)
@@ -66,13 +107,19 @@ cd luna-agent
 ### Available MCP Servers
 
 1. **Luna RAG** - Semantic code search and RAG capabilities
-2. **Luna Vision RAG™** - Cloud-based GUI testing and visual analysis (no local setup required!)  
+2. **Luna Vision RAG™** - Cloud-based GUI testing and visual analysis (no local setup required!)
+3. **Luna GLM Vision** - Advanced GUI testing automation with GLM integration
+4. **Luna API Auth** - Authentication service for premium features
 
 ### What Gets Installed
 
-✅ **Luna Agents Plugin** - 10 AI agents for complete development lifecycle  
-✅ **Auto-Configuration** - MCP config updated automatically  
-✅ **Quick Start Guide** - Ready-to-use documentation  
+✅ **Luna Agents Plugin** - 15+ AI agents for complete development lifecycle
+✅ **Auto-Configuration** - MCP config updated automatically
+✅ **Quick Start Guide** - Ready-to-use documentation
+✅ **Luna Shortcuts System** - Quick command aliases and workflows
+✅ **UI/UX Testing Suite** - Comprehensive testing with Playwright
+✅ **Cloudflare Deployment** - Automated deployment pipeline
+✅ **API Key Authentication** - Premium feature access control
 
 ### What Happens During Setup
 
@@ -81,8 +128,10 @@ cd luna-agent
 3. ✅ Configures Luna RAG MCP server
 4. ✅ Installs Luna Agents plugin
 5. ✅ **Configures Luna Vision RAG cloud MCP server** (no local process needed!)
-6. ✅ Updates MCP configuration file
-7. ✅ Creates `QUICK_START.md` guide
+6. ✅ **Sets up Luna GLM Vision integration**
+7. ✅ **Deploys API Auth service for premium features**
+8. ✅ Updates MCP configuration file
+9. ✅ Creates `QUICK_START.md` guide
 
 ### Verify Installation
 
@@ -119,19 +168,22 @@ cd your-project-directory
 
 ### Complete Workflow
 ```bash
-/luna-requirements   # 1. Analyze & generate requirements
-/luna-design         # 2. Create technical design
-/luna-plan           # 3. Break into tasks
-/luna-execute        # 4. Implement (run multiple times)
-/luna-review         # 5. Code review
-/luna-test           # 6. Test & validate
-/luna-deploy         # 7. Deploy to production
-/luna-docs           # 8. Generate documentation
-/luna-monitor        # 9. Set up monitoring
-/luna-postlaunch     # 10. Post-launch review (after 7 days)
+/luna-rag "How does this project work?"    # 0. Understand existing codebase
+/luna-requirements                        # 1. Analyze & generate requirements
+/luna-design                              # 2. Create technical design
+/luna-plan                                # 3. Break into tasks
+/luna-execute                             # 4. Implement (run multiple times)
+/luna-review                              # 5. Code review
+/luna-test                                # 6. Test & validate
+/luna-deploy                              # 7. Deploy to production
+/luna-docs                                # 8. Generate documentation
+/luna-monitor                             # 9. Set up monitoring
+/luna-postlaunch                          # 10. Post-launch review (after 7 days)
 ```
 
 ## Commands Reference
+
+### Core Development Commands
 
 | Command | Purpose | Prerequisites |
 |---------|---------|---------------|
@@ -145,6 +197,64 @@ cd your-project-directory
 | `/luna-docs` | Generate documentation | Deployed code |
 | `/luna-monitor` | Set up monitoring | Running in production |
 | `/luna-postlaunch` | Post-launch analysis | 7+ days in production |
+
+### 🔍 Search & Intelligence Commands
+
+| Command | Purpose | Prerequisites |
+|---------|---------|---------------|
+| `/luna-rag` | **Intelligent code search & context** | - |
+| `/luna-rag search` | Semantic code search | - |
+| `/luna-rag index` | Index project for search | - |
+| `/luna-rag patterns` | Extract coding patterns | - |
+| `/luna-rag compare` | Compare implementations | - |
+
+### UI/UX Design & Testing Commands
+
+| Command | Purpose | Prerequisites |
+|---------|---------|---------------|
+| `/luna-ui-convert` | Convert UI to Apple HIG + modern design | Existing UI components |
+| `/luna-ui-test` | Run comprehensive UI/UX tests | Deployed application |
+| `/luna-ui-fix` | Automatically fix UI issues | Test results |
+| `/luna-hig` | Apple Human Interface Guidelines analysis | Any UI components |
+
+### Deployment & Infrastructure Commands
+
+| Command | Purpose | Prerequisites |
+|---------|---------|---------------|
+| `/luna-cloudflare-auto` | Automated Cloudflare deployment | Built application |
+| `/luna-dockerize` | Containerize application | Source code |
+| `/luna-config` | Configure development environment | - |
+
+### Quick Shortcuts System
+
+| Command | Purpose | Example |
+|---------|---------|---------|
+| `/luna-shortcuts` | List all available shortcuts | `luna-shortcuts` |
+| `/luna-shortcuts` [category] | Show category-specific shortcuts | `luna-shortcuts design` |
+| `/luna-shortcuts` [name] | Run specific shortcut | `luna-shortcuts ui-convert` |
+| `/luna-shortcuts` create [name] [command] | Create custom shortcut | `luna-shortcuts create my-pipeline "luna-test && luna-deploy"` |
+
+### Popular Shortcuts Examples
+
+```bash
+# UI Design Pipeline
+luna-shortcuts ui-pipeline        # Convert → Test → Fix UI
+
+# Quick Deployment
+luna-shortcuts cf-auto           # Automated Cloudflare deployment
+
+# Apple HIG Analysis
+luna-shortcuts hig               # Quick HIG compliance check
+
+# Full Testing Suite
+luna-shortcuts test-all          # Run all test types
+
+# Development Workflow
+luna-shortcuts dev-flow          # Execute → Review → Test
+```
+
+
+---
 
 ## 📚 Skills Reference
 
@@ -249,7 +359,76 @@ cd ~/projects/existing-project
 /luna-execute       # Continue implementing remaining tasks
 ```
 
+## 💎 Premium Features & Pricing
+
+### Luna Free Tier
+✅ **Perfect for getting started**
+- 10 Core AI Agents (Requirements → Documentation)
+- Basic Luna RAG functionality
+- 100 queries per day
+- 1,000 files indexed
+- Community support
+- Local development only
+
+### Luna Pro ($29/month)
+🚀 **For professional developers**
+- Everything in Free, plus:
+- **Luna Vision RAG™** - Cloud GUI testing & analysis
+- **Luna GLM Vision** - Advanced visual AI testing
+- **Luna UI Test Agent** - Playwright automation
+- **Luna UI Fix Agent** - Automated issue correction
+- **Luna Cloudflare Deployment** - One-click deployment
+- Unlimited queries and indexing
+- Priority support
+- Advanced analytics dashboard
+
+### Luna Enterprise (Custom)
+🏢 **For teams and organizations**
+- Everything in Pro, plus:
+- Unlimited everything
+- Custom integrations
+- Dedicated support
+- Team collaboration features
+- Custom AI model training
+- SLA guarantees
+- On-premise deployment options
+
+### 🚀 Quick Start with Premium Features
+
+1. **Get Your API Key**
+   ```bash
+   # Visit https://agent.lunaos.ai/pricing
+   # Subscribe to Pro or Enterprise
+   # Copy your API key
+   ```
+
+2. **Configure Your MCP Client**
+   ```json
+   {
+     "mcpServers": {
+       "luna-vision-rag": {
+         "url": "https://luna-vision-rag-mcp.workers.dev/mcp",
+         "headers": {
+           "X-API-Key": "luna_YOUR_API_KEY_HERE"
+         }
+       }
+     }
+   }
+   ```
+
+3. **Start Using Premium Features**
+   ```bash
+   /luna-rag "How does authentication work?"    # Intelligent code search
+   /luna-shortcuts ui-pipeline                  # Modern UI conversion
+   /luna-ui-test                                # Comprehensive testing
+   /luna-cloudflare-auto                        # One-click deployment
+   ```
+
+---
+
 ## Agent Capabilities
+
+### Core Development Agents
 
 ### Luna Requirements Analyzer
 - Analyzes existing codebase structure
@@ -310,6 +489,34 @@ cd ~/projects/existing-project
 - Reviews user feedback and metrics
 - Identifies optimization opportunities
 - Provides improvement recommendations
+
+### 🎨 UI/UX Premium Agents
+
+### Luna UI Test Agent
+- **End-to-end user journey testing** with Playwright
+- **Visual regression testing** with screenshot comparison
+- **Accessibility compliance** (WCAG 2.1 AA)
+- **Performance testing** (Core Web Vitals)
+- **Cross-browser testing** (Chromium, Firefox, WebKit)
+- **Responsive design validation** across devices
+
+### Luna UI Fix Agent
+- **Automated issue detection** and fixing
+- **Accessibility remediation** (ARIA labels, contrast)
+- **Design system enforcement** consistency
+- **Responsive design fixes** for mobile/tablet
+- **Performance optimizations** (lazy loading, compression)
+- **Code quality improvements** and formatting
+
+### 🚀 Infrastructure Premium Agents
+
+### Luna Cloudflare Deployment Agent
+- **Automated Workers deployment** for serverless APIs
+- **Pages deployment** for static sites with CI/CD
+- **D1 database setup** and migration automation
+- **R2 object storage** configuration
+- **Custom domain setup** with SSL provisioning
+- **Global CDN configuration** for optimal performance
 
 ## 🔌 Recommended MCP Servers
 
@@ -522,6 +729,64 @@ Luna Agents automatically leverages available MCP servers:
 - Track progress through the checkbox system
 - Maintain consistent file organization
 
+## 🆕 What's New in Version 2.0
+
+### Latest Features (November 2025)
+
+- **🎨 Luna UI Convert** - Transform any UI to Apple HIG + modern design
+- **🧪 Luna UI Test** - Comprehensive UI/UX testing with Playwright
+- **🔧 Luna UI Fix** - Automatically detect and fix UI issues
+- **⚡ Luna Shortcuts** - Quick command aliases and workflow automation
+- **🚀 Luna Cloudflare Auto** - One-command full-stack deployment
+- **🔐 API Authentication** - Premium feature access control
+- **💳 LemonSqueezy Integration** - Subscription management and billing
+- **📊 Usage Analytics** - Track API usage and performance metrics
+- **🌐 Custom Domain Support** - `agent.lunaos.ai` with SSL
+- **📱 User Dashboard** - Manage subscription and view usage
+
+### New Premium Agents
+
+- **Luna UI Test Agent** - End-to-end visual testing automation
+- **Luna UI Fix Agent** - Automated issue correction and remediation
+- **Luna Cloudflare Deployment Agent** - Zero-config deployment pipeline
+
+### Enhanced Integrations
+
+- **RAG + GLM Vision Integration** - Context-aware GUI testing
+- **MCP Server Cross-Communication** - Unified agent ecosystem
+- **Cloudflare Workers Integration** - Serverless premium features
+- **Advanced Authentication** - API key-based access control
+
+---
+
+## 🛠️ Technical Implementation
+
+### Cloud Architecture
+
+```
+┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
+│   Luna Agents   │───▶│   MCP Servers    │───▶│  Cloud Services │
+│   (Local CLI)   │    │ (RAG/Vision/API) │    │ (Cloudflare)    │
+└─────────────────┘    └──────────────────┘    └─────────────────┘
+         │                       │                       │
+         ▼                       ▼                       ▼
+┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
+│ 15+ AI Agents   │    │  Semantic Search │    │  Auth & Billing │
+│ Complete DevOps │    │  Vision Analysis │    │  Usage Tracking │
+└─────────────────┘    └──────────────────┘    └─────────────────┘
+```
+
+### Key Integrations
+
+- **Luna RAG + GLM Vision**: Unified semantic and visual understanding
+- **LemonSqueezy**: Subscription billing and webhook processing
+- **Cloudflare Workers**: Serverless compute for premium features
+- **Pinecone/Qdrant**: Vector databases for semantic search
+- **Playwright**: Automated browser testing
+- **Apple HIG**: Design system compliance
+
+---
+
 ## Troubleshooting
 
 ### Common Issues
@@ -541,17 +806,60 @@ Luna Agents automatically leverages available MCP servers:
 - Check you're in the correct project directory
 - Review the prompt messages carefully
 
+**API Key Issues (Premium)**
+- Verify API key format: `luna_AbCdEfGh1234567890IjKlMnOpQrSt`
+- Check subscription is active at https://agent.lunaos.ai/dashboard
+- Ensure MCP configuration includes API key in headers
+
 ### Getting Help
 
 For additional support:
 - Check the generated reports in `.luna/` directory
 - Review the agent documentation in the plugin
 - Use `/luna-docs` to generate comprehensive project documentation
-- Consult the Luna workflow guidelines
+- Visit https://agent.lunaos.ai for guides and tutorials
+- Email support@lunaos.ai for premium support
+
+---
+
+## Roadmap
+
+### Version 2.1 (Coming Soon)
+- **Team Collaboration Features** - Shared workspaces and projects
+- **Advanced Analytics** - Detailed usage insights and recommendations
+- **Custom Model Training** - Train models on your codebase
+- **VS Code Extension** - Native Luna integration
+- **Mobile App** - On-the-go project management
+
+### Version 3.0 (Q1 2026)
+- **Multi-language Support** - Python, Java, Go, Rust agents
+- **Advanced CI/CD** - Full pipeline automation
+- **Enterprise SSO** - SAML, LDAP integration
+- **Custom Agent Builder** - Create your own specialized agents
+- **Marketplace** - Community-built agents and integrations
+
+---
 
 ## Contributing
 
 Luna Agents is an open-source project. Contributions welcome!
+
+### How to Contribute
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Add tests if applicable
+5. Submit a pull request
+
+### Development Setup
+```bash
+git clone https://github.com/shacharsol/luna-agent.git
+cd luna-agent
+npm install
+npm run dev
+```
+
+---
 
 ## License
 
@@ -559,4 +867,6 @@ MIT License - see LICENSE file for details.
 
 ---
 
-**Transform your development workflow with Luna Agents - AI-powered software development, end-to-end.** 🚀
+**🌙 Transform your development workflow with Luna Agents - AI-powered software development, end-to-end.**
+
+**🚀 Get started at [https://agent.lunaos.ai](https://agent.lunaos.ai)**
