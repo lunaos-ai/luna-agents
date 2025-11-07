@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Luna Agents</title>
+    <meta name="description" content="Manage your Luna Agents subscription, API keys, and usage statistics.">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="nav">
+        <div class="container">
+            <div class="nav-content">
+                <a href="index.html" class="logo">🌙 Luna Agents</a>
+                <div class="nav-links">
+                    <a href="index.html#features">Features</a>
+                    <a href="pricing.html">Pricing</a>
+                    <a href="dashboard.html" class="active">Dashboard</a>
+                    <a href="https://github.com/shacharsol/luna-agent" target="_blank">GitHub</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Dashboard Container -->
+    <div class="dashboard-container">
+        <div class="container">
+            
+            <!-- Dashboard Header -->
+            <div class="dashboard-header">
+                <h1>Dashboard</h1>
+                <p class="subtitle">Manage your subscription and API keys</p>
+            </div>
+
+            <!-- Login/Auth Section (shown when not authenticated) -->
+            <div id="auth-section" class="auth-section">
+                <div class="auth-card">
+                    <h2>Sign In</h2>
+                    <p>Enter your API key to view your dashboard</p>
+                    <form id="auth-form">
+                        <div class="form-group">
+                            <label for="api-key-input">API Key</label>
+                            <input 
+                                type="password" 
+                                id="api-key-input" 
+                                placeholder="luna_AbCdEfGh1234567890IjKlMnOpQrSt"
+                                required
+                            >
+                        </div>
+                        <button type="submit" class="btn-primary">Access Dashboard</button>
+                    </form>
+                    <p class="help-text">
+                        Don't have an API key? <a href="pricing.html">Subscribe to Pro</a>
+                    </p>
+                </div>
+            </div>
+
+            <!-- Dashboard Content (shown when authenticated) -->
+            <div id="dashboard-content" style="display: none;">
+                
+                <!-- Subscription Info -->
+                <div class="dashboard-grid">
+                    <div class="dashboard-card">
+                        <div class="card-header">
+                            <h3>Subscription</h3>
+                            <span class="status-badge" id="subscription-status">Active</span>
+                        </div>
+                        <div class="card-content">
+                            <div class="info-row">
+                                <span class="label">Plan</span>
+                                <span class="value" id="plan-tier">Pro</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="label">Status</span>
+                                <span class="value" id="status-text">Active</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="label">Customer ID</span>
+                                <span class="value" id="customer-id">Loading...</span>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <a href="https://app.lemonsqueezy.com/my-orders" target="_blank" class="btn-secondary">
+                                Manage Subscription
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- API Key -->
+                    <div class="dashboard-card">
+                        <div class="card-header">
+                            <h3>API Key</h3>
+                            <button class="btn-icon" id="copy-key-btn" title="Copy API Key">
+                                📋
+                            </button>
+                        </div>
+                        <div class="card-content">
+                            <div class="api-key-display">
+                                <code id="api-key-display">luna_••••••••••••••••••••••••••••</code>
+                                <button class="btn-toggle" id="toggle-key-btn">Show</button>
+                            </div>
+                            <p class="help-text">Keep your API key secure. Don't share it publicly.</p>
+                        </div>
+                        <div class="card-footer">
+                            <button class="btn-secondary" id="regenerate-key-btn">
+                                Regenerate Key
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Usage Statistics -->
+                <div class="dashboard-card">
+                    <div class="card-header">
+                        <h3>Usage Statistics</h3>
+                        <span class="reset-date">Resets: <span id="reset-date">Tomorrow</span></span>
+                    </div>
+                    <div class="card-content">
+                        <div class="usage-grid">
+                            
+                            <!-- Queries -->
+                            <div class="usage-item">
+                                <div class="usage-header">
+                                    <span class="usage-label">Queries</span>
+                                    <span class="usage-count">
+                                        <span id="queries-used">0</span> / 
+                                        <span id="queries-limit">Unlimited</span>
+                                    </span>
+                                </div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" id="queries-progress" style="width: 0%"></div>
+                                </div>
+                            </div>
+
+                            <!-- Files Indexed -->
+                            <div class="usage-item">
+                                <div class="usage-header">
+                                    <span class="usage-label">Files Indexed</span>
+                                    <span class="usage-count">
+                                        <span id="files-used">0</span> / 
+                                        <span id="files-limit">Unlimited</span>
+                                    </span>
+                                </div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" id="files-progress" style="width: 0%"></div>
+                                </div>
+                            </div>
+
+                            <!-- Screenshots Analyzed -->
+                            <div class="usage-item">
+                                <div class="usage-header">
+                                    <span class="usage-label">Screenshots Analyzed</span>
+                                    <span class="usage-count">
+                                        <span id="screenshots-used">0</span> / 
+                                        <span id="screenshots-limit">Unlimited</span>
+                                    </span>
+                                </div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" id="screenshots-progress" style="width: 0%"></div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Features -->
+                <div class="dashboard-card">
+                    <div class="card-header">
+                        <h3>Available Features</h3>
+                    </div>
+                    <div class="card-content">
+                        <div class="features-grid">
+                            <div class="feature-item" id="feature-vision-rag">
+                                <span class="feature-icon">❌</span>
+                                <span class="feature-name">Luna Vision RAG™</span>
+                            </div>
+                            <div class="feature-item" id="feature-unlimited-indexing">
+                                <span class="feature-icon">❌</span>
+                                <span class="feature-name">Unlimited Indexing</span>
+                            </div>
+                            <div class="feature-item" id="feature-unlimited-queries">
+                                <span class="feature-icon">❌</span>
+                                <span class="feature-name">Unlimited Queries</span>
+                            </div>
+                            <div class="feature-item" id="feature-priority-support">
+                                <span class="feature-icon">❌</span>
+                                <span class="feature-name">Priority Support</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Setup -->
+                <div class="dashboard-card">
+                    <div class="card-header">
+                        <h3>Quick Setup</h3>
+                    </div>
+                    <div class="card-content">
+                        <p>Add your API key to your MCP configuration:</p>
+                        
+                        <div class="code-tabs">
+                            <button class="tab-btn active" data-tab="claude">Claude Desktop</button>
+                            <button class="tab-btn" data-tab="zed">Zed</button>
+                        </div>
+
+                        <div class="tab-content active" id="claude-tab">
+                            <pre><code>{
+  "mcpServers": {
+    "luna-vision-rag": {
+      "url": "https://luna-vision-rag-mcp.broad-dew-49ad.workers.dev/mcp",
+      "headers": {
+        "X-API-Key": "<span id="claude-api-key">YOUR_API_KEY_HERE</span>"
+      }
+    }
+  }
+}</code></pre>
+                            <button class="btn-secondary copy-config-btn" data-config="claude">
+                                Copy Configuration
+                            </button>
+                        </div>
+
+                        <div class="tab-content" id="zed-tab">
+                            <pre><code>{
+  "context_servers": {
+    "luna-vision-rag": {
+      "settings": {
+        "url": "https://luna-vision-rag-mcp.broad-dew-49ad.workers.dev/mcp",
+        "headers": {
+          "X-API-Key": "<span id="zed-api-key">YOUR_API_KEY_HERE</span>"
+        }
+      }
+    }
+  }
+}</code></pre>
+                            <button class="btn-secondary copy-config-btn" data-config="zed">
+                                Copy Configuration
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Logout -->
+                <div class="dashboard-actions">
+                    <button class="btn-secondary" id="logout-btn">Sign Out</button>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>Luna Agents</h4>
+                    <p>AI-powered development lifecycle for modern teams.</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Product</h4>
+                    <a href="index.html#features">Features</a>
+                    <a href="pricing.html">Pricing</a>
+                    <a href="dashboard.html">Dashboard</a>
+                </div>
+                <div class="footer-section">
+                    <h4>Support</h4>
+                    <a href="mailto:support@lunaos.ai">Contact</a>
+                    <a href="index.html#docs">Documentation</a>
+                    <a href="https://github.com/shacharsol/luna-agent">GitHub</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 Luna Agents. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="dashboard.js"></script>
+</body>
+</html>
