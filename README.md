@@ -154,7 +154,7 @@ Unlike traditional MCP servers, Luna Vision RAG runs entirely in the cloud:
 
 ## 🌙 Luna RAG Backend Setup (Optional)
 
-For full Luna RAG functionality with premium features, deploy the backend:
+For full Luna RAG functionality with premium features, deploy the backend to Cloudflare Workers:
 
 ### Quick Backend Deployment
 
@@ -162,9 +162,17 @@ For full Luna RAG functionality with premium features, deploy the backend:
 # Navigate to backend directory
 cd backend
 
-# Deploy to AWS Lambda
+# Deploy to Cloudflare Workers
 ./deploy.sh
 ```
+
+### Why Cloudflare Workers? ⚡
+
+- **🌍 Global Edge Network** - 200+ locations worldwide with <10ms latency
+- **💰 60-80% Cost Savings** vs AWS Lambda and other providers
+- **🚀 Zero Cold Starts** - Instant responses from anywhere
+- **📈 Automatic Scaling** - Handle millions of requests seamlessly
+- **🆓 Generous Free Tier** - 100K requests/day included
 
 ### What the Backend Provides
 
@@ -173,44 +181,58 @@ cd backend
 - **Payment Processing** - LemonSqueezy subscription management
 - **Email Services** - Welcome emails, trial notifications, payment confirmations
 - **Webhook Handling** - Real-time payment and subscription updates
-- **Database Storage** - User data and usage analytics (DynamoDB)
+- **Database Storage** - User data and usage analytics (Cloudflare D1)
+- **Global Caching** - Ultra-fast KV storage for responses
 
 ### Backend Requirements
 
-- AWS Account with Lambda, API Gateway, and DynamoDB access
+- Cloudflare account with Workers and D1 enabled
 - LemonSqueezy account with products configured
-- AWS CLI configured with credentials
+- Wrangler CLI installed (`npm install -g wrangler`)
 
-### Configure Environment
+### One-Command Deployment
 
-1. **Store secrets in AWS Systems Manager:**
+The deployment script automatically handles:
 
 ```bash
-# Store LemonSqueezy API key
-aws ssm put-parameter \
-  --name "/luna-rag/lemonsqueezy-api-key" \
-  --value "your-api-key" \
-  --type "SecureString"
+# This single command does everything:
+./deploy.sh
 
-# Store webhook secret
-aws ssm put-parameter \
-  --name "/luna-rag/webhook-secret" \
-  --value "your-webhook-secret" \
-  --type "SecureString"
+✅ Creates D1 database and runs migrations
+✅ Sets up KV storage for caching
+✅ Configures environment secrets
+✅ Deploys to Cloudflare Workers
+✅ Tests the deployment
+✅ Provides LemonSqueezy webhook URL
 ```
 
-2. **Configure LemonSqueezy Webhooks:**
+### Configure Secrets
 
-- Webhook URL: `[YOUR_API_ENDPOINT]/webhook`
+During deployment, you'll be prompted to set these secrets:
+
+```bash
+wrangler secret put LEMONSQUEEZY_API_KEY
+wrangler secret put LEMONSQUEEZY_WEBHOOK_SECRET
+wrangler secret put JWT_SECRET
+wrangler secret put SENDGRID_API_KEY
+wrangler secret put EMAIL_FROM
+wrangler secret put EMAIL_SUPPORT
+```
+
+### LemonSqueezy Webhook Setup
+
+After deployment, configure LemonSqueezy:
+
+- Webhook URL: `[YOUR_WORKER_URL]/webhook`
 - Events: Order created, Subscription created, Payment succeeded, Subscription cancelled
 
-3. **Update API Configuration:**
+### Update API Configuration
 
 Your Claude Code plugin will automatically detect and use the deployed backend for premium features.
 
-### Manual Backend Setup
+### Manual Setup Guide
 
-For detailed setup instructions, see: [Backend Deployment Guide](backend/DEPLOYMENT.md)
+For detailed setup instructions, see: [Cloudflare Deployment Guide](backend/DEPLOYMENT.md)
 
 ## Quick Start
 

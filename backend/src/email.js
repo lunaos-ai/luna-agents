@@ -1,133 +1,154 @@
-import nodemailer from 'nodemailer';
 import config from './config.js';
 
 export class EmailService {
-  constructor() {
-    this.transporter = nodemailer.createTransport({
-      service: config.email.service,
-      auth: {
-        user: config.email.auth.user,
-        pass: config.email.auth.pass
+  constructor(env) {
+    this.sendgridApiKey = env.SENDGRID_API_KEY;
+    this.fromEmail = env.EMAIL_FROM || config.email.from;
+    this.supportEmail = env.EMAIL_SUPPORT || config.email.support;
+  }
+
+  /**
+   * Send email using SendGrid
+   */
+  async sendEmail(options) {
+    const { to, subject, html, text, from = this.fromEmail } = options;
+
+    try {
+      const response = await fetch('https://api.sendgrid.com/v3/mail/send', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${this.sendgridApiKey}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          personalizations: [{
+            to: [{ email: to }],
+            subject
+          }],
+          from: { email: from },
+          content: [
+            { type: 'text/plain', value: text || this.htmlToText(html) },
+            { type: 'text/html', value: html }
+          ]
+        })
+      });
+
+      if (!response.ok) {
+        const error = await response.text();
+        throw new Error(`SendGrid error: ${response.status} - ${error}`);
       }
+
+      return { success: true, messageId: response.headers.get('x-message-id') };
+
+    } catch (error) {
+      console.error('Email send error:', error);
+      throw new Error(`Failed to send email: ${error.message}`);
+    }
+  }
+
+  /**
+   * Send welcome email
+   */
+  async sendWelcomeEmail(email, apiKey, userTier = 'free') {
+    const html = this.getWelcomeEmailTemplate(email, apiKey, userTier);
+    const text = this.getWelcomeEmailText(email, apiKey, userTier);
+
+    return await this.sendEmail({
+      to: email,
+      subject: '🌙 Welcome to Luna RAG Pro! Your Intelligent Code Search is Ready',
+      html,
+      text
     });
   }
 
-  async sendWelcomeEmail(email, apiKey) {
-    const mailOptions = {
-      from: config.email.from,
-      to: email,
-      subject: '🌙 Welcome to Luna RAG Pro! Your Intelligent Code Search is Ready',
-      html: this.getWelcomeEmailTemplate(email, apiKey)
-    };
+  /**
+   * Send trial expiration email
+   */
+  async sendTrialExpirationEmail(email, daysRemaining, apiKey) {
+    const html = this.getTrialExpirationTemplate(email, daysRemaining);
+    const text = this.getTrialExpirationText(email, daysRemaining);
 
-    try {
-      const info = await this.transporter.sendMail(mailOptions);
-      console.log('Welcome email sent:', info.messageId);
-      return info;
-    } catch (error) {
-      console.error('Error sending welcome email:', error);
-      throw error;
-    }
-  }
-
-  async sendTrialExpirationEmail(email, daysRemaining) {
-    const mailOptions = {
-      from: config.email.from,
+    return await this.sendEmail({
       to: email,
       subject: `⏰ Your Luna RAG Pro trial ends in ${daysRemaining} days!`,
-      html: this.getTrialExpirationTemplate(email, daysRemaining)
-    };
-
-    try {
-      const info = await this.transporter.sendMail(mailOptions);
-      console.log('Trial expiration email sent:', info.messageId);
-      return info;
-    } catch (error) {
-      console.error('Error sending trial expiration email:', error);
-      throw error;
-    }
+      html,
+      text
+    });
   }
 
+  /**
+   * Send payment success email
+   */
   async sendPaymentSuccessEmail(email, subscriptionData) {
-    const mailOptions = {
-      from: config.email.from,
+    const html = this.getPaymentSuccessTemplate(email, subscriptionData);
+    const text = this.getPaymentSuccessText(email, subscriptionData);
+
+    return await this.sendEmail({
       to: email,
       subject: '🎉 Payment Successful! Luna RAG Pro is Active',
-      html: this.getPaymentSuccessTemplate(email, subscriptionData)
-    };
-
-    try {
-      const info = await this.transporter.sendMail(mailOptions);
-      console.log('Payment success email sent:', info.messageId);
-      return info;
-    } catch (error) {
-      console.error('Error sending payment success email:', error);
-      throw error;
-    }
+      html,
+      text
+    });
   }
 
+  /**
+   * Send cancellation email
+   */
   async sendCancellationEmail(email, cancellationDate) {
-    const mailOptions = {
-      from: config.email.from,
+    const html = this.getCancellationTemplate(email, cancellationDate);
+    const text = this.getCancellationText(email, cancellationDate);
+
+    return await this.sendEmail({
       to: email,
       subject: 'Your Luna RAG subscription has been cancelled',
-      html: this.getCancellationTemplate(email, cancellationDate)
-    };
-
-    try {
-      const info = await this.transporter.sendMail(mailOptions);
-      console.log('Cancellation email sent:', info.messageId);
-      return info;
-    } catch (error) {
-      console.error('Error sending cancellation email:', error);
-      throw error;
-    }
+      html,
+      text
+    });
   }
 
+  /**
+   * Send usage report email
+   */
   async sendUsageReportEmail(email, usageStats) {
-    const mailOptions = {
-      from: config.email.from,
+    const html = this.getUsageReportTemplate(email, usageStats);
+    const text = this.getUsageReportText(email, usageStats);
+
+    return await this.sendEmail({
       to: email,
       subject: '📊 Your Luna RAG Usage Report',
-      html: this.getUsageReportTemplate(email, usageStats)
-    };
-
-    try {
-      const info = await this.transporter.sendMail(mailOptions);
-      console.log('Usage report email sent:', info.messageId);
-      return info;
-    } catch (error) {
-      console.error('Error sending usage report email:', error);
-      throw error;
-    }
+      html,
+      text
+    });
   }
 
+  /**
+   * Send enterprise contact email
+   */
   async sendEnterpriseContactEmail(contactData) {
-    const mailOptions = {
-      from: config.email.from,
-      to: config.email.support,
-      subject: `Enterprise Inquiry from ${contactData.company}`,
-      html: this.getEnterpriseContactTemplate(contactData)
-    };
+    const html = this.getEnterpriseContactTemplate(contactData);
+    const text = this.getEnterpriseContactText(contactData);
 
-    try {
-      const info = await this.transporter.sendMail(mailOptions);
-      console.log('Enterprise contact email sent:', info.messageId);
-      return info;
-    } catch (error) {
-      console.error('Error sending enterprise contact email:', error);
-      throw error;
-    }
+    return await this.sendEmail({
+      to: this.supportEmail,
+      subject: `🏢 Enterprise Inquiry from ${contactData.company}`,
+      html,
+      text
+    });
   }
 
-  getWelcomeEmailTemplate(email, apiKey) {
+  /**
+   * Welcome email template
+   */
+  getWelcomeEmailTemplate(email, apiKey, userTier = 'free') {
+    const isPro = userTier !== 'free';
+
     return `
       <!DOCTYPE html>
       <html>
       <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Welcome to Luna RAG Pro!</title>
+        <title>Welcome to Luna RAG${isPro ? ' Pro' : ''}!</title>
         <style>
           body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; margin: 0; padding: 0; background: #f8f9fa; }
           .container { max-width: 600px; margin: 0 auto; background: white; padding: 40px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
@@ -146,23 +167,32 @@ export class EmailService {
         <div class="container">
           <div class="header">
             <div class="logo">🌙</div>
-            <h1 class="title">Welcome to Luna RAG Pro!</h1>
+            <h1 class="title">Welcome to Luna RAG${isPro ? ' Pro' : ''}!</h1>
             <p>Your intelligent code search journey begins now</p>
           </div>
 
+          ${isPro ? `
           <div>
             <h3>🎉 Your API Key</h3>
             <div class="api-key">${apiKey}</div>
           </div>
+          ` : ''}
 
           <div class="features">
-            <h3>🚀 Your Pro Features</h3>
-            <div class="feature">Unlimited semantic searches - no daily limits!</div>
-            <div class="feature">Unlimited file indexing for entire codebases</div>
-            <div class="feature">Luna Vision RAG™ - analyze screenshots with code context</div>
-            <div class="feature">GLM Vision - advanced visual AI testing</div>
-            <div class="feature">Priority support (24hr response time)</div>
-            <div class="feature">Advanced analytics dashboard</div>
+            <h3>${isPro ? '🚀 Your Pro Features' : '🎁 Your Free Features'}</h3>
+            ${isPro ? `
+              <div class="feature">Unlimited semantic searches - no daily limits!</div>
+              <div class="feature">Unlimited file indexing for entire codebases</div>
+              <div class="feature">Luna Vision RAG™ - analyze screenshots with code context</div>
+              <div class="feature">GLM Vision - advanced visual AI testing</div>
+              <div class="feature">Priority support (24hr response time)</div>
+              <div class="feature">Advanced analytics dashboard</div>
+            ` : `
+              <div class="feature">100 semantic searches per day</div>
+              <div class="feature">1,000 files indexed</div>
+              <div class="feature">Basic semantic search</div>
+              <div class="feature">Community support</div>
+            `}
           </div>
 
           <div style="text-align: center; margin: 30px 0;">
@@ -179,6 +209,9 @@ export class EmailService {
     `;
   }
 
+  /**
+   * Trial expiration template
+   */
   getTrialExpirationTemplate(email, daysRemaining) {
     return `
       <!DOCTYPE html>
@@ -187,6 +220,10 @@ export class EmailService {
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Luna RAG Pro Trial Expiration</title>
+        <style>
+          body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; line-height: 1.6; }
+          .upgrade-btn { background: #007bff; color: white; padding: 15px 30px; border-radius: 5px; text-decoration: none; display: inline-block; font-weight: bold; text-align: center; }
+        </style>
       </head>
       <body style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; line-height: 1.6;">
         <h2>⏰ Your Luna RAG Pro Trial Ends Soon</h2>
@@ -204,10 +241,8 @@ export class EmailService {
 
         <p><strong>Ready to continue your intelligent code search journey?</strong></p>
 
-        <div style="background: #007bff; color: white; padding: 15px; border-radius: 5px; text-align: center; margin: 20px 0;">
-          <a href="https://agent.lunaos.ai/upgrade" style="color: white; text-decoration: none; font-weight: bold;">
-            Upgrade Now & Continue Searching
-          </a>
+        <div style="text-align: center; margin: 20px 0;">
+          <a href="https://agent.lunaos.ai/upgrade" class="upgrade-btn">Upgrade Now & Continue Searching</a>
         </div>
 
         <p>Questions? Just reply to this email!</p>
@@ -217,6 +252,9 @@ export class EmailService {
     `;
   }
 
+  /**
+   * Payment success template
+   */
   getPaymentSuccessTemplate(email, subscriptionData) {
     return `
       <!DOCTYPE html>
@@ -259,6 +297,9 @@ export class EmailService {
     `;
   }
 
+  /**
+   * Cancellation template
+   */
   getCancellationTemplate(email, cancellationDate) {
     return `
       <!DOCTYPE html>
@@ -292,6 +333,9 @@ export class EmailService {
     `;
   }
 
+  /**
+   * Usage report template
+   */
   getUsageReportTemplate(email, usageStats) {
     return `
       <!DOCTYPE html>
@@ -325,6 +369,9 @@ export class EmailService {
     `;
   }
 
+  /**
+   * Enterprise contact template
+   */
   getEnterpriseContactTemplate(contactData) {
     return `
       <!DOCTYPE html>
@@ -352,6 +399,170 @@ export class EmailService {
         <p>The Luna Team</p>
       </body>
       </html>
+    `;
+  }
+
+  /**
+   * Convert HTML to text (fallback)
+   */
+  htmlToText(html) {
+    return html
+      .replace(/<[^>]*>/g, '')
+      .replace(/&nbsp;/g, ' ')
+      .replace(/&lt;/g, '<')
+      .replace(/&gt;/g, '>')
+      .replace(/&amp;/g, '&')
+      .replace(/&quot;/g, '"')
+      .replace(/&#39;/g, "'")
+      .trim();
+  }
+
+  /**
+   * Text versions of templates
+   */
+  getWelcomeEmailText(email, apiKey, userTier = 'free') {
+    const isPro = userTier !== 'free';
+    return `
+Welcome to Luna RAG${isPro ? ' Pro' : ''}!
+
+Your intelligent code search journey begins now.
+
+${isPro ? `Your API Key: ${apiKey}` : ''}
+
+${isPro ? 'Your Pro Features:' : 'Your Free Features:'}
+${isPro ? `
+- Unlimited semantic searches - no daily limits!
+- Unlimited file indexing for entire codebases
+- Luna Vision RAG™ - analyze screenshots with code context
+- GLM Vision - advanced visual AI testing
+- Priority support (24hr response time)
+- Advanced analytics dashboard
+` : `
+- 100 semantic searches per day
+- 1,000 files indexed
+- Basic semantic search
+- Community support
+`}
+
+Get started: https://agent.lunaos.ai/docs
+
+Questions? Just reply to this email.
+
+Happy coding! The Luna Team
+    `;
+  }
+
+  getTrialExpirationText(email, daysRemaining) {
+    return `
+Your Luna RAG Pro Trial Ends Soon
+
+Hi ${email},
+
+Your 14-day free trial of Luna RAG Pro will expire in ${daysRemaining} days.
+
+Don't lose access to:
+- Unlimited semantic searches
+- Luna Vision RAG™ screenshot analysis
+- GLM Vision advanced testing
+- Advanced analytics dashboard
+- Priority support
+
+Ready to continue? https://agent.lunaos.ai/upgrade
+
+Questions? Just reply to this email!
+
+Best regards,
+The Luna Team
+    `;
+  }
+
+  getPaymentSuccessText(email, subscriptionData) {
+    return `
+Payment Successful! Welcome to Luna RAG Pro
+
+Hi ${email},
+
+Thank you for your subscription! Your Luna RAG Pro features are now active.
+
+Subscription Details:
+- Plan: Luna RAG Pro
+- Price: $29/month
+- Status: Active
+- Next Billing: ${new Date(subscriptionData.renewsAt).toLocaleDateString()}
+
+Your Pro Features Are Ready:
+- Unlimited searches (no limits!)
+- Luna Vision RAG™ for screenshot analysis
+- GLM Vision for advanced visual AI
+- Priority support (24hr response)
+- Advanced analytics dashboard
+
+Tip: Just ask me "analyze this screenshot" to start using Vision RAG!
+
+Need help getting started? https://agent.lunaos.ai/docs
+
+Happy coding with Luna RAG!
+The Luna Team
+    `;
+  }
+
+  getCancellationText(email, cancellationDate) {
+    return `
+Subscription Cancelled
+
+Hi ${email},
+
+Your Luna RAG Pro subscription has been cancelled as of ${new Date(cancellationDate).toLocaleDateString()}.
+
+What happens next:
+- Your Pro features will remain active until the end of your current billing period
+- You'll be downgraded to the Free tier automatically
+- You'll have 100 searches per day and 1,000 files indexed
+
+We're sorry to see you go! Have feedback or questions about your experience? Just reply to this email - we'd love to hear from you.
+
+Want to reactivate your subscription? https://agent.lunaos.ai/pricing
+
+Thank you for trying Luna RAG!
+The Luna Team
+    `;
+  }
+
+  getUsageReportText(email, usageStats) {
+    return `
+Your Luna RAG Usage Report
+
+Monthly Summary:
+- Searches: ${usageStats.monthly.searches}
+- Files Indexed: ${usageStats.monthly.filesIndexed}
+- Vision Analyses: ${usageStats.monthly.visionAnalyses}
+- GLM Analyses: ${usageStats.monthly.glmAnalyses}
+
+Your Features: ${usageStats.features.join(', ')}
+
+Pro Tip: Try combining searches: "How does authentication work?" followed by "Show me pattern implementations."
+
+Keep exploring your codebase with Luna RAG!
+The Luna Team
+    `;
+  }
+
+  getEnterpriseContactText(contactData) {
+    return `
+New Enterprise Inquiry
+
+Contact Information:
+- Company: ${contactData.company}
+- Name: ${contactData.name}
+- Email: ${contactData.email}
+- Team Size: ${contactData.teamSize}
+
+Message:
+${contactData.message}
+
+This inquiry requires follow-up. Please contact the customer promptly.
+
+The Luna Team
     `;
   }
 }
