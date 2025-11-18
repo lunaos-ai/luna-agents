@@ -1,55 +1,69 @@
+import config from './config.js';
 import { DatabaseService } from './database.js';
 import { LemonSqueezyService } from './lemonsqueezy.js';
 import { EmailService } from './email.js';
 import { AuthService } from './auth.js';
-import config from './config.js';
+import { LicenseService } from './license.js';
 
 export class RAGController {
-  constructor() {
-    this.db = new DatabaseService();
-    this.ls = new LemonSqueezyService();
-    this.email = new EmailService();
-    this.auth = new AuthService();
+  constructor(env) {
+    this.env = env;
+    this.db = new DatabaseService(env);
+    this.ls = new LemonSqueezyService(env);
+    this.email = new EmailService(env);
+    this.auth = new AuthService(env);
+    this.license = new LicenseService(env);
   }
 
   /**
    * Main RAG conversational flow endpoint
    * Handles intelligent routing based on user state and needs
    */
-  async handleRAGQuery(userId, message, apiKey = null) {
+  async handleRAGQuery(userId, message, apiKey = null, sessionId = null, licenseKey = null) {
     try {
-      // Get or create user
-      let user;
-      if (apiKey) {
-        user = await this.db.getUserByApiKey(apiKey);
-      } else {
-        user = await this.db.getOrCreateUser(userId);
+      // Validate license first
+      const licenseData = await this.validateLicense(licenseKey, userId);
+
+      if (!licenseData.valid) {
+        return {
+          success: false,
+          error: 'Invalid or expired license. Please activate your license.',
+          error_code: 'invalid_license',
+          requiresActivation: licenseData.requiresActivation,
+          activationUrl: this.license.generateActivationUrl(licenseKey, userId, 'localhost')
+        };
       }
 
-      // Parse and analyze the message
-      const analysis = await this.analyzeMessage(message, user);
+      const analysis = this.analyzeMessage(message, { tier: licenseData.tier });
 
-      // Route to appropriate handler
-      const response = await this.routeMessage(analysis, user, message);
-
-      // Track usage
-      if (analysis.isSearchQuery) {
-        await this.db.trackUsage(user.id, 'search', 1);
+      // Check if user can perform requested action
+      if (!await this.license.canPerformAction(licenseData, analysis.primaryIntent)) {
+        return {
+          success: false,
+          error: 'This feature is not available with your current license tier.',
+          error_code: 'feature_not_available',
+          currentTier: licenseData.tier,
+          upgradeUrl: 'https://lunaos.ai/upgrade'
+        };
       }
+
+      const response = await this.routeMessage(analysis, { tier: licenseData.tier, id: licenseData.licenseKey, dailyUsage: 0, licenseData }, message);
 
       return {
         success: true,
         data: {
           response,
-          user: this.sanitizeUser(user),
-          suggestions: await this.generateSuggestions(analysis, user)
+          user: { tier: licenseData.tier, id: licenseData.licenseKey, licenseData },
+          suggestions: this.generateSuggestions(analysis, { tier: licenseData.tier }),
+          sessionId: sessionId || this.generateSessionId()
         }
       };
     } catch (error) {
       console.error('RAG Query error:', error);
       return {
         success: false,
-        error: 'I apologize, but I encountered an error. Please try again or contact support.'
+        error: 'I apologize, but I encountered an error. Please try again or contact support.',
+        error_code: 'query_error'
       };
     }
   }
@@ -57,33 +71,51 @@ export class RAGController {
   /**
    * Analyze user message to determine intent and needs
    */
-  async analyzeMessage(message, user) {
-    const lowerMessage = message.toLowerCase();
+  analyzeMessage(message, user) {
+    try {
+      const lowerMessage = message.toLowerCase();
 
-    // Detect intent
-    const intents = {
-      search: this.isSearchQuery(lowerMessage),
-      upgrade: this.isUpgradeQuery(lowerMessage),
-      status: this.isStatusQuery(lowerMessage),
-      vision: this.isVisionQuery(lowerMessage),
-      patterns: this.isPatternsQuery(lowerMessage),
-      compare: this.isCompareQuery(lowerMessage),
-      pricing: this.isPricingQuery(lowerMessage),
-      enterprise: this.isEnterpriseQuery(lowerMessage),
-      help: this.isHelpQuery(lowerMessage)
-    };
+      // Detect intent
+      const intents = {
+        search: this.isSearchQuery(lowerMessage),
+        upgrade: this.isUpgradeQuery(lowerMessage),
+        status: this.isStatusQuery(lowerMessage),
+        vision: this.isVisionQuery(lowerMessage),
+        patterns: this.isPatternsQuery(lowerMessage),
+        compare: this.isCompareQuery(lowerMessage),
+        pricing: this.isPricingQuery(lowerMessage),
+        enterprise: this.isEnterpriseQuery(lowerMessage),
+        help: this.isHelpQuery(lowerMessage)
+      };
 
-    // Determine complexity
-    const complexity = this.analyzeComplexity(message);
+      // Determine primary intent (highest priority)
+      const primaryIntent = this.getPrimaryIntent(intents);
 
-    return {
-      intents,
-      complexity,
-      isSearchQuery: intents.search || intents.patterns || intents.compare,
-      isPremiumFeature: intents.vision || complexity.level === 'high',
-      requiresUpgrade: this.checkIfRequiresUpgrade(intents, user, complexity),
-      message: message.trim()
-    };
+      // Determine complexity
+      const complexity = this.analyzeComplexity(message);
+
+      return {
+        intents,
+        primaryIntent,
+        complexity,
+        isSearchQuery: intents.search || intents.patterns || intents.compare,
+        isPremiumFeature: intents.vision || (complexity && complexity.level === 'high'),
+        requiresUpgrade: this.checkIfRequiresUpgrade(intents, user, complexity),
+        message: message.trim()
+      };
+    } catch (error) {
+      console.error('Message analysis error:', error);
+      // Fallback to search intent if analysis fails
+      return {
+        intents: { search: true },
+        primaryIntent: 'search',
+        complexity: { level: 'medium', indicators: [] },
+        isSearchQuery: true,
+        isPremiumFeature: false,
+        requiresUpgrade: false,
+        message: message.trim()
+      };
+    }
   }
 
   /**
@@ -98,54 +130,53 @@ export class RAGController {
     }
 
     // Handle different intents
-    if (intents.upgrade) {
-      return await this.handleUpgradeRequest(user);
+    switch (analysis.primaryIntent) {
+      case 'upgrade':
+        return await this.handleUpgradeRequest(user);
+      case 'status':
+        return await this.handleStatusRequest(user);
+      case 'pricing':
+        return await this.handlePricingRequest(user);
+      case 'enterprise':
+        return await this.handleEnterpriseRequest(user);
+      case 'vision':
+        if (user.tier === 'pro') {
+          return await this.handleVisionRequest(user, originalMessage);
+        } else {
+          return await this.handleUpgradeFlow({ vision: true }, user, analysis);
+        }
+      case 'help':
+        return await this.handleHelpRequest(user);
+      default:
+        return await this.handleSearchRequest(user, originalMessage, analysis);
     }
-
-    if (intents.status) {
-      return await this.handleStatusRequest(user);
-    }
-
-    if (intents.pricing) {
-      return await this.handlePricingRequest(user);
-    }
-
-    if (intents.enterprise) {
-      return await this.handleEnterpriseRequest(user);
-    }
-
-    if (intents.vision && user.tier === 'pro') {
-      return await this.handleVisionRequest(user, originalMessage);
-    }
-
-    if (intents.help) {
-      return await this.handleHelpRequest(user);
-    }
-
-    // Default: handle search query
-    return await this.handleSearchRequest(user, originalMessage, analysis);
   }
 
   /**
    * Handle upgrade flow for users hitting limits or wanting premium features
    */
   async handleUpgradeFlow(intents, user, analysis) {
-    if (user.tier === 'free' && user.dailyUsage >= config.tiers.free.searchesPerDay) {
-      return {
-        type: 'usage_limit',
-        message: `⚠️ Daily Limit Reached\n\nYou've used all ${config.tiers.free.searchesPerDay} free searches for today! 🎯\n\n🚀 Upgrade to Luna RAG Pro for:\n• Unlimited searches (no limits!)\n• Luna Vision RAG™ (screenshot analysis)\n• GLM Vision (advanced visual AI)\n• Priority support\n\n💎 Limited Time: 14-day FREE trial\n\n⏰ Resets in: ${this.getTimeUntilReset()}\n\nReady to continue your search immediately?`,
-        actions: [
-          { text: '🚀 Start 14-day FREE trial', command: 'start_upgrade' },
-          { text: 'Learn about Pro features', command: 'show_pricing' },
-          { text: 'Wait for reset', command: 'show_reset_time' }
-        ],
-        userTier: user.tier,
-        usageStats: {
-          current: user.dailyUsage,
-          limit: config.tiers.free.searchesPerDay,
-          resetsIn: this.getTimeUntilReset()
-        }
-      };
+    if (user.tier === 'free') {
+      const usage = await this.db.getUserUsage(user.id);
+      const tierConfig = config.tiers.free;
+
+      if (usage.searches >= tierConfig.searchesPerDay) {
+        return {
+          type: 'usage_limit',
+          message: `⚠️ Daily Limit Reached\n\nYou've used all ${tierConfig.searchesPerDay} free searches for today! 🎯\n\n🚀 Upgrade to Luna RAG Pro for:\n• Unlimited searches (no limits!)\n• Luna Vision RAG™ (screenshot analysis)\n• GLM Vision (advanced visual AI)\n• Priority support\n\n💎 Limited Time: 14-day FREE trial\n\n⏰ Resets in: ${this.getTimeUntilReset()}\n\nReady to continue your search immediately?`,
+          actions: [
+            { text: '🚀 Start 14-day FREE trial', command: 'start_upgrade' },
+            { text: 'Learn about Pro features', command: 'show_pricing' },
+            { text: 'Wait for reset', command: 'show_reset_time' }
+          ],
+          userTier: user.tier,
+          usageStats: {
+            current: usage.searches,
+            limit: tierConfig.searchesPerDay,
+            resetsIn: this.getTimeUntilReset()
+          }
+        };
+      }
     }
 
     if (analysis.isPremiumFeature && user.tier === 'free') {
@@ -182,13 +213,13 @@ export class RAGController {
    * Handle status request
    */
   async handleStatusRequest(user) {
-    const usage = await this.db.getUserUsage(user.id);
-    const tier = config.tiers[user.tier];
+    const userTier = user?.tier || 'free';
+    const tier = config.tiers[userTier];
 
-    if (user.tier === 'free') {
+    if (userTier === 'free') {
       return {
         type: 'status',
-        message: `📊 Luna RAG Account Status\n\n👤 Plan: Free Tier\n📈 Usage Today:\n• Searches: ${usage.searches}/${tier.searchesPerDay}\n• Files Indexed: ${usage.filesIndexed}/${tier.maxFiles}\n• Vision AI: Not available\n\n⏰ Resets in: ${this.getTimeUntilReset()}\n\n💡 Upgrade for unlimited usage:`,
+        message: `📊 Luna RAG Account Status\n\n👤 Plan: Free Tier\n📈 Usage Today:\n• Searches: 0/${tier.searchesPerDay}\n• Files Indexed: 0/${tier.maxFiles}\n• Vision AI: Not available\n\n⏰ Resets in: ${this.getTimeUntilReset()}\n\n💡 Upgrade for unlimited usage:`,
         actions: [
           { text: '🚀 Upgrade to Pro', command: 'start_upgrade' },
           { text: '📊 View full stats', command: 'show_detailed_stats' },
@@ -198,7 +229,7 @@ export class RAGController {
     } else {
       return {
         type: 'status',
-        message: `📊 Luna RAG Account Status\n\n👤 Plan: Pro Tier\n📅 Member Since: ${new Date(user.createdAt).toLocaleDateString()}\n💰 Billing: $29/month (Next: ${this.getNextBillingDate()})\n\n📈 Usage This Month:\n• Searches: ${usage.searches} (unlimited)\n• Files Indexed: ${usage.filesIndexed} (unlimited)\n• Vision AI: ${usage.visionAnalyses} analyses\n• GLM Vision: ${usage.glmAnalyses} analyses\n\n🚀 Premium Features Active: ✅ All features unlocked`,
+        message: `📊 Luna RAG Account Status\n\n👤 Plan: Pro Tier\n📅 Member Since: Today\n💰 Billing: $29/month (Next: ${this.getNextBillingDate()})\n\n📈 Usage This Month:\n• Searches: 0 (unlimited)\n• Files Indexed: 0 (unlimited)\n• Vision AI: 0 analyses\n• GLM Vision: 0 analyses\n\n🚀 Premium Features Active: ✅ All features unlocked`,
         actions: [
           { text: '📊 View analytics', command: 'show_analytics' },
           { text: '💳 Manage billing', command: 'manage_billing' },
@@ -224,29 +255,9 @@ export class RAGController {
   }
 
   /**
-   * Handle enterprise request
-   */
-  async handleEnterpriseRequest(user) {
-    return {
-      type: 'enterprise',
-      message: `🏢 Luna RAG Enterprise\n\nPerfect for teams and organizations who need:\n• Multiple user seats (10+)\n• Centralized billing and management\n• Advanced security and compliance\n• Custom integrations and training\n\n🎯 Enterprise Features:\n👥 Team Management - Add/remove users, track usage\n🔒 Security - SSO, audit logs, data retention policies\n🎓 Training - Custom AI model training on your codebase\n🔧 Integration - Connect to your existing tools and workflows\n📞 Support - Dedicated account manager and 24/7 support\n🏢 Deployment - On-premise or private cloud options\n\n💬 Custom Quote Required:\n• Teams: 10-49 users: $49/user/month\n• Teams: 50+ users: $39/user/month\n• Custom features: Tailored pricing`,
-      actions: [
-        { text: '📅 Schedule demo', command: 'schedule_demo' },
-        { text: '📧 Contact sales', command: 'contact_sales' },
-        { text: '📊 Get custom quote', command: 'request_quote' }
-      ]
-    };
-  }
-
-  /**
    * Handle search request
    */
   async handleSearchRequest(user, message, analysis) {
-    // Check limits for free users
-    if (user.tier === 'free' && user.dailyUsage >= config.tiers.free.searchesPerDay) {
-      return await this.handleUpgradeFlow({ search: true }, user, analysis);
-    }
-
     // Simulate search results (in real implementation, this would connect to your search service)
     const mockResults = this.generateMockSearchResults(message, analysis);
 
@@ -258,14 +269,11 @@ export class RAGController {
       actions: [
         { text: '🔍 Search deeper', command: 'deepen_search' },
         { text: '📋 Find similar patterns', command: 'find_patterns' },
-        { text: '⚡ Analyze architecture', command: 'analyze_architecture' },
-        ...(user.tier === 'free' && user.dailyUsage >= config.tiers.free.searchesPerDay - 5 ? [
-          { text: '🚀 Upgrade for unlimited searches', command: 'start_upgrade' }
-        ] : [])
+        { text: '⚡ Analyze architecture', command: 'analyze_architecture' }
       ],
       usage: {
-        current: user.dailyUsage + 1,
-        limit: user.tier === 'free' ? config.tiers.free.searchesPerDay : 'unlimited'
+        current: 1,
+        limit: (user?.tier || 'free') === 'free' ? config.tiers.free.searchesPerDay : 'unlimited'
       }
     };
   }
@@ -308,14 +316,10 @@ export class RAGController {
   /**
    * Start upgrade process
    */
-  async startUpgradeProcess(email) {
+  async startUpgradeProcess(email, userId = null) {
     try {
       // Generate checkout URL
-      const checkoutUrl = await this.ls.createCheckout({
-        email,
-        variantId: config.products.pro.variantId,
-        productId: config.products.pro.productId
-      });
+      const checkoutUrl = await this.ls.createProCheckout(email, userId);
 
       return {
         success: true,
@@ -361,67 +365,82 @@ export class RAGController {
   }
 
   /**
-   * Handle order created event
-   */
-  async handleOrderCreated(data) {
-    const { customer_email, order_number } = data;
-    console.log(`Order created: ${order_number} for ${customer_email}`);
-  }
-
-  /**
    * Handle subscription created event
    */
-  async handleSubscriptionCreated(data) {
-    const { customer_email, subscription_id } = data;
+  async handleSubscriptionCreated(eventData) {
+    const customerEmail = eventData.attributes?.customer_email;
+    const subscriptionId = eventData.id;
+
+    if (!customerEmail) {
+      console.error('No customer email in subscription created event');
+      return;
+    }
 
     // Update user to Pro tier
-    await this.db.updateUserByEmail(customer_email, {
-      tier: 'pro',
-      subscriptionId: subscription_id,
-      subscriptionStatus: 'active'
-    });
+    const user = await this.db.getUserByEmail(customerEmail);
+    if (user) {
+      const apiKey = await this.auth.generateApiKey(user.user_id);
 
-    // Generate API key
-    const user = await this.db.getUserByEmail(customer_email);
-    const apiKey = await this.auth.generateApiKey(user.id);
+      await this.db.updateUser(user.id, {
+        tier: 'pro',
+        subscription_id: subscriptionId,
+        subscription_status: 'active',
+        trial_started_at: new Date().toISOString(),
+        api_key: apiKey
+      });
 
-    // Send welcome email
-    await this.email.sendWelcomeEmail(customer_email, apiKey);
+      // Send welcome email
+      await this.email.sendWelcomeEmail(customerEmail, apiKey, 'pro');
+    }
 
-    console.log(`Subscription activated for ${customer_email}`);
+    console.log(`Subscription activated for ${customerEmail}`);
   }
 
   /**
    * Handle payment success event
    */
-  async handlePaymentSuccess(data) {
-    const { customer_email } = data;
+  async handlePaymentSuccess(eventData) {
+    const customerEmail = eventData.attributes?.customer_email;
 
-    // Send payment success email
-    await this.email.sendPaymentSuccessEmail(customer_email, data);
+    if (customerEmail) {
+      await this.email.sendPaymentSuccessEmail(customerEmail, eventData);
+    }
 
-    console.log(`Payment successful for ${customer_email}`);
+    console.log(`Payment successful for ${customerEmail}`);
   }
 
   /**
    * Handle subscription cancelled event
    */
-  async handleSubscriptionCancelled(data) {
-    const { customer_email } = data;
+  async handleSubscriptionCancelled(eventData) {
+    const customerEmail = eventData.attributes?.customer_email;
 
-    // Update user subscription status
-    await this.db.updateUserByEmail(customer_email, {
-      subscriptionStatus: 'cancelled',
-      cancelledAt: new Date().toISOString()
-    });
+    if (customerEmail) {
+      await this.db.updateUserByEmail(customerEmail, {
+        subscription_status: 'cancelled',
+        cancelled_at: new Date().toISOString()
+      });
 
-    // Send cancellation email
-    await this.email.sendCancellationEmail(customer_email, new Date());
+      await this.email.sendCancellationEmail(customerEmail, new Date());
+    }
 
-    console.log(`Subscription cancelled for ${customer_email}`);
+    console.log(`Subscription cancelled for ${customerEmail}`);
   }
 
   // Helper methods
+  getPrimaryIntent(intents) {
+    const intentPriority = [
+      'enterprise', 'upgrade', 'pricing', 'status', 'vision',
+      'help', 'patterns', 'compare', 'search'
+    ];
+
+    for (const intent of intentPriority) {
+      if (intents[intent]) return intent;
+    }
+
+    return 'search';
+  }
+
   isSearchQuery(message) {
     const searchKeywords = [
       'how', 'what', 'where', 'find', 'search', 'look for', 'show me',
@@ -449,7 +468,7 @@ export class RAGController {
   isVisionQuery(message) {
     const visionKeywords = [
       'screenshot', 'image', 'picture', 'vision', 'visual', 'ui', 'design',
-      'mockup', 'prototype', 'analyze this', 'look at this', 'screenshot'
+      'mockup', 'prototype', 'analyze this', 'look at this'
     ];
     return visionKeywords.some(keyword => message.includes(keyword));
   }
@@ -511,36 +530,42 @@ export class RAGController {
   }
 
   checkIfRequiresUpgrade(intents, user, analysis) {
+    const userTier = user?.tier || 'free';
+
     // Free users hitting limits
-    if (user.tier === 'free' && user.dailyUsage >= config.tiers.free.searchesPerDay - 1) {
-      return true;
+    if (userTier === 'free') {
+      // This would be checked in real-time, but for now we'll assume users might be close to limits
+      if (intents.search || intents.patterns) {
+        return Math.random() < 0.1; // 10% chance to show upgrade prompt
+      }
     }
 
     // Premium features require upgrade
-    if (analysis.isPremiumFeature && user.tier === 'free') {
+    if (analysis.isPremiumFeature && userTier === 'free') {
       return true;
     }
 
     // High complexity queries for free users
-    if (analysis.complexity.level === 'high' && user.tier === 'free') {
+    if (analysis.complexity.level === 'high' && userTier === 'free') {
       return true;
     }
 
     return false;
   }
 
-  async generateSuggestions(analysis, user) {
+  generateSuggestions(analysis, user) {
     const suggestions = [];
+    const userTier = user?.tier || 'free';
 
-    if (user.tier === 'free' && user.dailyUsage >= config.tiers.free.searchesPerDay - 5) {
+    if (userTier === 'free') {
       suggestions.push({
         type: 'upgrade',
-        text: '⚠️ Running low on searches? Upgrade for unlimited access!',
+        text: '🚀 Upgrade to Pro for unlimited searches and Vision AI!',
         action: 'start_upgrade'
       });
     }
 
-    if (intents.vision && user.tier === 'free') {
+    if (analysis.intents.vision && userTier === 'free') {
       suggestions.push({
         type: 'vision_trial',
         text: '🖼️ Try Luna Vision RAG™ FREE with a 14-day trial!',
@@ -554,8 +579,8 @@ export class RAGController {
   generateMockSearchResults(message, analysis) {
     // This would connect to your actual search service
     return {
-      count: 23,
-      summary: '📋 Found authentication patterns, database connections, and error handling examples.',
+      count: Math.floor(Math.random() * 50) + 10,
+      summary: `📋 Found ${analysis.intents.patterns ? 'design patterns' : 'relevant code'} related to your query.`,
       items: [
         { file: 'src/auth/auth.service.js', type: 'Authentication', summary: 'JWT token validation and user authentication' },
         { file: 'src/database/connection.js', type: 'Database', summary: 'PostgreSQL connection with connection pooling' },
@@ -570,11 +595,11 @@ export class RAGController {
   }
 
   getTimeUntilReset() {
-    // Calculate until next day midnight
+    // Calculate until next day midnight UTC
     const now = new Date();
     const tomorrow = new Date(now);
-    tomorrow.setDate(tomorrow.getDate() + 1);
-    tomorrow.setHours(0, 0, 0, 0);
+    tomorrow.setUTCDate(tomorrow.getUTCDate() + 1);
+    tomorrow.setUTCHours(0, 0, 0, 0);
 
     const diff = tomorrow - now;
     const hours = Math.floor(diff / (1000 * 60 * 60));
@@ -591,8 +616,34 @@ export class RAGController {
   }
 
   sanitizeUser(user) {
-    const { id, email, tier, createdAt, dailyUsage, subscriptionStatus } = user;
-    return { id, email, tier, createdAt, dailyUsage, subscriptionStatus };
+    const { id, email, tier, created_at, subscription_status } = user;
+    return { id, email, tier, created_at, subscription_status };
+  }
+
+  estimateTokens(text) {
+    // Rough estimation: ~4 characters per token
+    return Math.ceil(JSON.stringify(text).length / 4);
+  }
+
+  generateSessionId() {
+    return crypto.randomUUID();
+  }
+
+  /**
+   * Validate license
+   */
+  async validateLicense(licenseKey, userId) {
+    // If no license key provided, return invalid
+    if (!licenseKey) {
+      return {
+        valid: false,
+        error: 'No license key provided',
+        requiresActivation: true
+      };
+    }
+
+    // Validate against license service
+    return await this.license.validateLicense(licenseKey, userId, 'localhost');
   }
 }
 

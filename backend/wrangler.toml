@@ -14,13 +14,13 @@ API_VERSION = "v1"
 [[d1_databases]]
 binding = "DB"
 database_name = "luna-rag-db"
-database_id = "luna-rag-db-id" # Will be set after first deployment
+database_id = "b3b1420b-4db9-4598-b9a5-f6f1ca17d41e"
 
 # KV Storage for caching
 [[kv_namespaces]]
 binding = "CACHE"
-id = "luna-rag-cache"
-preview_id = "luna-rag-cache-preview"
+id = "3ba6e6f7397049aa8bc56565c214526e"
+preview_id = "c818e8631af64633b322a2cca6b03fb1"
 
 # Queue for email processing
 [[queues.producers]]
@@ -49,9 +49,6 @@ cpu_ms = 50000
 [build]
 command = ""
 
-# Deployment configuration
-[deploy]
-compatibility_date = "2024-05-12"
 
 # Analytics Engine (optional - for detailed metrics)
 # [[analytics_engine_datasets]]

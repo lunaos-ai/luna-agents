@@ -1,81 +1,126 @@
+// Configuration for Luna RAG Cloudflare Workers
 export const config = {
-  // LemonSqueezy Configuration
-  lemonSqueezy: {
-    apiKey: process.env.LEMONSQUEEZY_API_KEY,
-    storeId: process.env.LEMONSQUEEZY_STORE_ID || '214097',
-    webhookSecret: process.env.LEMONSQUEEZY_WEBHOOK_SECRET,
-    apiBase: 'https://api.lemonsqueezy.com/v1'
+  // Environment
+  environment: globalThis.ENVIRONMENT || 'development',
+
+  // License Configuration
+  license: {
+    validationEndpoint: globalThis.LICENSE_VALIDATION_ENDPOINT || 'https://api.lunaos.ai/validate',
+    maxOfflineGracePeriod: 30, // days
+    encryptionKey: globalThis.LICENSE_ENCRYPTION_KEY || 'default-key-change-me'
   },
 
-  // Products Configuration
-  products: {
-    proMonthly: {
-      id: null, // Will be fetched from LemonSqueezy
-      name: 'Luna RAG Pro',
-      price: 29.00,
-      trialDays: 14,
-      variantId: null // Will be fetched
-    },
-    proYearly: {
-      id: null,
-      name: 'Luna RAG Pro (Yearly)',
-      price: 290.00, // 2 months free
-      trialDays: 14,
-      variantId: null
+  // LemonSqueezy Configuration
+  lemonsqueezy: {
+    storeId: globalThis.LEMONSQUEEZY_STORE_ID,
+    apiUrl: 'https://api.lemonsqueezy.com/v1',
+    webhookSecret: globalThis.LEMONSQUEEZY_WEBHOOK_SECRET,
+    products: {
+      pro: {
+        variantId: 'pro-monthly-variant', // Set this in LemonSqueezy
+        productId: 'pro-product',
+        price: 29.00
+      },
+      enterprise: {
+        variantId: 'enterprise-monthly-variant',
+        productId: 'enterprise-product',
+        price: 49.00
+      }
     }
   },
 
-  // Free Tier Limits
-  freeTier: {
-    searchesPerDay: 100,
-    filesIndexed: 1000,
-    features: ['basic_search', 'limited_indexing']
-  },
-
-  // Pro Tier Features
-  proTier: {
-    searchesPerDay: -1, // Unlimited
-    filesIndexed: -1, // Unlimited
-    features: ['basic_search', 'unlimited_search', 'vision_rag', 'glm_vision', 'priority_support']
+  // Subscription Tiers
+  tiers: {
+    free: {
+      searchesPerDay: 100,
+      maxFiles: 1000,
+      visionAnalyses: 0,
+      glmAnalyses: 0,
+      features: ['basic_search', 'community_support', 'local_indexing']
+    },
+    pro: {
+      searchesPerDay: -1, // Unlimited
+      maxFiles: -1, // Unlimited
+      visionAnalyses: -1, // Unlimited
+      glmAnalyses: -1, // Unlimited
+      features: ['unlimited_search', 'vision_rag', 'glm_vision', 'priority_support', 'advanced_analytics', 'api_access']
+    },
+    enterprise: {
+      searchesPerDay: -1,
+      maxFiles: -1,
+      visionAnalyses: -1,
+      glmAnalyses: -1,
+      features: ['team_collaboration', 'sso_integration', 'dedicated_support', 'custom_training', 'on_premise', 'white_label']
+    }
   },
 
   // JWT Configuration
   jwt: {
-    secret: process.env.JWT_SECRET,
-    expiresIn: '365d',
-    refreshExpiresIn: '30d'
-  },
-
-  // Database Configuration
-  database: {
-    tableName: process.env.DYNAMODB_TABLE || 'luna-rag-users'
+    secret: globalThis.JWT_SECRET,
+    expiresIn: globalThis.JWT_EXPIRES_IN || '7d',
+    issuer: 'luna-rag',
+    audience: 'luna-rag-users'
   },
 
   // Email Configuration
   email: {
-    service: process.env.EMAIL_SERVICE || 'gmail',
-    auth: {
-      user: process.env.EMAIL_USER,
-      pass: process.env.EMAIL_PASS
+    provider: 'sendgrid', // Can be 'sendgrid', 'resend', or 'smtp'
+    from: globalThis.EMAIL_FROM || 'noreply@lunaos.ai',
+    support: globalThis.EMAIL_SUPPORT || 'support@lunaos.ai',
+    templates: {
+      welcome: 'welcome-email',
+      trialExpiry: 'trial-expiry',
+      paymentSuccess: 'payment-success',
+      cancellation: 'subscription-cancelled',
+      usageReport: 'usage-report'
+    }
+  },
+
+  // API Configuration
+  api: {
+    version: globalThis.API_VERSION || 'v1',
+    rateLimiting: {
+      free: {
+        requests: 1000,
+        window: '1h'
+      },
+      pro: {
+        requests: 10000,
+        window: '1h'
+      }
     },
-    from: 'noreply@agent.lunaos.ai',
-    support: 'support@agent.lunaos.ai'
+    cors: {
+      origins: ['*'], // Restrict in production
+      methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+      headers: ['Content-Type', 'Authorization', 'X-API-Key'],
+      maxAge: 86400
+    }
   },
 
-  // OpenAI Configuration
-  openai: {
-    apiKey: process.env.OPENAI_API_KEY,
-    model: 'gpt-4',
-    maxTokens: 4000,
-    temperature: 0.7
+  // Cache Configuration
+  cache: {
+    ttl: {
+      user: 300, // 5 minutes
+      usage: 60, // 1 minute
+      search: 1800 // 30 minutes
+    }
   },
 
-  // Rate Limiting
-  rateLimiting: {
-    windowMs: 15 * 60 * 1000, // 15 minutes
-    max: 100, // limit each IP to 100 requests per windowMs
-    freeTierMax: 10, // stricter limit for free tier
-    proTierMax: 1000
+  // Feature Flags
+  features: {
+    visionRag: true,
+    glmVision: true,
+    analytics: true,
+    teamManagement: false, // Coming soon
+    ssoIntegration: false, // Coming soon
+    customTraining: false // Coming soon
+  },
+
+  // Analytics
+  analytics: {
+    trackEvents: true,
+    retentionDays: 90,
+    anonymizeData: false // Set to true for GDPR compliance
   }
 };
 

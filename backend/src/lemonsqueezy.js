@@ -1,32 +1,65 @@
 import config from './config.js';
 
 export class LemonSqueezyService {
-  constructor() {
-    this.apiKey = config.lemonsqueezy.apiKey;
+  constructor(env) {
+    this.apiKey = env.LEMONSQUEEZY_API_KEY;
     this.storeId = config.lemonsqueezy.storeId;
-    this.apiBase = config.lemonsqueezy.apiBase;
+    this.apiUrl = config.lemonsqueezy.apiUrl;
+    this.webhookSecret = env.LEMONSQUEEZY_WEBHOOK_SECRET;
   }
 
-  async createStoreCheckout(variantId, customerEmail) {
+  /**
+   * Create checkout URL for subscription
+   */
+  async createCheckout(options) {
+    const {
+      email,
+      variantId,
+      productId,
+      customData = {},
+      redirectTo = null
+    } = options;
+
     try {
-      const response = await fetch(`${this.apiBase}/checkouts`, {
+      const response = await fetch(`${this.apiUrl}/checkouts`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${this.apiKey}`,
-          'Content-Type': 'application/json',
-          'Accept': 'application/json'
+          'Content-Type': 'application/vnd.api+json',
+          'Accept': 'application/vnd.api+json'
         },
         body: JSON.stringify({
           data: {
-            type: 'checkout',
+            type: 'checkouts',
             attributes: {
-              store_id: this.storeId,
+              store_id: parseInt(this.storeId),
               variant_id: variantId,
-              customer_email: customerEmail,
+              custom_price: null,
               product_options: {
-                redirect_url: `${process.env.FRONTEND_URL}/success`,
-                receipt_button_text: 'View Receipt',
-                receipt_thank_you_page_url: `${process.env.FRONTEND_URL}/thank-you`
+                redirect_url: redirectTo,
+                receipt_button_text: 'Go to Luna RAG',
+                receipt_thank_you_note: 'Thank you for upgrading to Luna RAG Pro!',
+                receipt_link_url: 'https://agent.lunaos.ai/docs'
+              },
+              checkout_options: {
+                button_color: '#667eea',
+                embed: false,
+                logo: 'https://agent.lunaos.ai/logo.png'
+              },
+              checkout_data: {
+                email,
+                custom: {
+                  user_id: customData.userId || null,
+                  source: 'luna-rag-cloudflare'
+                }
+              }
+            },
+            relationships: {
+              store: {
+                data: {
+                  type: 'stores',
+                  id: this.storeId
+                }
               }
             }
           }
@@ -34,96 +67,183 @@ export class LemonSqueezyService {
       });
 
       if (!response.ok) {
-        throw new Error(`Checkout creation failed: ${response.statusText}`);
+        const error = await response.text();
+        throw new Error(`LemonSqueezy API error: ${response.status} - ${error}`);
       }
 
-      const checkoutData = await response.json();
-      return {
-        checkoutUrl: checkoutData.data.attributes.url,
-        checkoutId: checkoutData.data.id
-      };
+      const data = await response.json();
+      return data.data.attributes.url;
+
     } catch (error) {
-      console.error('LemonSqueezy checkout error:', error);
-      throw error;
+      console.error('Checkout creation error:', error);
+      throw new Error('Failed to create checkout URL');
     }
   }
 
+  /**
+   * Get customer by email
+   */
+  async getCustomerByEmail(email) {
+    try {
+      const response = await fetch(`${this.apiUrl}/customers?filter[email]=${encodeURIComponent(email)}`, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${this.apiKey}`,
+          'Accept': 'application/vnd.api+json'
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error(`Failed to fetch customer: ${response.status}`);
+      }
+
+      const data = await response.json();
+      return data.data[0] || null;
+
+    } catch (error) {
+      console.error('Customer fetch error:', error);
+      return null;
+    }
+  }
+
+  /**
+   * Get subscription details
+   */
   async getSubscription(subscriptionId) {
     try {
-      const response = await fetch(`${this.apiBase}/subscriptions/${subscriptionId}`, {
+      const response = await fetch(`${this.apiUrl}/subscriptions/${subscriptionId}`, {
+        method: 'GET',
         headers: {
           'Authorization': `Bearer ${this.apiKey}`,
-          'Content-Type': 'application/json'
+          'Accept': 'application/vnd.api+json'
         }
       });
 
       if (!response.ok) {
-        throw new Error(`Failed to fetch subscription: ${response.statusText}`);
+        throw new Error(`Failed to fetch subscription: ${response.status}`);
       }
 
-      return await response.json();
+      const data = await response.json();
+      return data.data;
+
     } catch (error) {
-      console.error('LemonSqueezy subscription fetch error:', error);
-      throw error;
+      console.error('Subscription fetch error:', error);
+      return null;
     }
   }
 
-  async getCustomer(customerId) {
-    try {
-      const response = await fetch(`${this.apiBase}/customers/${customerId}`, {
-        headers: {
-          'Authorization': `Bearer ${this.apiKey}`,
-          'Content-Type': 'application/json'
-        }
-      });
-
-      if (!response.ok) {
-        throw new Error(`Failed to fetch customer: ${response.statusText}`);
-      }
-
-      return await response.json();
-    } catch (error) {
-      console.error('LemonSqueezy customer fetch error:', error);
-      throw error;
-    }
-  }
-
+  /**
+   * Cancel subscription
+   */
   async cancelSubscription(subscriptionId) {
     try {
-      const response = await fetch(`${this.apiBase}/subscriptions/${subscriptionId}`, {
+      const response = await fetch(`${this.apiUrl}/subscriptions/${subscriptionId}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${this.apiKey}`,
-          'Content-Type': 'application/json'
+          'Accept': 'application/vnd.api+json'
         }
       });
 
       if (!response.ok) {
-        throw new Error(`Failed to cancel subscription: ${response.statusText}`);
+        throw new Error(`Failed to cancel subscription: ${response.status}`);
       }
 
-      return await response.json();
+      const data = await response.json();
+      return data.data;
+
     } catch (error) {
-      console.error('LemonSqueezy subscription cancellation error:', error);
-      throw error;
+      console.error('Subscription cancellation error:', error);
+      throw new Error('Failed to cancel subscription');
     }
   }
 
-  async pauseSubscription(subscriptionId) {
+  /**
+   * Update subscription
+   */
+  async updateSubscription(subscriptionId, updates) {
     try {
-      const response = await fetch(`${this.apiBase}/subscriptions/${subscriptionId}`, {
+      const response = await fetch(`${this.apiUrl}/subscriptions/${subscriptionId}`, {
         method: 'PATCH',
         headers: {
           'Authorization': `Bearer ${this.apiKey}`,
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/vnd.api+json',
+          'Accept': 'application/vnd.api+json'
         },
         body: JSON.stringify({
           data: {
             type: 'subscriptions',
             id: subscriptionId,
+            attributes: updates
+          }
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error(`Failed to update subscription: ${response.status}`);
+      }
+
+      const data = await response.json();
+      return data.data;
+
+    } catch (error) {
+      console.error('Subscription update error:', error);
+      throw new Error('Failed to update subscription');
+    }
+  }
+
+  /**
+   * Get subscription list for customer
+   */
+  async getCustomerSubscriptions(customerId) {
+    try {
+      const response = await fetch(`${this.apiUrl}/subscriptions?filter[customer_id]=${customerId}`, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${this.apiKey}`,
+          'Accept': 'application/vnd.api+json'
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error(`Failed to fetch subscriptions: ${response.status}`);
+      }
+
+      const data = await response.json();
+      return data.data;
+
+    } catch (error) {
+      console.error('Subscriptions fetch error:', error);
+      return [];
+    }
+  }
+
+  /**
+   * Create customer
+   */
+  async createCustomer(email, name = null) {
+    try {
+      const response = await fetch(`${this.apiUrl}/customers`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${this.apiKey}`,
+          'Content-Type': 'application/vnd.api+json',
+          'Accept': 'application/vnd.api+json'
+        },
+        body: JSON.stringify({
+          data: {
+            type: 'customers',
             attributes: {
-              pause: {
-                mode: 'void'
+              store_id: parseInt(this.storeId),
+              name,
+              email
+            },
+            relationships: {
+              store: {
+                data: {
+                  type: 'stores',
+                  id: this.storeId
+                }
               }
             }
           }
@@ -131,125 +251,156 @@ export class LemonSqueezyService {
       });
 
       if (!response.ok) {
-        throw new Error(`Failed to pause subscription: ${response.statusText}`);
+        throw new Error(`Failed to create customer: ${response.status}`);
       }
 
-      return await response.json();
+      const data = await response.json();
+      return data.data;
+
     } catch (error) {
-      console.error('LemonSqueezy subscription pause error:', error);
-      throw error;
+      console.error('Customer creation error:', error);
+      throw new Error('Failed to create customer');
     }
   }
 
-  async updateSubscription(subscriptionId, variantId) {
+  /**
+   * Get store information
+   */
+  async getStore() {
     try {
-      const response = await fetch(`${this.apiBase}/subscriptions/${subscriptionId}`, {
-        method: 'PATCH',
+      const response = await fetch(`${this.apiUrl}/stores/${this.storeId}`, {
+        method: 'GET',
         headers: {
           'Authorization': `Bearer ${this.apiKey}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          data: {
-            type: 'subscriptions',
-            id: subscriptionId,
-            attributes: {
-              variant_id: variantId
-            }
-          }
-        })
-      });
-
-      if (!response.ok) {
-        throw new Error(`Failed to update subscription: ${response.statusText}`);
-      }
-
-      return await response.json();
-    } catch (error) {
-      console.error('LemonSqueezy subscription update error:', error);
-      throw error;
-    }
-  }
-
-  async getOrders(customerId, limit = 20) {
-    try {
-      const response = await fetch(`${this.apiBase}/orders?filter[customer_id]=${customerId}&limit=${limit}`, {
-        headers: {
-          'Authorization': `Bearer ${this.apiKey}`,
-          'Content-Type': 'application/json'
+          'Accept': 'application/vnd.api+json'
         }
       });
 
       if (!response.ok) {
-        throw new Error(`Failed to fetch orders: ${response.statusText}`);
+        throw new Error(`Failed to fetch store: ${response.status}`);
       }
 
-      return await response.json();
+      const data = await response.json();
+      return data.data;
+
     } catch (error) {
-      console.error('LemonSqueezy orders fetch error:', error);
-      throw error;
+      console.error('Store fetch error:', error);
+      return null;
     }
   }
 
-  async getDiscountCodes() {
+  /**
+   * Get variants for a product
+   */
+  async getProductVariants(productId) {
     try {
-      const response = await fetch(`${this.apiBase}/discount-codes?store_id=${this.storeId}`, {
+      const response = await fetch(`${this.apiUrl}/variants?filter[product_id]=${productId}`, {
+        method: 'GET',
         headers: {
           'Authorization': `Bearer ${this.apiKey}`,
-          'Content-Type': 'application/json'
+          'Accept': 'application/vnd.api+json'
         }
       });
 
       if (!response.ok) {
-        throw new Error(`Failed to fetch discount codes: ${response.statusText}`);
+        throw new Error(`Failed to fetch variants: ${response.status}`);
       }
 
-      return await response.json();
+      const data = await response.json();
+      return data.data;
+
     } catch (error) {
-      console.error('LemonSqueezy discount codes fetch error:', error);
-      throw error;
+      console.error('Variants fetch error:', error);
+      return [];
     }
   }
 
-  validateWebhook(payload, signature) {
-    if (!config.lemonsqueezy.webhookSecret) {
-      console.warn('Webhook secret not configured');
-      return false;
-    }
+  /**
+   * Verify webhook signature
+   */
+  verifyWebhookSignature(payload, signature) {
+    // In Cloudflare Workers, we need to use the Web Crypto API
+    const encoder = new TextEncoder();
+    const keyData = encoder.encode(this.webhookSecret);
+    const messageData = encoder.encode(payload);
 
-    try {
-      const crypto = require('crypto');
-      const hash = crypto
-        .createHmac('sha256', config.lemonsquezy.webhookSecret)
-        .update(payload, 'utf8')
-        .digest('hex');
-
-      return hash === signature;
-    } catch (error) {
-      console.error('Webhook validation error:', error);
-      return false;
-    }
+    return crypto.subtle
+      .importKey('raw', keyData, { name: 'HMAC', hash: 'SHA-256' }, false, ['verify'])
+      .then(async (key) => {
+        const signatureData = this.hexToBuffer(signature);
+        return await crypto.subtle.verify('HMAC', key, signatureData, messageData);
+      })
+      .catch((error) => {
+        console.error('Webhook signature verification error:', error);
+        return false;
+      });
   }
 
-  parseWebhookEvent(body) {
-    const eventName = body.meta.event_name;
-    const data = body.data;
+  /**
+   * Convert hex string to ArrayBuffer
+   */
+  hexToBuffer(hex) {
+    const bytes = new Uint8Array(hex.length / 2);
+    for (let i = 0; i < hex.length; i += 2) {
+      bytes[i / 2] = parseInt(hex.substr(i, 2), 16);
+    }
+    return bytes.buffer;
+  }
+
+  /**
+   * Create Pro subscription checkout
+   */
+  async createProCheckout(email, userId = null) {
+    const variantId = config.lemonsqueezy.products.pro.variantId;
+    const redirectTo = `${this.getBaseUrl()}/subscription/success`;
+
+    return await this.createCheckout({
+      email,
+      variantId: parseInt(variantId),
+      customData: { userId },
+      redirectTo
+    });
+  }
+
+  /**
+   * Create Enterprise subscription checkout
+   */
+  async createEnterpriseCheckout(email, userId = null) {
+    const variantId = config.lemonsqueezy.products.enterprise.variantId;
+    const redirectTo = `${this.getBaseUrl()}/subscription/success`;
+
+    return await this.createCheckout({
+      email,
+      variantId: parseInt(variantId),
+      customData: { userId },
+      redirectTo
+    });
+  }
+
+  /**
+   * Get base URL for redirects
+   */
+  getBaseUrl() {
+    // This should be set in wrangler.toml or environment
+    return 'https://luna-rag-backend.your-subdomain.workers.dev';
+  }
+
+  /**
+   * Parse webhook event
+   */
+  parseWebhookEvent(event) {
+    const eventType = event.meta?.event_name;
+    const eventData = event.data;
 
     return {
-      eventName,
-      subscriptionId: data.id,
-      customerId: data.attributes?.customer_id,
-      variantId: data.attributes?.variant_id,
-      status: data.attributes?.status,
-      renewsAt: data.attributes?.renews_at,
-      trialEndsAt: data.attributes?.trial_ends_at,
-      endsAt: data.attributes?.ends_at,
-      email: data.attributes?.user_email,
-      productName: data.attributes?.product_name,
-      storeId: data.attributes?.store_id,
-      orderId: data.attributes?.order_id,
-      totalPrice: data.attributes?.total,
-      currency: data.attributes?.currency
+      type: eventType,
+      data: eventData,
+      attributes: eventData?.attributes || {},
+      customData: eventData?.attributes?.custom || {},
+      customerId: eventData?.attributes?.customer_id,
+      subscriptionId: eventData?.attributes?.subscription_id,
+      orderId: eventData?.attributes?.order_id,
+      variantId: eventData?.attributes?.variant_id
     };
   }
 }

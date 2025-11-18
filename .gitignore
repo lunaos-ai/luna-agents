@@ -23,6 +23,22 @@ package-lock.json
 *_FIXED.md
 *_COMPLETE.md
 
+# Planning and status documents (not core documentation)
+*_PLAN.md
+*_SUCCESS.md
+*_SUMMARY.md
+*_RESULTS.md
+*_REPORT.md
+DEPLOYMENT_SUCCESS.md
+FINAL_DEPLOYMENT.md
+CUSTOM_DOMAIN_SUCCESS.md
+TEST_RESULTS.md
+TEST_SUMMARY.md
+LAUNCH_SUMMARY.md
+NEW_FEATURES_SUMMARY.md
+RAG_GLM_INTEGRATION_PLAN.md
+RAG_INTEGRATION_TEST_REPORT.md
+
 # Backup files
 *.backup
 *.bak
