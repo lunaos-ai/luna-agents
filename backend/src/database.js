@@ -9,15 +9,54 @@ export class DatabaseService {
   }
 
   /**
+   * Safely get data from cache with error handling
+   * P1-1 FIX: Graceful degradation when cache fails
+   */
+  async getCached(cacheKey) {
+    try {
+      const cached = await this.cache.get(cacheKey);
+      if (cached) {
+        try {
+          return JSON.parse(cached);
+        } catch (parseError) {
+          console.error(`Cache parse error for key ${cacheKey}:`, parseError);
+          // Invalidate corrupted cache entry
+          await this.cache.delete(cacheKey).catch(() => {});
+          return null;
+        }
+      }
+      return null;
+    } catch (error) {
+      console.error(`Cache read error for key ${cacheKey}:`, error);
+      // Degrade gracefully to database - don't crash
+      return null;
+    }
+  }
+
+  /**
+   * Safely set data in cache with error handling
+   * P1-1 FIX: Don't crash if cache write fails
+   */
+  async setCached(cacheKey, value, ttl) {
+    try {
+      const serialized = JSON.stringify(value);
+      await this.cache.put(cacheKey, serialized, { expirationTtl: ttl });
+    } catch (error) {
+      console.error(`Cache write error for key ${cacheKey}:`, error);
+      // Don't throw - cache write failures are non-critical
+    }
+  }
+
+  /**
    * Get or create user by user_id (from Claude Code)
    */
   async getOrCreateUser(userId, email = null) {
     const cacheKey = `user:${userId}`;
 
-    // Try cache first
-    const cached = await this.cache.get(cacheKey);
+    // Try cache first with error handling
+    const cached = await this.getCached(cacheKey);
     if (cached) {
-      return JSON.parse(cached);
+      return cached;
     }
 
     // Check if user exists
@@ -43,8 +82,8 @@ export class DatabaseService {
       await this.createUser(user);
     }
 
-    // Cache for 5 minutes
-    await this.cache.put(cacheKey, JSON.stringify(user), { expirationTtl: config.cache.ttl.user });
+    // Cache for 5 minutes with error handling
+    await this.setCached(cacheKey, user, config.cache.ttl.user);
 
     return user;
   }
@@ -103,29 +142,59 @@ export class DatabaseService {
   }
 
   /**
-   * Create new user
+   * Create new user with transaction support
+   * P1-2 FIX: Atomic user creation with usage metrics initialization
    */
   async createUser(userData) {
-    const stmt = this.db.prepare(`
-      INSERT INTO users (
-        id, user_id, email, tier, api_key, subscription_id,
-        subscription_status, created_at, updated_at
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-    `);
+    try {
+      // Use D1 batch for atomic transaction
+      const results = await this.db.batch([
+        // Insert user record
+        this.db.prepare(`
+          INSERT INTO users (
+            id, user_id, email, tier, api_key, subscription_id,
+            subscription_status, created_at, updated_at
+          ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+        `).bind(
+          userData.id,
+          userData.user_id,
+          userData.email,
+          userData.tier || 'free',
+          userData.api_key,
+          userData.subscription_id,
+          userData.subscription_status || 'inactive',
+          userData.created_at,
+          userData.updated_at
+        ),
+        // Initialize usage metrics record
+        this.db.prepare(`
+          INSERT INTO usage_metrics (
+            id, user_id, queries_count, documents_indexed,
+            storage_used_mb, created_at, updated_at
+          ) VALUES (?, ?, ?, ?, ?, ?, ?)
+        `).bind(
+          this.generateId(),
+          userData.id,
+          0, // Initial query count
+          0, // Initial documents indexed
+          0, // Initial storage used
+          userData.created_at,
+          userData.created_at
+        )
+      ]);
 
-    await stmt.bind(
-      userData.id,
-      userData.user_id,
-      userData.email,
-      userData.tier || 'free',
-      userData.api_key,
-      userData.subscription_id,
-      userData.subscription_status || 'inactive',
-      userData.created_at,
-      userData.updated_at
-    ).run();
+      // Check if all operations succeeded
+      const allSucceeded = results.every(r => r.success);
+      if (!allSucceeded) {
+        const failedOps = results.filter(r => !r.success);
+        throw new Error(`Transaction failed: ${JSON.stringify(failedOps)}`);
+      }
 
-    return userData;
+      return userData;
+    } catch (error) {
+      console.error('User creation transaction failed:', error);
+      throw new Error(`Failed to create user: ${error.message}`);
+    }
   }
 
   /**
@@ -246,6 +315,7 @@ export class DatabaseService {
 
     await stmt.bind(...values).run();
 
+    // P1-5 FIX: Comprehensive cache invalidation with error handling
     // Invalidate all related cache keys
     const user = await this.getUserById(id);
     if (user) {
@@ -258,7 +328,22 @@ export class DatabaseService {
         cacheKeys.push(`api_key:${user.api_key}`);
       }
 
-      await Promise.all(cacheKeys.map(key => this.cache.delete(key)));
+      // Also invalidate old values if they were updated
+      if (validatedUpdates.email && validatedUpdates.email !== user.email) {
+        cacheKeys.push(`email:${validatedUpdates.email}`);
+      }
+      if (validatedUpdates.api_key && validatedUpdates.api_key !== user.api_key) {
+        cacheKeys.push(`api_key:${validatedUpdates.api_key}`);
+      }
+
+      // Delete cache keys with error handling (don't crash if cache fails)
+      await Promise.allSettled(
+        cacheKeys.map(key =>
+          this.cache.delete(key).catch(err => {
+            console.error(`Failed to delete cache key ${key}:`, err);
+          })
+        )
+      );
     }
 
     return this.getUserByUserId(id);
