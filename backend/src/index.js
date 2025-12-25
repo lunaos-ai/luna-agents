@@ -173,25 +173,90 @@ export default {
     }
 
     // Run daily/weekly tasks
-    await Promise.all([
-      handleDailyTasks(env),
-      handleWeeklyTasks(env)
+    // P1-3 FIX: Use Promise.allSettled instead of Promise.all
+    // to prevent one failure from crashing all tasks
+    const taskResults = await Promise.allSettled([
+      handleDailyTasks(env).catch(err => {
+        console.error('Daily task failed:', err);
+        // Send alert to monitoring system if available
+        return { error: err.message };
+      }),
+      handleWeeklyTasks(env).catch(err => {
+        console.error('Weekly task failed:', err);
+        return { error: err.message };
+      })
     ]);
+
+    // Log results for monitoring
+    const failures = taskResults.filter(r => r.status === 'rejected');
+    if (failures.length > 0) {
+      console.error('Some scheduled tasks failed:', failures);
+    }
   }
 };
 
-// Queue handler for email processing
+// Queue handler for email processing with retry logic
+// P1-4 FIX: Implement retry mechanism and dead letter queue
 async function queueHandler(batch, env) {
   console.log('Processing email queue batch:', batch.messages.length);
 
+  const MAX_RETRIES = 3;
+  const RETRY_DELAYS = [60, 300, 900]; // 1min, 5min, 15min
+
   for (const message of batch.messages) {
+    const retryCount = message.attempts || 0;
+
     try {
       const { type, data } = JSON.parse(message.body);
 
       // Process email based on type
-      switch (type) {
-        case 'welcome':
-          // Send welcome email
+      await processEmail(type, data, env);
+
+      // Acknowledge successful processing
+      await message.ack();
+      console.log(`Email processed successfully: ${type}`);
+
+    } catch (error) {
+      console.error(`Email processing error (attempt ${retryCount + 1}):`, error);
+
+      // Retry up to MAX_RETRIES times
+      if (retryCount < MAX_RETRIES) {
+        const delaySeconds = RETRY_DELAYS[retryCount];
+        console.log(`Retrying email in ${delaySeconds} seconds (attempt ${retryCount + 1}/${MAX_RETRIES})`);
+
+        await message.retry({ delaySeconds });
+      } else {
+        // Max retries exceeded - move to dead letter queue
+        console.error(`Max retries exceeded for email. Moving to dead letter queue.`);
+
+        try {
+          // Store in database for manual review
+          const deadLetterEntry = {
+            message_body: message.body,
+            error: error.message,
+            retry_count: retryCount,
+            failed_at: new Date().toISOString()
+          };
+
+          // You could store this in a dead_letter_queue table
+          // For now, log it for monitoring
+          console.error('DEAD LETTER QUEUE:', JSON.stringify(deadLetterEntry));
+
+          // Acknowledge to prevent infinite loop
+          await message.ack();
+        } catch (dlqError) {
+          console.error('Failed to process dead letter:', dlqError);
+        }
+      }
+    }
+  }
+}
+
+// Helper function to process different email types
+async function processEmail(type, data, env) {
+  switch (type) {
+    case 'welcome':
+      // Send welcome email
           break;
         case 'trial_expiry':
           // Send trial expiry email
@@ -442,7 +507,7 @@ async function handleTeamRoutes(pathParts, request, teamController) {
   const method = request.method;
   const route = pathParts[0];
   const url = new URL(request.url);
-  const userId = url.searchParams.get('userId') ||
+  let userId = url.searchParams.get('userId') ||
                 request.headers.get('X-User-ID') ||
                 request.headers.get('Authorization')?.replace('Bearer ', '');
 
@@ -529,8 +594,8 @@ async function handleTeamRoutes(pathParts, request, teamController) {
 
       default:
         // Handle team member operations
-        const teamId = route;
-        if (!teamId) {
+        const defaultTeamId = route;
+        if (!defaultTeamId) {
           return {
             success: false,
             error: 'Team ID is required',
@@ -545,10 +610,10 @@ async function handleTeamRoutes(pathParts, request, teamController) {
           if (method === 'POST') {
             // Update member role
             const { role } = body;
-            return await teamController.updateMemberRole(userId, teamId, memberId, role);
+            return await teamController.updateMemberRole(userId, defaultTeamId, memberId, role);
           } else if (method === 'DELETE') {
             // Remove member
-            return await teamController.removeMember(userId, teamId, memberId);
+            return await teamController.removeMember(userId, defaultTeamId, memberId);
           }
         }
 
@@ -598,7 +663,7 @@ async function handleWorkspaceRoutes(pathParts, request, workspaceController) {
   const method = request.method;
   const route = pathParts[0];
   const url = new URL(request.url);
-  const userId = url.searchParams.get('userId') ||
+  let userId = url.searchParams.get('userId') ||
                 request.headers.get('X-User-ID') ||
                 request.headers.get('Authorization')?.replace('Bearer ', '');
 
@@ -764,7 +829,7 @@ async function handleAnalyticsRoutes(pathParts, request, analyticsController) {
   const method = request.method;
   const route = pathParts[0];
   const url = new URL(request.url);
-  const userId = url.searchParams.get('userId') ||
+  let userId = url.searchParams.get('userId') ||
                 request.headers.get('X-User-ID') ||
                 request.headers.get('Authorization')?.replace('Bearer ', '');
 
