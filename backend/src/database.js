@@ -1,9 +1,11 @@
 import config from './config.js';
+import DatabasePerformanceOptimizer from './database-performance.js';
 
 export class DatabaseService {
   constructor(env) {
     this.db = env.DB;
     this.cache = env.CACHE;
+    this.optimizer = new DatabasePerformanceOptimizer(env.DB, env.CACHE);
   }
 
   /**
@@ -75,12 +77,7 @@ export class DatabaseService {
    * Get user by user_id
    */
   async getUserByUserId(userId) {
-    const result = await this.db
-      .prepare('SELECT * FROM users WHERE user_id = ?')
-      .bind(userId)
-      .first();
-
-    return result;
+    return await this.optimizer.getUserOptimized({ userId });
   }
 
   /**
@@ -132,14 +129,112 @@ export class DatabaseService {
   }
 
   /**
-   * Update user
+   * Validate and sanitize user updates
+   * @param {Object} updates - Fields to update
+   * @returns {Object} Validated and sanitized updates
+   */
+  validateUserUpdates(updates) {
+    // Whitelist of allowed update fields
+    const allowedFields = [
+      'email',
+      'tier',
+      'api_key',
+      'subscription_id',
+      'subscription_status'
+    ];
+
+    const validatedUpdates = {};
+
+    for (const [key, value] of Object.entries(updates)) {
+      // Check if field is allowed
+      if (!allowedFields.includes(key)) {
+        throw new Error(`Invalid update field: ${key}`);
+      }
+
+      // Validate field-specific constraints
+      switch (key) {
+        case 'email':
+          if (!this.isValidEmail(value)) {
+            throw new Error('Invalid email format');
+          }
+          validatedUpdates[key] = value.toLowerCase().trim();
+          break;
+
+        case 'tier':
+          const validTiers = ['free', 'pro', 'enterprise'];
+          if (!validTiers.includes(value)) {
+            throw new Error(`Invalid tier: ${value}. Must be one of: ${validTiers.join(', ')}`);
+          }
+          validatedUpdates[key] = value;
+          break;
+
+        case 'subscription_status':
+          const validStatuses = ['active', 'inactive', 'cancelled', 'past_due', 'trialing'];
+          if (!validStatuses.includes(value)) {
+            throw new Error(`Invalid subscription status: ${value}`);
+          }
+          validatedUpdates[key] = value;
+          break;
+
+        case 'api_key':
+          if (value !== null && typeof value !== 'string') {
+            throw new Error('API key must be a string or null');
+          }
+          validatedUpdates[key] = value;
+          break;
+
+        case 'subscription_id':
+          if (value !== null && typeof value !== 'string') {
+            throw new Error('Subscription ID must be a string or null');
+          }
+          validatedUpdates[key] = value;
+          break;
+
+        default:
+          validatedUpdates[key] = value;
+      }
+    }
+
+    return validatedUpdates;
+  }
+
+  /**
+   * Validate email format
+   * @param {string} email - Email to validate
+   * @returns {boolean} True if valid
+   */
+  isValidEmail(email) {
+    if (!email || typeof email !== 'string') {
+      return false;
+    }
+
+    // Basic email validation regex
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email) && email.length <= 255;
+  }
+
+  /**
+   * Update user with input validation
    */
   async updateUser(id, updates) {
-    const setClause = Object.keys(updates)
+    // Validate ID
+    if (!id || typeof id !== 'string') {
+      throw new Error('Invalid user ID');
+    }
+
+    // Validate and sanitize updates
+    const validatedUpdates = this.validateUserUpdates(updates);
+
+    // Check if there are any valid updates
+    if (Object.keys(validatedUpdates).length === 0) {
+      throw new Error('No valid fields to update');
+    }
+
+    const setClause = Object.keys(validatedUpdates)
       .map(key => `${key} = ?`)
       .join(', ');
 
-    const values = Object.values(updates);
+    const values = Object.values(validatedUpdates);
     values.push(new Date().toISOString()); // updated_at
     values.push(id);
 
@@ -151,13 +246,19 @@ export class DatabaseService {
 
     await stmt.bind(...values).run();
 
-    // Invalidate cache
-    await this.cache.delete(`user:${id}`);
-    if (updates.api_key) {
-      await this.cache.delete(`api_key:${updates.api_key}`);
-    }
-    if (updates.email) {
-      await this.cache.delete(`email:${updates.email}`);
+    // Invalidate all related cache keys
+    const user = await this.getUserById(id);
+    if (user) {
+      const cacheKeys = [
+        `user:${user.user_id}`,
+        `email:${user.email}`
+      ];
+
+      if (user.api_key) {
+        cacheKeys.push(`api_key:${user.api_key}`);
+      }
+
+      await Promise.all(cacheKeys.map(key => this.cache.delete(key)));
     }
 
     return this.getUserByUserId(id);
@@ -652,10 +753,14 @@ export class DatabaseService {
       ORDER BY tm.joined_at ASC, tm.invited_at ASC
     `;
 
-    const results = await this.db
-      .prepare(query)
-      .bind(teamId, status)
-      .all();
+    const results = await this.optimizer.executeQuery(
+      query,
+      [teamId, status],
+      {
+        cacheable: true,
+        cacheKey: `team_members:${teamId}:${status}`
+      }
+    );
 
     return results.results || [];
   }
@@ -1500,6 +1605,48 @@ export class DatabaseService {
       member_growth: memberGrowth.results || [],
       project_growth: projectGrowth.results || []
     };
+  }
+
+  /**
+   * Get database performance metrics
+   */
+  getPerformanceMetrics() {
+    return this.optimizer.getPerformanceMetrics();
+  }
+
+  /**
+   * Get performance recommendations
+   */
+  getPerformanceRecommendations() {
+    return this.optimizer.analyzeQueryPerformance();
+  }
+
+  /**
+   * Generate performance indexes migration
+   */
+  generatePerformanceIndexes() {
+    return this.optimizer.createPerformanceIndexMigrations();
+  }
+
+  /**
+   * Execute bulk insert with optimization
+   */
+  async bulkInsertOptimized(table, records, options = {}) {
+    return await this.optimizer.bulkInsertOptimized(table, records, options);
+  }
+
+  /**
+   * Execute search with optimization
+   */
+  async searchOptimized(table, searchTerm, options = {}) {
+    return await this.optimizer.searchOptimized(table, searchTerm, options);
+  }
+
+  /**
+   * Execute batch queries with optimization
+   */
+  async executeBatch(queries, options = {}) {
+    return await this.optimizer.executeBatch(queries, options);
   }
 }
 
