@@ -51,13 +51,18 @@ export class AuthService {
     try {
       const [header, payload, signature] = token.split('.');
 
-      // Verify signature
+      if (!header || !payload || !signature) {
+        throw new Error('Invalid token format');
+      }
+
+      // Verify signature with constant-time comparison
       const message = `${header}.${payload}`;
       const expectedSignature = await this.sign(message);
       const providedSignature = this.base64UrlDecode(signature);
 
-      // In a real implementation, you'd use constant-time comparison
-      if (providedSignature !== expectedSignature) {
+      // Use constant-time comparison to prevent timing attacks
+      const isValidSignature = await this.constantTimeCompare(providedSignature, expectedSignature);
+      if (!isValidSignature) {
         throw new Error('Invalid signature');
       }
 
@@ -70,12 +75,55 @@ export class AuthService {
         throw new Error('Token expired');
       }
 
+      // Validate issuer and audience
+      if (decodedPayload.iss !== config.jwt.issuer) {
+        throw new Error('Invalid issuer');
+      }
+
+      if (decodedPayload.aud !== config.jwt.audience) {
+        throw new Error('Invalid audience');
+      }
+
       return decodedPayload;
 
     } catch (error) {
       console.error('JWT verification error:', error);
       throw new Error('Invalid token');
     }
+  }
+
+  /**
+   * Constant-time string comparison to prevent timing attacks
+   * @param {string} a - First string to compare
+   * @param {string} b - Second string to compare
+   * @returns {Promise<boolean>} True if strings match
+   */
+  async constantTimeCompare(a, b) {
+    // Convert strings to buffers for constant-time comparison
+    const encoder = new TextEncoder();
+    const bufferA = encoder.encode(a);
+    const bufferB = encoder.encode(b);
+
+    // Different lengths = not equal (but still compare to prevent timing leak)
+    if (bufferA.length !== bufferB.length) {
+      // Still perform comparison to maintain constant time
+      let result = 0;
+      const maxLen = Math.max(bufferA.length, bufferB.length);
+      for (let i = 0; i < maxLen; i++) {
+        const byteA = i < bufferA.length ? bufferA[i] : 0;
+        const byteB = i < bufferB.length ? bufferB[i] : 0;
+        result |= byteA ^ byteB;
+      }
+      return false;
+    }
+
+    // Constant-time comparison
+    let result = 0;
+    for (let i = 0; i < bufferA.length; i++) {
+      result |= bufferA[i] ^ bufferB[i];
+    }
+
+    return result === 0;
   }
 
   /**

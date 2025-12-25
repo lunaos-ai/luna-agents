@@ -2,6 +2,11 @@ import { RAGController } from './rag-controller.js';
 import { TeamController } from './team-controller.js';
 import { SharedWorkspaceController } from './shared-workspace-controller.js';
 import { TeamAnalyticsController } from './team-analytics-controller.js';
+import { DatabasePerformanceController } from './database-performance-controller.js';
+import CachingMiddleware from './caching-middleware.js';
+import CacheManager from './cache-manager.js';
+import RateLimiter from './rate-limiter.js';
+import { AuthService } from './auth.js';
 
 export default {
   async fetch(request, env, ctx) {
@@ -9,6 +14,10 @@ export default {
     const teamController = new TeamController(env);
     const sharedWorkspaceController = new SharedWorkspaceController(env);
     const analyticsController = new TeamAnalyticsController(env);
+    const performanceController = new DatabasePerformanceController(env);
+    const cachingMiddleware = new CachingMiddleware(env);
+    const rateLimiter = new RateLimiter(env);
+    const authService = new AuthService(env);
 
     try {
       // Handle CORS preflight
@@ -25,16 +34,72 @@ export default {
 
       console.log(`${request.method} ${url.pathname}`);
 
+      // Health check endpoint (bypass rate limiting)
+      if (url.pathname === '/health') {
+        return await handleHealthCheck(env);
+      }
+
+      // Apply IP-based rate limiting first (DDoS protection)
+      const ipRateLimit = await rateLimiter.checkIpRateLimit(request);
+      if (!ipRateLimit.allowed) {
+        console.warn('IP rate limit exceeded:', request.headers.get('CF-Connecting-IP'));
+        return rateLimiter.createRateLimitResponse(ipRateLimit);
+      }
+
+      // Extract authentication info
+      const authInfo = authService.extractAuthInfo(request);
+      let userId = null;
+      let userTier = 'free';
+
+      // Apply user/API key rate limiting for authenticated requests
+      if (authInfo) {
+        if (authInfo.type === 'api_key') {
+          // TODO: Get user from API key and apply API key rate limiting
+          const apiKeyRateLimit = await rateLimiter.checkApiKeyRateLimit(authInfo.token, userTier);
+          if (!apiKeyRateLimit.allowed) {
+            return rateLimiter.createRateLimitResponse(apiKeyRateLimit);
+          }
+        } else if (authInfo.type === 'jwt') {
+          try {
+            const payload = await authService.verifyJWT(authInfo.token);
+            userId = payload.userId;
+            userTier = payload.tier || 'free';
+
+            const userRateLimit = await rateLimiter.checkUserRateLimit(userId, userTier);
+            if (!userRateLimit.allowed) {
+              return rateLimiter.createRateLimitResponse(userRateLimit);
+            }
+          } catch (error) {
+            // Invalid JWT - will be handled by endpoint
+          }
+        }
+      }
+
+      // Apply caching middleware before routing
+      const cachedResponse = await applyCachingMiddleware(request, env, ctx, cachingMiddleware);
+      if (cachedResponse) {
+        // Add rate limit headers to cached response
+        const headers = new Headers(cachedResponse.headers);
+        Object.entries(rateLimiter.getRateLimitHeaders(ipRateLimit)).forEach(([key, value]) => {
+          headers.set(key, value);
+        });
+
+        return new Response(cachedResponse.body, {
+          status: cachedResponse.status,
+          headers
+        });
+      }
+
       // Route to appropriate handler
       let result;
 
       switch (request.method) {
         case 'GET':
-          result = await handleGetRequest(pathParts, url, request, env, ragController, teamController, sharedWorkspaceController, analyticsController);
+          result = await handleGetRequest(pathParts, url, request, env, ragController, teamController, sharedWorkspaceController, analyticsController, performanceController);
           break;
 
         case 'POST':
-          result = await handlePostRequest(pathParts, request, env, ragController, teamController, sharedWorkspaceController, analyticsController);
+          result = await handlePostRequest(pathParts, request, env, ragController, teamController, sharedWorkspaceController, analyticsController, performanceController);
           break;
 
         default:
@@ -46,14 +111,21 @@ export default {
         break;
       }
 
-      // Return response
-      return new Response(JSON.stringify(result), {
+      // Apply post-request caching middleware
+      const finalResponse = new Response(JSON.stringify(result), {
         status: result.success ? 200 : 400,
         headers: {
           ...getCorsHeaders(),
           'Content-Type': 'application/json'
         }
       });
+
+      await applyPostCachingMiddleware(finalResponse, request, env, ctx, cachingMiddleware);
+
+      // Apply cache invalidation for modifying requests
+      await applyCacheInvalidation(request, env, ctx, cachingMiddleware);
+
+      return finalResponse;
 
     } catch (error) {
       console.error('Worker error:', error);
@@ -71,58 +143,78 @@ export default {
     }
   },
 
-  // Queue handler for email processing
-  async queue(batch, env) {
-    console.log('Processing email queue batch:', batch.messages.length);
-
-    for (const message of batch.messages) {
-      try {
-        const { type, data } = JSON.parse(message.body);
-
-        // Process email based on type
-        switch (type) {
-          case 'welcome':
-            // Send welcome email
-            break;
-          case 'trial_expiry':
-            // Send trial expiry email
-            break;
-          case 'payment_success':
-            // Send payment success email
-            break;
-          default:
-            console.warn('Unknown email type:', type);
-        }
-
-        message.ack();
-      } catch (error) {
-        console.error('Error processing queue message:', error);
-        message.retry();
-      }
-    }
-  },
-
-  // Scheduled handler for periodic tasks
   async scheduled(event, env, ctx) {
-    console.log('Scheduled event:', event.cron);
+    const cacheManager = new CacheManager(env);
 
     switch (event.cron) {
+      case '0 */15 * * *': // Every 15 minutes
+        console.log('Running 15-minute cache optimization');
+        await cacheManager.optimizeCache();
+        break;
+
       case '0 0 * * *': // Daily at midnight
-        await handleDailyTasks(env);
+        console.log('Running daily cache maintenance');
+        await cacheManager.cleanupCache();
+        await cacheManager.warmupCache();
         break;
-      case '0 0 * * 1': // Weekly on Monday
-        await handleWeeklyTasks(env);
+
+      case '0 2 * * 0': // Weekly on Sunday at 2 AM
+        console.log('Running weekly cache deep clean');
+        await cacheManager.cleanupCache();
+        await cacheManager.optimizeCache();
+
+        // Generate health report
+        const healthReport = await cacheManager.getHealthReport();
+        console.log('Cache health report:', JSON.stringify(healthReport, null, 2));
         break;
+
       default:
-        console.log('Unknown scheduled event:', event.cron);
+        console.log(`Unknown scheduled task: ${event.cron}`);
     }
+
+    // Run daily/weekly tasks
+    await Promise.all([
+      handleDailyTasks(env),
+      handleWeeklyTasks(env)
+    ]);
   }
 };
+
+// Queue handler for email processing
+async function queueHandler(batch, env) {
+  console.log('Processing email queue batch:', batch.messages.length);
+
+  for (const message of batch.messages) {
+    try {
+      const { type, data } = JSON.parse(message.body);
+
+      // Process email based on type
+      switch (type) {
+        case 'welcome':
+          // Send welcome email
+          break;
+        case 'trial_expiry':
+          // Send trial expiry email
+          break;
+        case 'payment_success':
+          // Send payment success email
+          break;
+        default:
+          console.warn('Unknown email type:', type);
+      }
+
+      message.ack();
+    } catch (error) {
+      console.error('Error processing queue message:', error);
+      message.retry();
+    }
+  }
+}
 
 /**
  * Handle GET requests
  */
-async function handleGetRequest(pathParts, url, request, env, ragController, teamController, sharedWorkspaceController, analyticsController) {
+async function handleGetRequest(pathParts, url, request, env, ragController, teamController, sharedWorkspaceController, analyticsController, performanceController) {
   const route = pathParts[0];
 
   switch (route) {
@@ -188,6 +280,10 @@ async function handleGetRequest(pathParts, url, request, env, ragController, tea
       // Handle analytics GET operations
       return await handleAnalyticsRoutes(pathParts.slice(1), request, analyticsController);
 
+    case 'performance':
+      // Handle performance monitoring GET operations
+      return await handlePerformanceRoutes(pathParts.slice(1), request, performanceController);
+
     default:
       return {
         success: false,
@@ -200,7 +296,7 @@ async function handleGetRequest(pathParts, url, request, env, ragController, tea
 /**
  * Handle POST requests
  */
-async function handlePostRequest(pathParts, request, env, ragController, teamController, sharedWorkspaceController, analyticsController) {
+async function handlePostRequest(pathParts, request, env, ragController, teamController, sharedWorkspaceController, analyticsController, performanceController) {
   const route = pathParts[0];
   const body = await request.json().catch(() => ({}));
 
@@ -293,6 +389,10 @@ async function handlePostRequest(pathParts, request, env, ragController, teamCon
     case 'analytics':
       // Handle analytics operations
       return await handleAnalyticsRoutes(pathParts.slice(1), request, analyticsController);
+
+    case 'performance':
+      // Handle performance monitoring operations
+      return await handlePerformanceRoutes(pathParts.slice(1), request, performanceController);
 
     default:
       return {
@@ -859,4 +959,259 @@ function getCorsHeaders() {
     'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-API-Key',
     'Access-Control-Max-Age': '86400',
   };
+}
+
+/**
+ * Apply caching middleware before request handling
+ */
+async function applyCachingMiddleware(request, env, ctx, cachingMiddleware) {
+  const url = new URL(request.url);
+  const pathParts = url.pathname.replace(/^\/+/, '').split('/');
+
+  // Apply different caching strategies based on endpoint
+  if (pathParts[0] === 'analytics' && request.method === 'GET') {
+    // Cache analytics responses
+    return await cachingMiddleware.cacheAnalytics()(request, env, ctx);
+  }
+
+  if (pathParts[0] === 'query' && request.method === 'POST') {
+    // Cache RAG query responses
+    return await cachingMiddleware.cacheRAGQuery()(request, env, ctx);
+  }
+
+  // Session caching for auth endpoints
+  if (pathParts[0] === 'auth' && pathParts[1] === 'me' && request.method === 'GET') {
+    return await cachingMiddleware.cacheSession()(request, env, ctx);
+  }
+
+  return null; // No cached response
+}
+
+/**
+ * Apply post-request caching middleware
+ */
+async function applyPostCachingMiddleware(response, request, env, ctx, cachingMiddleware) {
+  const url = new URL(request.url);
+  const pathParts = url.pathname.replace(/^\/+/, '').split('/');
+
+  // Store successful responses in cache
+  if (response.ok) {
+    try {
+      let cacheConfig = null;
+
+      if (pathParts[0] === 'analytics' && request.method === 'GET') {
+        cacheConfig = {
+          ttl: 1800, // 30 minutes
+          keyGenerator: (req) => `analytics:${req.url}`,
+          tags: ['analytics']
+        };
+      }
+
+      if (pathParts[0] === 'query' && request.method === 'POST') {
+        cacheConfig = {
+          ttl: 300, // 5 minutes
+          keyGenerator: async (req) => {
+            const body = await req.json().catch(() => ({}));
+            const hash = await cachingMiddleware.hashString(JSON.stringify(body));
+            return `query:${req.url}:${hash}`;
+          },
+          tags: ['query', 'rag']
+        };
+      }
+
+      if (cacheConfig) {
+        await cachingMiddleware.storeResponse(cacheConfig)(response, request, env, ctx);
+      }
+    } catch (error) {
+      console.error('Post-caching error:', error);
+    }
+  }
+}
+
+/**
+ * Apply cache invalidation for modifying requests
+ */
+async function applyCacheInvalidation(request, env, ctx, cachingMiddleware) {
+  const url = new URL(request.url);
+  const pathParts = url.pathname.replace(/^\/+/, '').split('/');
+
+  // Only invalidate on modifying requests
+  if (!['POST', 'PUT', 'DELETE', 'PATCH'].includes(request.method)) {
+    return;
+  }
+
+  try {
+    const patterns = [];
+
+    // Invalidate analytics cache when team data changes
+    if (pathParts[0] === 'teams') {
+      patterns.push('analytics:*');
+      patterns.push('query:*');
+    }
+
+    // Invalidate RAG cache when knowledge base changes
+    if (pathParts[0] === 'workspace' && pathParts[1] === 'add-knowledge') {
+      patterns.push('query:*');
+      patterns.push('workspace:*');
+    }
+
+    // Invalidate team-specific caches
+    if (pathParts[0] === 'teams' && pathParts[1]) {
+      const teamId = pathParts[1];
+      patterns.push(`*:*team-${teamId}*`);
+    }
+
+    if (patterns.length > 0) {
+      await cachingMiddleware.invalidateCache(patterns)(request, env, ctx);
+    }
+  } catch (error) {
+    console.error('Cache invalidation error:', error);
+  }
+}
+
+/**
+ * Handle performance monitoring routes
+ */
+async function handlePerformanceRoutes(pathParts, request, performanceController) {
+  const method = request.method;
+  const route = pathParts[0];
+  const url = new URL(request.url);
+
+  // Handle different performance routes
+  if (method === 'GET') {
+    switch (route) {
+      case 'metrics':
+        // Get performance metrics
+        return await performanceController.getPerformanceMetrics();
+
+      case 'health':
+        // Get database health check
+        return await performanceController.getHealthCheck();
+
+      case 'slow-queries':
+        // Get slow queries analysis
+        const limit = parseInt(url.searchParams.get('limit')) || 50;
+        const minTime = parseInt(url.searchParams.get('minTime')) || 50;
+        return await performanceController.getSlowQueries({ limit, minTime });
+
+      case 'cache':
+        // Get cache performance analysis
+        return await performanceController.getCachePerformance();
+
+      case 'indexes':
+        // Get index recommendations
+        return await performanceController.getIndexRecommendations();
+
+      case 'report':
+        // Generate comprehensive performance report
+        const period = url.searchParams.get('period') || '24h';
+        const includeRecommendations = url.searchParams.get('includeRecommendations') !== 'false';
+        const includeQueryPlans = url.searchParams.get('includeQueryPlans') === 'true';
+        return await performanceController.generatePerformanceReport({
+          period,
+          includeRecommendations,
+          includeQueryPlans
+        });
+
+      default:
+        return {
+          success: false,
+          error: 'Performance endpoint not found',
+          error_code: 'performance_endpoint_not_found'
+        };
+    }
+  }
+
+  if (method === 'POST') {
+    switch (route) {
+      case 'optimize':
+        // Run database optimization
+        const body = await request.json().catch(() => ({}));
+        return await performanceController.runOptimization({
+          dryRun: body.dryRun !== false,
+          analyzeTables: body.analyzeTables !== false,
+          createIndexes: body.createIndexes === true
+        });
+
+      case 'query-plan':
+        // Analyze query execution plan
+        const queryBody = await request.json().catch(() => ({}));
+        const { query, params } = queryBody;
+        if (!query) {
+          return {
+            success: false,
+            error: 'Query is required',
+            error_code: 'missing_query'
+          };
+        }
+        return await performanceController.getQueryPlan(query, params || []);
+
+      default:
+        return {
+          success: false,
+          error: 'Performance endpoint not found',
+          error_code: 'performance_endpoint_not_found'
+        };
+    }
+  }
+
+  return {
+    success: false,
+    error: 'Method not allowed',
+    error_code: 'method_not_allowed'
+  };
+}
+
+/**
+ * Handle health check endpoint
+ */
+async function handleHealthCheck(env) {
+  try {
+    const checks = {
+      database: false,
+      cache: false,
+      timestamp: new Date().toISOString()
+    };
+
+    // Check database connectivity
+    try {
+      await env.DB.prepare('SELECT 1').first();
+      checks.database = true;
+    } catch (error) {
+      console.error('Database health check failed:', error);
+    }
+
+    // Check cache connectivity
+    try {
+      await env.CACHE.get('health:check');
+      checks.cache = true;
+    } catch (error) {
+      console.error('Cache health check failed:', error);
+    }
+
+    const healthy = checks.database && checks.cache;
+
+    return new Response(JSON.stringify({
+      status: healthy ? 'healthy' : 'unhealthy',
+      checks,
+      version: '1.0.0',
+      uptime: process.uptime ? process.uptime() : 'unknown'
+    }), {
+      status: healthy ? 200 : 503,
+      headers: {
+        'Content-Type': 'application/json',
+        'Cache-Control': 'no-cache, no-store, must-revalidate'
+      }
+    });
+  } catch (error) {
+    console.error('Health check error:', error);
+    return new Response(JSON.stringify({
+      status: 'error',
+      error: error.message,
+      timestamp: new Date().toISOString()
+    }), {
+      status: 500,
+      headers: { 'Content-Type': 'application/json' }
+    });
+  }
 }
