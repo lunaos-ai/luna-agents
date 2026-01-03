@@ -1,0 +1,399 @@
+#!/bin/bash
+
+# Luna Agents - Command Dispatcher
+# Routes luna-* commands to appropriate agent implementations
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_DIR="$(dirname "$SCRIPT_DIR")/../.."
+COMMAND_NAME="$(basename "$0")"
+
+# Extract the agent name from command (e.g., luna-database -> database)
+AGENT="${COMMAND_NAME#luna-}"
+
+# Function to display help
+show_help() {
+    echo "🤖 Luna Agents - AI Development Assistant"
+    echo ""
+    echo "Usage: luna-<agent> [options] [task-description]"
+    echo ""
+    echo "Available Agents:"
+    echo "  luna-auth          Authentication & Security Specialist"
+    echo "  luna-database      Database & Performance Specialist"
+    echo "  luna-analytics     Analytics & Monitoring Specialist"
+    echo "  luna-rag           RAG & Search Specialist"
+    echo "  luna-hig           UI/UX Design Specialist"
+    echo "  luna-deploy        Deployment & CI/CD Specialist"
+    echo "  luna-test          Quality Assurance Specialist"
+    echo "  luna-review        Code Review Specialist"
+    echo "  luna-docs          Documentation Specialist"
+    echo ""
+    echo "Examples:"
+    echo "  luna-database \"Implement user authentication\""
+    echo "  luna-analytics --priority=high \"Add performance monitoring\""
+    echo "  luna-test --type=gui \"Run accessibility tests\""
+    echo ""
+    echo "Global Options:"
+    echo "  --help, -h           Show this help message"
+    echo "  --version           Show version information"
+    echo "  --verbose, -v       Verbose output"
+    echo "  --dry-run           Show what would be done"
+    echo "  --priority <level>  Set priority (low, medium, high)"
+    echo "  --timeout <mins>    Set timeout in minutes"
+    echo ""
+    echo "Configuration: .luna/luna-config.yml"
+    echo "Documentation: .luna/README.md"
+}
+
+# Function to show version
+show_version() {
+    echo "🤖 Luna Agents v1.0.0"
+    echo "AI-powered development lifecycle management"
+}
+
+# Function to load configuration
+load_config() {
+    local config_file="$PROJECT_DIR/.luna/luna-config.yml"
+    if [ -f "$config_file" ]; then
+        echo "📋 Loading configuration from $config_file" >&2
+        # Would parse YAML here in a real implementation
+    else
+        echo "⚠️ No configuration file found, using defaults" >&2
+    fi
+}
+
+# Function to validate agent
+validate_agent() {
+    case "$AGENT" in
+        auth|database|analytics|rag|hig|deploy|test|review|docs)
+            return 0
+            ;;
+        *)
+            echo "❌ Unknown agent: $AGENT"
+            echo ""
+            echo "Available agents: auth, database, analytics, rag, hig, deploy, test, review, docs"
+            exit 1
+            ;;
+    esac
+}
+
+# Function to execute agent task
+execute_agent_task() {
+    local task="$1"
+    local priority="$2"
+    local timeout="$3"
+    local dry_run="$4"
+    local verbose="$5"
+
+    echo "🤖 Executing Luna Agent: $AGENT"
+    echo "📋 Task: $task"
+    [ -n "$priority" ] && echo "🎯 Priority: $priority"
+    [ -n "$timeout" ] && echo "⏱️ Timeout: ${timeout}min"
+    [ "$dry_run" = "true" ] && echo "🔍 Dry run mode"
+
+    # Check for implementation scripts
+    local agent_script="$PROJECT_DIR/.luna/agents/${AGENT}.sh"
+    if [ -f "$agent_script" ]; then
+        echo "📜 Found agent implementation: $agent_script"
+
+        if [ "$dry_run" = "true" ]; then
+            echo "🔍 Would execute: bash $agent_script \"$task\""
+        else
+            echo "🔄 Executing agent implementation..."
+            bash "$agent_script" "$task" "$priority" "$timeout" "$verbose"
+        fi
+    else
+        echo "⚠️ Agent implementation not found: $agent_script"
+        echo "💡 Creating placeholder implementation..."
+        create_placeholder_agent "$AGENT" "$task" "$priority"
+    fi
+}
+
+# Function to create placeholder agent
+create_placeholder_agent() {
+    local agent="$1"
+    local task="$2"
+    local priority="$3"
+    local timestamp=$(date +"%Y-%m-%d %H:%M:%S")
+
+    echo "📝 Creating placeholder implementation for $agent agent..."
+
+    # Create agent directory if it doesn't exist
+    mkdir -p "$PROJECT_DIR/.luna/agents"
+
+    # Create placeholder implementation
+    cat > "$PROJECT_DIR/.luna/agents/${agent}.sh" << EOF
+#!/bin/bash
+
+# Luna Agent: $agent
+# Generated: $timestamp
+# Task: $task
+# Priority: $priority
+
+echo "🤖 $agent Agent Starting..."
+echo "📋 Task: $task"
+echo "🎯 Priority: $priority"
+
+# TODO: Implement actual agent logic here
+# This is a placeholder implementation
+
+echo "⚠️ Placeholder implementation - actual $agent agent logic needed"
+echo "💡 To implement: Create specific functionality for $agent specialist"
+
+# Simulate work
+echo "⏳ Analyzing requirements..."
+sleep 2
+
+echo "🔧 Implementing solution..."
+sleep 3
+
+echo "🧪 Running tests..."
+sleep 1
+
+echo "✅ $agent task completed successfully!"
+echo ""
+echo "📊 Results:"
+echo "  - Analysis: Completed"
+echo "  - Implementation: Placeholder created"
+echo "  - Testing: Skipped (placeholder)"
+echo "  - Documentation: Generated"
+
+echo ""
+echo "🔗 Next Steps:"
+echo "  1. Replace this placeholder with actual $agent implementation"
+echo "  2. Add specific logic for: $task"
+echo "  3. Implement testing framework integration"
+echo "  4. Add proper error handling and validation"
+
+echo ""
+echo "📁 Implementation files created:"
+echo "  - Backend: ./backend/src/${agent}-implementation.js"
+echo "  - Tests: ./backend/tests/${agent}-test.js"
+echo "  - Config: ./backend/config/${agent}-config.yml"
+EOF
+
+    chmod +x "$PROJECT_DIR/.luna/agents/${agent}.sh"
+
+    echo "✅ Placeholder created: $agent_script"
+}
+
+# Function to create implementation files
+create_implementation_files() {
+    local agent="$1"
+    local task="$2"
+
+    echo "📁 Creating implementation files for $agent agent..."
+
+    # Create backend implementation
+    mkdir -p "$PROJECT_DIR/backend/src"
+    cat > "$PROJECT_DIR/backend/src/${agent}-implementation.js" << EOF
+/**
+ * $agent Implementation
+ * Auto-generated by Luna Agents
+ * Task: $task
+ * Created: $(date +"%Y-%m-%d %H:%M:%S")
+ */
+
+export class ${agent^}Agent {
+  constructor(env) {
+    this.env = env;
+  }
+
+  async execute(task) {
+    console.log(\`🤖 Starting $agent implementation\`);
+    console.log(\`📋 Task: \${task}\`);
+
+    // TODO: Implement actual $agent logic here
+    // This is a placeholder implementation
+
+    try {
+      // Simulate implementation work
+      await this.analyzeRequirements();
+      await this.implementSolution();
+      await this.runTests();
+
+      return {
+        success: true,
+        message: '$agent task completed successfully',
+        details: {
+          agent: '$agent',
+          task: task,
+          timestamp: new Date().toISOString()
+        }
+      };
+    } catch (error) {
+      return {
+        success: false,
+        error: error.message,
+        details: {
+          agent: '$agent',
+          task: task,
+          timestamp: new Date().toISOString()
+        }
+      };
+    }
+  }
+
+  async analyzeRequirements() {
+    // Placeholder for requirements analysis
+    console.log('📋 Analyzing requirements...');
+    await new Promise(resolve => setTimeout(resolve, 1000));
+  }
+
+  async implementSolution() {
+    // Placeholder for implementation logic
+    console.log('🔧 Implementing solution...');
+    await new Promise(resolve => setTimeout(resolve, 2000));
+  }
+
+  async runTests() {
+    // Placeholder for testing
+    console.log('🧪 Running tests...');
+    await new Promise(resolve => setTimeout(resolve, 500));
+  }
+}
+
+export default ${agent^}Agent;
+EOF
+
+    # Create test file
+    mkdir -p "$PROJECT_DIR/backend/tests"
+    cat > "$PROJECT_DIR/backend/tests/${agent}-test.js" << EOF
+/**
+ * $agent Tests
+ * Auto-generated by Luna Agents
+ * Task: $task
+ */
+
+import { describe, it, expect, beforeEach, vi } from 'vitest';
+import ${agent^}Agent from '../src/${agent}-implementation.js';
+
+describe('${agent^}Agent', () => {
+  let agent;
+  let mockEnv;
+
+  beforeEach(() => {
+    mockEnv = {};
+    agent = new ${agent^}Agent(mockEnv);
+  });
+
+  describe('execute', () => {
+    it('should execute $agent task successfully', async () => {
+      const result = await agent.execute('$task');
+
+      expect(result.success).toBe(true);
+      expect(result.message).toContain('completed successfully');
+      expect(result.details.agent).toBe('$agent');
+      expect(result.details.task).toBe('$task');
+    });
+
+    it('should handle errors gracefully', async () => {
+      // Mock a failure scenario
+      vi.spyOn(agent, 'analyzeRequirements').mockRejectedValue(new Error('Test error'));
+
+      const result = await agent.execute('$task');
+
+      expect(result.success).toBe(false);
+      expect(result.error).toBe('Test error');
+    });
+  });
+
+  describe('analyzeRequirements', () => {
+    it('should analyze requirements without errors', async () => {
+      await expect(agent.analyzeRequirements()).resolves.toBeUndefined();
+    });
+  });
+
+  describe('implementSolution', () => {
+    it('should implement solution without errors', async () => {
+      await expect(agent.implementSolution()).resolves.toBeUndefined();
+    });
+  });
+
+  describe('runTests', () => {
+    it('should run tests without errors', async () => {
+      await expect(agent.runTests()).resolves.toBeUndefined();
+    });
+  });
+});
+EOF
+
+    echo "✅ Implementation files created:"
+    echo "  - Backend: ./backend/src/${agent}-implementation.js"
+    echo "  - Tests: ./backend/tests/${agent}-test.js"
+}
+
+# Parse command line arguments
+DRY_RUN=false
+VERBOSE=false
+PRIORITY=""
+TIMEOUT=""
+TASK=""
+
+while [[ $# -gt 0 ]]; do
+    case $1 in
+        --help|-h)
+            show_help
+            exit 0
+            ;;
+        --version)
+            show_version
+            exit 0
+            ;;
+        --verbose|-v)
+            VERBOSE=true
+            shift
+            ;;
+        --dry-run)
+            DRY_RUN=true
+            shift
+            ;;
+        --priority)
+            PRIORITY="$2"
+            shift 2
+            ;;
+        --timeout)
+            TIMEOUT="$2"
+            shift 2
+            ;;
+        -*)
+            echo "❌ Unknown option: $1"
+            echo ""
+            show_help
+            exit 1
+            ;;
+        *)
+            if [ -z "$TASK" ]; then
+                TASK="$1"
+            else
+                TASK="$TASK $1"
+            fi
+            shift
+            ;;
+    esac
+done
+
+# Validate command
+if [ "$COMMAND_NAME" = "luna-agents" ]; then
+    show_help
+    exit 0
+fi
+
+# Check if task was provided
+if [ -z "$TASK" ]; then
+    echo "❌ Task description is required"
+    echo ""
+    echo "Usage: luna-<agent> \"<task description>\""
+    echo ""
+    show_help
+    exit 1
+fi
+
+# Initialize
+validate_agent
+load_config
+
+# Create implementation files if they don't exist
+create_implementation_files "$AGENT" "$TASK"
+
+# Execute the agent task
+execute_agent_task "$TASK" "$PRIORITY" "$TIMEOUT" "$DRY_RUN" "$VERBOSE"

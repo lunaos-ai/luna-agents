@@ -1,0 +1,158 @@
+# Luna Auto-Execution Configuration
+# Customize the behavior of luna-execute-auto command
+
+execution:
+  # Timeout per task in minutes (default: 30)
+  timeout: 30
+
+  # Number of retry attempts per task (default: 3)
+  retry_count: 3
+
+  # Execute independent tasks in parallel (default: false)
+  parallel: false
+
+  # Maximum concurrent tasks when parallel is true
+  max_concurrent: 2
+
+  # Automatically deploy when all tasks complete (default: false)
+  auto_deploy: false
+
+  # Skip test execution for faster development (default: false)
+  skip_tests: false
+
+  # Continue execution even on errors (default: false)
+  force: false
+
+  # Show detailed output (default: false)
+  verbose: false
+
+# Agent assignments
+# Map task types to specific Luna agents
+agents:
+  # Authentication and security tasks
+  auth: luna-auth
+
+  # Database and performance tasks
+  database: luna-database
+
+  # Analytics and monitoring tasks
+  analytics: luna-analytics
+
+  # RAG and search tasks
+  rag: luna-rag
+
+  # UI/UX design tasks
+  ui: luna-hig
+
+  # Deployment and infrastructure tasks
+  deployment: luna-deployment
+
+  # Testing and quality assurance
+  testing: luna-testing
+
+  # Code review tasks
+  code_review: luna-code-review
+
+  # Documentation tasks
+  documentation: luna-documentation
+
+# Hooks and scripts
+hooks:
+  # Scripts to run before each task
+  pre_task:
+    - "echo 'Starting task execution...'"
+
+  # Scripts to run after each successful task
+  post_task:
+    - "echo 'Task completed successfully!'"
+
+  # Scripts to run after all tasks complete
+  completion:
+    - "echo 'All tasks completed!'"
+    - "npm run lint"
+
+  # Scripts to run on task failure
+  failure:
+    - "echo 'Task failed - check logs for details'"
+
+# Quality gates
+quality:
+  # Minimum test coverage percentage (default: 80)
+  min_test_coverage: 80
+
+  # Maximum allowed slow queries (default: 5)
+  max_slow_queries: 5
+
+  # Maximum average query time in ms (default: 50)
+  max_avg_query_time: 50
+
+  # Minimum cache hit rate percentage (default: 70)
+  min_cache_hit_rate: 70
+
+# Performance settings
+performance:
+  # Maximum memory usage per task in GB
+  max_memory: 4
+
+  # Maximum CPU usage per task
+  max_cpu: 2
+
+  # Maximum execution time per task in minutes
+  max_execution_time: 60
+
+# Notifications
+notifications:
+  # Send email notifications on completion
+  email:
+    enabled: false
+    to: ["dev@company.com"]
+    on_completion: true
+    on_failure: true
+
+  # Slack webhook notifications
+  slack:
+    enabled: false
+    webhook_url: "https://hooks.slack.com/services/YOUR/WEBHOOK/URL"
+    channel: "#development"
+    on_completion: true
+    on_failure: true
+
+# Reporting
+reporting:
+  # Generate detailed execution report (default: true)
+  generate_report: true
+
+  # Report formats
+  formats: ["json", "markdown"]
+
+  # Include performance metrics in report
+  include_performance: true
+
+  # Include test results in report
+  include_tests: true
+
+  # Send report to external services
+  external_services: []
+
+# Environment settings
+environment:
+  # Development environment settings
+  development:
+    skip_tests: false
+    timeout: 45
+    verbose: true
+
+  # Staging environment settings
+  staging:
+    skip_tests: true
+    timeout: 30
+    auto_deploy: false
+
+  # Production environment settings
+  production:
+    skip_tests: false
+    timeout: 20
+    force: false
+    min_test_coverage: 90
+    max_slow_queries: 2
+    max_avg_query_time: 25

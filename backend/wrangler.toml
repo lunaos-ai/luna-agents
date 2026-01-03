@@ -22,10 +22,20 @@ binding = "CACHE"
 id = "3ba6e6f7397049aa8bc56565c214526e"
 preview_id = "c818e8631af64633b322a2cca6b03fb1"
 
+# KV Storage for cache metadata
+[[kv_namespaces]]
+binding = "CACHE_KV"
+id = "73b427dc72c34f5c8809061bb90cfaaa"
+preview_id = "fc8929c4f5b4410eaa4a8cc559872154"
+
 # Queue for email processing
 [[queues.producers]]
 binding = "EMAIL_QUEUE"
 queue = "luna-rag-email-queue"
+
+# Scheduled tasks for cache management
+[triggers]
+crons = ["0 */15 * * *", "0 0 * * *", "0 2 * * SUN"]
 
 # Environment-specific configurations
 [env.staging]

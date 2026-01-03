@@ -7,6 +7,7 @@ import CachingMiddleware from './caching-middleware.js';
 import CacheManager from './cache-manager.js';
 import RateLimiter from './rate-limiter.js';
 import { AuthService } from './auth.js';
+import { DatabaseService } from './database.js';
 
 export default {
   async fetch(request, env, ctx) {
@@ -257,22 +258,15 @@ async function processEmail(type, data, env) {
   switch (type) {
     case 'welcome':
       // Send welcome email
-          break;
-        case 'trial_expiry':
-          // Send trial expiry email
-          break;
-        case 'payment_success':
-          // Send payment success email
-          break;
-        default:
-          console.warn('Unknown email type:', type);
-      }
-
-      message.ack();
-    } catch (error) {
-      console.error('Error processing queue message:', error);
-      message.retry();
-    }
+      break;
+    case 'trial_expiry':
+      // Send trial expiry email
+      break;
+    case 'payment_success':
+      // Send payment success email
+      break;
+    default:
+      console.warn('Unknown email type:', type);
   }
 }
 
