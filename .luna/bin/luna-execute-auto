@@ -1,0 +1,28 @@
+#!/bin/bash
+
+# Luna Auto-Execute CLI Wrapper
+# Automatically executes all Luna Agents implementation tasks
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_DIR="$(dirname "$SCRIPT_DIR")/.."
+
+# Check if Node.js is available
+if ! command -v node &> /dev/null; then
+    echo "❌ Node.js is required but not installed."
+    echo "Please install Node.js to use luna-execute-auto"
+    exit 1
+fi
+
+# Check if we're in a Luna Agents project
+if [ ! -f "$PROJECT_DIR/.luna/implementation-plan.md" ]; then
+    echo "❌ Not a valid Luna Agents project."
+    echo "Please run this command from within a Luna Agents project directory."
+    exit 1
+fi
+
+# Run the auto-execute script
+echo "🚀 Starting Luna Auto-Execute..."
+echo "📁 Project: $PROJECT_DIR"
+
+cd "$PROJECT_DIR"
+node "$SCRIPT_DIR/../scripts/auto-execute.js" "$@"
