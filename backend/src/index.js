@@ -1253,8 +1253,7 @@ async function handleHealthCheck(env) {
     return new Response(JSON.stringify({
       status: healthy ? 'healthy' : 'unhealthy',
       checks,
-      version: '1.0.0',
-      uptime: process.uptime ? process.uptime() : 'unknown'
+      version: '1.0.0'
     }), {
       status: healthy ? 200 : 503,
       headers: {
