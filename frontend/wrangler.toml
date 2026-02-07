@@ -1,7 +1,0 @@
-name = "luna-agents"
-compatibility_date = "2024-01-05"
-
-[site]
-bucket = "."
-
-pages_build_output_dir = "."
