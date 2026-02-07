@@ -35,7 +35,7 @@ export const runCommand = new Command('run')
 
         spinner.text = `Loading ${chalk.hex('#E8A317')(agent.name)} agent...`;
 
-        // 2. Resolve API key
+        // 2. Resolve API key (skip for cloud mode)
         const provider = (options.provider || 'anthropic') as Provider;
         const providerInfo = PROVIDERS[provider];
 
@@ -45,9 +45,9 @@ export const runCommand = new Command('run')
             process.exit(1);
         }
 
-        const apiKey = resolveApiKey(provider);
+        const apiKey = options.cloud ? '' : resolveApiKey(provider);
 
-        if (!apiKey) {
+        if (!options.cloud && !apiKey) {
             spinner.fail(chalk.red(`Missing ${providerInfo.name} API key`));
             console.log('');
             console.log(chalk.dim(`  Set your API key:`));
@@ -195,7 +195,7 @@ export const runCommand = new Command('run')
             const config: LLMConfig = {
                 provider,
                 model: options.model || defaultModel(provider),
-                apiKey,
+                apiKey: apiKey as string,
                 maxTokens: 8192,
                 temperature: 0.3,
             };

@@ -35,6 +35,7 @@ const PROVIDER_LIST: Array<{ key: Provider; label: string; tag?: string }> = [
 export const initCommand = new Command('init')
     .description('Initialize LunaOS in your project')
     .option('--skip-keys', 'Skip API key setup')
+    .option('--cloud', 'Configure cloud mode (sign up / log in to LunaOS)')
     .action(async (options) => {
         const projectName = path.basename(process.cwd());
         const lunaDir = path.join(process.cwd(), '.luna');
@@ -47,6 +48,86 @@ export const initCommand = new Command('init')
         console.log(chalk.hex('#E8A317')('🌙 LunaOS Setup'));
         console.log(chalk.dim(`  Project: ${projectName}`));
         console.log('');
+
+        // --- CLOUD MODE ---
+        if (options.cloud) {
+            console.log(chalk.white.bold('  ☁️  Cloud Mode Setup'));
+            console.log(chalk.dim('  Connect to api.lunaos.ai for cloud agent execution'));
+            console.log('');
+
+            const API_BASE = process.env.LUNA_API_URL || 'https://api.lunaos.ai';
+
+            // Check for existing token
+            let existingCreds: Record<string, string> = {};
+            if (fs.existsSync(credentialsPath)) {
+                try {
+                    existingCreds = yaml.parse(fs.readFileSync(credentialsPath, 'utf-8')) || {};
+                } catch { /* ignore */ }
+            }
+
+            if (existingCreds.cloud_token) {
+                console.log(`  ${chalk.green('✓')} Cloud token already configured`);
+                console.log(chalk.dim('    To re-authenticate, delete ~/.luna/credentials.yaml and run again'));
+                console.log('');
+                return;
+            }
+
+            const choice = await prompt('  [1] Sign up  [2] Log in  [1]: ');
+            const isSignup = (choice || '1') === '1';
+            console.log('');
+
+            const email = await prompt('  Email: ');
+            const password = await prompt('  Password: ');
+
+            if (!email || !password) {
+                console.log(chalk.red('  ✗ Email and password are required'));
+                process.exit(1);
+            }
+
+            const endpoint = isSignup ? '/auth/signup' : '/auth/login';
+            const body = isSignup
+                ? JSON.stringify({ email, password, name: email.split('@')[0] })
+                : JSON.stringify({ email, password });
+
+            try {
+                console.log('');
+                console.log(chalk.dim(`  Connecting to ${API_BASE}...`));
+
+                const response = await fetch(`${API_BASE}${endpoint}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body,
+                });
+
+                const data = await response.json() as any;
+
+                if (!response.ok) {
+                    console.log(chalk.red(`  ✗ ${data.error || 'Authentication failed'}`));
+                    process.exit(1);
+                }
+
+                // Save token
+                fs.mkdirSync(globalDir, { recursive: true });
+                existingCreds.cloud_token = data.token;
+                fs.writeFileSync(credentialsPath, yaml.stringify(existingCreds), 'utf-8');
+                fs.chmodSync(credentialsPath, 0o600);
+
+                console.log(`  ${chalk.green('✓')} ${isSignup ? 'Signed up' : 'Logged in'} as ${chalk.white(data.user.email)}`);
+                console.log(`  ${chalk.green('✓')} Token saved to ${chalk.dim('~/.luna/credentials.yaml')}`);
+                console.log('');
+                console.log(chalk.dim('  Try it now:'));
+                console.log(`    ${chalk.cyan('luna run code-review --cloud')}   — run via cloud API`);
+                console.log('');
+            } catch (err: any) {
+                console.log(chalk.red(`  ✗ Connection failed: ${err.message}`));
+                console.log(chalk.dim(`    Make sure ${API_BASE} is reachable`));
+                process.exit(1);
+            }
+
+            return;
+        }
+
+        // --- LOCAL MODE (existing flow) ---
 
         // Step 1: Choose provider
         console.log(chalk.white.bold('  Choose your LLM provider:'));
