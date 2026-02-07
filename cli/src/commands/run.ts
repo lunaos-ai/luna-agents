@@ -90,39 +90,134 @@ export const runCommand = new Command('run')
             userMessage = `Please provide guidance for a project in the current directory: ${path.basename(process.cwd())}`;
         }
 
-        // 5. Execute with LLM
+        // 5. Execute — cloud or local
         spinner.succeed(chalk.hex('#E8A317')(`🌙 ${agent.name}`));
-        console.log(chalk.dim(`  Provider: ${provider} | Model: ${options.model || defaultModel(provider)}`));
-        console.log(chalk.dim('─'.repeat(60)));
-        console.log('');
-
-        const config: LLMConfig = {
-            provider,
-            model: options.model || defaultModel(provider),
-            apiKey,
-            maxTokens: 8192,
-            temperature: 0.3,
-        };
 
         let fullOutput = '';
 
-        try {
-            fullOutput = await streamLLM(
-                config,
-                agent.systemPrompt,
-                userMessage,
-                {
-                    onToken: (token) => process.stdout.write(token),
-                    onDone: () => { },
-                    onError: (err) => {
-                        console.error(chalk.red(`\n\nError: ${err.message}`));
+        if (options.cloud) {
+            // --- CLOUD MODE: call LunaOS Engine API ---
+            console.log(chalk.dim(`  Mode: ☁️  cloud | Provider: ${provider}`));
+            console.log(chalk.dim('─'.repeat(60)));
+            console.log('');
+
+            // Load cloud token from credentials
+            const os = await import('node:os');
+            const yaml = await import('yaml');
+            const credPath = path.join(os.default.homedir(), '.luna', 'credentials.yaml');
+            let cloudToken = '';
+
+            if (fs.existsSync(credPath)) {
+                try {
+                    const creds = yaml.default.parse(fs.readFileSync(credPath, 'utf-8'));
+                    cloudToken = creds?.cloud_token || '';
+                } catch { /* ignore */ }
+            }
+
+            if (!cloudToken) {
+                console.error(chalk.red('  ✗ No cloud token found.'));
+                console.error(chalk.dim('    Run: luna init --cloud   to configure'));
+                console.error(chalk.dim('    Or login at: https://agents.lunaos.ai'));
+                process.exit(1);
+            }
+
+            const API_BASE = process.env.LUNA_API_URL || 'https://api.lunaos.ai';
+
+            try {
+                const response = await fetch(`${API_BASE}/agents/execute`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${cloudToken}`,
                     },
+                    body: JSON.stringify({
+                        agent: agent.slug,
+                        context: userMessage,
+                        provider,
+                        model: options.model,
+                    }),
+                });
+
+                if (!response.ok) {
+                    const err = await response.json() as any;
+                    throw new Error(err.error || `HTTP ${response.status}`);
                 }
-            );
-        } catch (error: any) {
-            console.error('');
-            console.error(chalk.red(`  ✗ Agent execution failed: ${error.message}`));
-            process.exit(1);
+
+                // Parse SSE stream from cloud API
+                const reader = response.body?.getReader();
+                if (!reader) throw new Error('No response body');
+
+                const decoder = new TextDecoder();
+                let buffer = '';
+
+                while (true) {
+                    const { done, value } = await reader.read();
+                    if (done) break;
+
+                    buffer += decoder.decode(value, { stream: true });
+                    const lines = buffer.split('\n');
+                    buffer = lines.pop() || '';
+
+                    for (const line of lines) {
+                        if (line.startsWith('data:')) {
+                            const data = line.slice(5).trim();
+                            if (!data) continue;
+
+                            // Check for event type in preceding line
+                            const eventLine = lines[lines.indexOf(line) - 1];
+                            if (eventLine?.includes('event: token')) {
+                                process.stdout.write(data);
+                                fullOutput += data;
+                            } else if (eventLine?.includes('event: done')) {
+                                // Execution complete
+                            } else if (eventLine?.includes('event: error')) {
+                                const err = JSON.parse(data);
+                                throw new Error(err.error);
+                            } else {
+                                // Fallback: treat as token
+                                process.stdout.write(data);
+                                fullOutput += data;
+                            }
+                        }
+                    }
+                }
+            } catch (error: any) {
+                console.error('');
+                console.error(chalk.red(`  ✗ Cloud execution failed: ${error.message}`));
+                process.exit(1);
+            }
+        } else {
+            // --- LOCAL MODE: direct LLM call ---
+            console.log(chalk.dim(`  Provider: ${provider} | Model: ${options.model || defaultModel(provider)}`));
+            console.log(chalk.dim('─'.repeat(60)));
+            console.log('');
+
+            const config: LLMConfig = {
+                provider,
+                model: options.model || defaultModel(provider),
+                apiKey,
+                maxTokens: 8192,
+                temperature: 0.3,
+            };
+
+            try {
+                fullOutput = await streamLLM(
+                    config,
+                    agent.systemPrompt,
+                    userMessage,
+                    {
+                        onToken: (token) => process.stdout.write(token),
+                        onDone: () => { },
+                        onError: (err) => {
+                            console.error(chalk.red(`\n\nError: ${err.message}`));
+                        },
+                    }
+                );
+            } catch (error: any) {
+                console.error('');
+                console.error(chalk.red(`  ✗ Agent execution failed: ${error.message}`));
+                process.exit(1);
+            }
         }
 
         // 6. Save report
@@ -144,7 +239,7 @@ export const runCommand = new Command('run')
                 `**Date**: ${new Date().toISOString()}`,
                 `**Agent**: ${agent.slug}`,
                 `**Provider**: ${provider}`,
-                `**Model**: ${config.model}`,
+                `**Model**: ${options.model || defaultModel(provider)}`,
                 `**Duration**: ${duration}s`,
                 ``,
                 `---`,
