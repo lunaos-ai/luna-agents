@@ -5,13 +5,15 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { loadAgent } from '../core/persona-parser.js';
 import { buildContext, formatContext } from '../core/context-builder.js';
-import { streamLLM, resolveApiKey, defaultModel } from '../core/llm-client.js';
-import type { LLMConfig } from '../core/llm-client.js';
+import { streamLLM, resolveApiKey, defaultModel, PROVIDERS } from '../core/llm-client.js';
+import type { LLMConfig, Provider } from '../core/llm-client.js';
+
+const providerNames = Object.keys(PROVIDERS).join(', ');
 
 export const runCommand = new Command('run')
     .description('Run an agent on your project')
     .argument('<agent>', 'Agent to run (e.g., code-review, testing-validation, deployment)')
-    .option('-p, --provider <provider>', 'LLM provider (anthropic, openai)', 'anthropic')
+    .option('-p, --provider <provider>', `LLM provider (${providerNames})`, 'anthropic')
     .option('-m, --model <model>', 'Model to use')
     .option('--no-context', 'Skip auto-context gathering')
     .option('-f, --files <files...>', 'Specific files to include')
@@ -34,15 +36,23 @@ export const runCommand = new Command('run')
         spinner.text = `Loading ${chalk.hex('#E8A317')(agent.name)} agent...`;
 
         // 2. Resolve API key
-        const provider = (options.provider || 'anthropic') as 'anthropic' | 'openai';
+        const provider = (options.provider || 'anthropic') as Provider;
+        const providerInfo = PROVIDERS[provider];
+
+        if (!providerInfo) {
+            spinner.fail(chalk.red(`Unknown provider "${provider}"`));
+            console.log(chalk.dim(`  Available: ${providerNames}`));
+            process.exit(1);
+        }
+
         const apiKey = resolveApiKey(provider);
 
         if (!apiKey) {
-            spinner.fail(chalk.red(`Missing API key`));
-            const envVar = provider === 'anthropic' ? 'ANTHROPIC_API_KEY' : 'OPENAI_API_KEY';
+            spinner.fail(chalk.red(`Missing ${providerInfo.name} API key`));
             console.log('');
             console.log(chalk.dim(`  Set your API key:`));
-            console.log(`    export ${envVar}=your-key-here`);
+            console.log(`    export ${providerInfo.envVar}=your-key-here`);
+            console.log(chalk.dim(`  Or run: ${chalk.cyan('luna init')} to configure`));
             console.log('');
             process.exit(1);
         }
