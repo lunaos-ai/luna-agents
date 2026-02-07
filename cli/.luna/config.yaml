@@ -1,0 +1,15 @@
+version: "1.0"
+project: cli
+provider: anthropic
+model: claude-sonnet-4-20250514
+agents:
+  free:
+    - code-review
+    - testing-validation
+    - documentation
+    - deployment
+    - requirements-analyzer
+    - design-architect
+output:
+  dir: .luna/reports
+  format: markdown
