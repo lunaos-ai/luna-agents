@@ -43,9 +43,8 @@ const SOURCE_EXTENSIONS = new Set([
     '.py', '.go', '.rs', '.rb', '.java', '.kt',
     '.vue', '.svelte', '.astro',
     '.css', '.scss', '.less',
-    '.html', '.md',
     '.sql', '.prisma', '.graphql',
-    '.yaml', '.yml', '.toml', '.json',
+    '.yaml', '.yml', '.toml',
     '.sh', '.bash',
 ]);
 
@@ -53,10 +52,12 @@ const IGNORE_DIRS = new Set([
     'node_modules', '.git', 'dist', 'build', '.next', '.nuxt',
     'target', 'vendor', '__pycache__', '.venv', 'venv',
     'coverage', '.turbo', '.cache', '.output',
+    '.luna', '.idea', '.vscode',
 ]);
 
-const MAX_FILE_SIZE = 50_000; // 50KB per file
-const MAX_TOTAL_TOKENS = 80_000; // ~80K tokens of context
+const MAX_FILE_SIZE = 15_000; // 15KB per file
+const MAX_TOTAL_TOKENS = 20_000; // ~20K tokens — safe for all providers
+const MAX_FILES = 30; // cap number of files
 
 /**
  * Detect project type from files in the current directory
@@ -94,12 +95,13 @@ export async function buildContext(cwd: string): Promise<ProjectContext> {
     const projectName = path.basename(cwd);
     const { type, language, framework } = detectProject(cwd);
 
-    // Find all source files
+    // Find source files (max 3 levels deep to avoid scanning monorepos)
     const allFiles = await glob('**/*', {
         cwd,
         nodir: true,
-        ignore: [...IGNORE_DIRS].map(d => `${d}/**`),
+        ignore: [...IGNORE_DIRS].map(d => `**/${d}/**`),
         dot: false,
+        maxDepth: 4,
     });
 
     // Filter to source files and read content
@@ -119,8 +121,14 @@ export async function buildContext(cwd: string): Promise<ProjectContext> {
     });
 
     for (const file of sortedFiles) {
+        if (files.length >= MAX_FILES) break;
+
         const ext = path.extname(file);
         if (!SOURCE_EXTENSIONS.has(ext)) continue;
+
+        // Skip package.json in subdirectories (monorepo noise)
+        const basename = path.basename(file);
+        if (basename === 'package-lock.json') continue;
 
         const fullPath = path.join(cwd, file);
         try {
