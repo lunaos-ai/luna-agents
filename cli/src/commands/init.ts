@@ -5,7 +5,19 @@ import path from 'node:path';
 import os from 'node:os';
 import yaml from 'yaml';
 import { createInterface } from 'node:readline';
+import { exec } from 'node:child_process';
 import { PROVIDERS, type Provider } from '../core/llm-client.js';
+
+/**
+ * Open a URL in the user's default browser
+ */
+function openUrl(url: string): void {
+    const platform = process.platform;
+    const cmd = platform === 'darwin' ? 'open'
+        : platform === 'win32' ? 'start'
+            : 'xdg-open';
+    exec(`${cmd} "${url}"`);
+}
 
 function prompt(question: string): Promise<string> {
     return new Promise((resolve) => {
@@ -36,6 +48,7 @@ export const initCommand = new Command('init')
     .description('Initialize LunaOS in your project')
     .option('--skip-keys', 'Skip API key setup')
     .option('--cloud', 'Configure cloud mode (sign up / log in to LunaOS)')
+    .option('--open', 'Auto-open provider\'s API key page in browser')
     .action(async (options) => {
         const projectName = path.basename(process.cwd());
         const lunaDir = path.join(process.cwd(), '.luna');
@@ -172,6 +185,12 @@ export const initCommand = new Command('init')
                 });
                 console.log('');
                 console.log(chalk.dim(`  URL: ${chalk.cyan(providerInfo.signupUrl)}`));
+                if (options.open) {
+                    console.log(`  ${chalk.cyan('→')} Opening in browser...`);
+                    openUrl(providerInfo.signupUrl);
+                } else {
+                    console.log(chalk.dim(`  Tip: Use ${chalk.white('--open')} to auto-open in browser`));
+                }
                 console.log('');
 
                 const apiKey = await prompt(`  API Key: `);
