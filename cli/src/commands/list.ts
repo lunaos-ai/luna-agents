@@ -23,6 +23,13 @@ const CATEGORY_COLORS: Record<string, string> = {
 export const listCommand = new Command('list')
     .alias('ls')
     .description('List all available agents')
+    .addHelpText('after', `
+Examples:
+  luna list                    Show all agents grouped by category
+  luna list --json             Output as JSON
+  luna list -c security        Filter by category
+  luna ls                      Shorthand alias
+`)
     .option('-c, --category <category>', 'Filter by category')
     .option('--json', 'Output as JSON')
     .action(async (options) => {

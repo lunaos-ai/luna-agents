@@ -12,7 +12,16 @@ const providerNames = Object.keys(PROVIDERS).join(', ');
 
 export const runCommand = new Command('run')
     .description('Run an agent on your project')
-    .argument('<agent>', 'Agent to run (e.g., code-review, testing-validation, deployment)')
+    .argument('<agent>', 'Agent name (e.g., code-review, testing-validation, deployment)')
+    .addHelpText('after', `
+Examples:
+  luna run code-review                    Review your code
+  luna run code-review -f src/index.ts    Review specific file
+  luna run testing-validation             Generate test suggestions
+  luna run documentation -o docs/api.md   Save output to file
+  luna run code-review --cloud            Run via LunaOS cloud API
+  luna run deployment --verbose           Run with debug output
+`)
     .option('-p, --provider <provider>', `LLM provider (${providerNames})`, 'anthropic')
     .option('-m, --model <model>', 'Model to use')
     .option('--no-context', 'Skip auto-context gathering')
