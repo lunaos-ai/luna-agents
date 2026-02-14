@@ -46,9 +46,17 @@ const PROVIDER_LIST: Array<{ key: Provider; label: string; tag?: string }> = [
 
 export const initCommand = new Command('init')
     .description('Initialize LunaOS in your project')
+    .addHelpText('after', `
+Examples:
+  luna init                    Interactive setup — choose provider & enter API key
+  luna init --skip-keys        Skip API key setup (set later with luna keys add)
+  luna init --cloud            Connect to LunaOS cloud for remote execution
+  luna init --open             Auto-open provider's API key page in browser
+`)
     .option('--skip-keys', 'Skip API key setup')
     .option('--cloud', 'Configure cloud mode (sign up / log in to LunaOS)')
     .option('--open', 'Auto-open provider\'s API key page in browser')
+    .option('--auto-key', 'Auto-extract API key using browser automation')
     .action(async (options) => {
         const projectName = path.basename(process.cwd());
         const lunaDir = path.join(process.cwd(), '.luna');
@@ -178,22 +186,44 @@ export const initCommand = new Command('init')
             } else {
                 console.log('');
                 console.log(chalk.white.bold(`  🔑 ${providerInfo.name} API Key Setup`));
-                console.log('');
-                console.log(chalk.dim(`  How to get your key:`));
-                providerInfo.keyGuide.split('\n').forEach(line => {
-                    console.log(chalk.dim(`  ${line.trim()}`));
-                });
-                console.log('');
-                console.log(chalk.dim(`  URL: ${chalk.cyan(providerInfo.signupUrl)}`));
-                if (options.open) {
-                    console.log(`  ${chalk.cyan('→')} Opening in browser...`);
-                    openUrl(providerInfo.signupUrl);
-                } else {
-                    console.log(chalk.dim(`  Tip: Use ${chalk.white('--open')} to auto-open in browser`));
-                }
-                console.log('');
 
-                const apiKey = await prompt(`  API Key: `);
+                let apiKey: string | null = null;
+
+                if (options.autoKey) {
+                    // Dynamic import to avoid loading heavy dependencies unless needed
+                    const { KeyProvisioner } = await import('../core/key-provisioner.js');
+                    const { OpenAIExtractor, AnthropicExtractor } = await import('../core/extractors/index.js');
+
+                    let extractor = null;
+                    if (provider === 'openai') extractor = new OpenAIExtractor();
+                    else if (provider === 'anthropic') extractor = new AnthropicExtractor();
+
+                    if (extractor) {
+                        apiKey = await KeyProvisioner.provision(extractor);
+                    } else {
+                        console.log(chalk.yellow(`  ⚠ Auto-key not yet supported for ${providerInfo.name}. Please enter key manually.`));
+                    }
+                }
+
+                if (!apiKey) {
+                    console.log('');
+                    console.log(chalk.dim(`  How to get your key:`));
+                    providerInfo.keyGuide.split('\n').forEach(line => {
+                        console.log(chalk.dim(`  ${line.trim()}`));
+                    });
+                    console.log('');
+                    console.log(chalk.dim(`  URL: ${chalk.cyan(providerInfo.signupUrl)}`));
+                    if (options.open && !options.autoKey) { // Don't open if auto-key failed or not used, unless explicit
+                        console.log(`  ${chalk.cyan('→')} Opening in browser...`);
+                        openUrl(providerInfo.signupUrl);
+                    } else if (!options.autoKey) {
+                        console.log(chalk.dim(`  Tip: Use ${chalk.white('--open')} to auto-open in browser`));
+                        console.log(chalk.dim(`       Use ${chalk.white('--auto-key')} to auto-extract key`));
+                    }
+                    console.log('');
+
+                    apiKey = await prompt(`  API Key: `);
+                }
 
                 if (apiKey) {
                     fs.mkdirSync(globalDir, { recursive: true });

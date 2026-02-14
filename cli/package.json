@@ -47,19 +47,20 @@
         "README.md"
     ],
     "dependencies": {
-        "commander": "^12.1.0",
         "chalk": "^5.3.0",
-        "ora": "^8.1.0",
-        "inquirer": "^9.3.7",
+        "commander": "^12.1.0",
         "glob": "^11.0.0",
-        "yaml": "^2.5.1",
+        "inquirer": "^9.3.7",
         "marked": "^14.1.4",
-        "marked-terminal": "^7.2.1"
+        "marked-terminal": "^7.2.1",
+        "ora": "^8.1.0",
+        "yaml": "^2.5.1"
     },
     "devDependencies": {
+        "@types/node": "^22.9.0",
+        "playwright": "^1.58.2",
         "tsup": "^8.3.5",
         "typescript": "^5.6.3",
-        "@types/node": "^22.9.0",
         "vitest": "^2.1.5"
     }
 }
