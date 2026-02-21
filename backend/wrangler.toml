@@ -44,7 +44,29 @@ vars = { ENVIRONMENT = "staging" }
 
 [env.production]
 name = "luna-rag-backend"
-vars = { ENVIRONMENT = "production" }
+
+[env.production.vars]
+ENVIRONMENT = "production"
+LEMONSQUEEZY_STORE_ID = "214097"
+JWT_EXPIRES_IN = "7d"
+API_VERSION = "v1"
+
+[[env.production.d1_databases]]
+binding = "DB"
+database_name = "luna-rag-db"
+database_id = "b3b1420b-4db9-4598-b9a5-f6f1ca17d41e"
+
+[[env.production.kv_namespaces]]
+binding = "CACHE"
+id = "3ba6e6f7397049aa8bc56565c214526e"
+
+[[env.production.kv_namespaces]]
+binding = "CACHE_KV"
+id = "73b427dc72c34f5c8809061bb90cfaaa"
+
+[[env.production.queues.producers]]
+binding = "EMAIL_QUEUE"
+queue = "luna-rag-email-queue"
 
 # Route configuration (for custom domain)
 # [[routes]]
