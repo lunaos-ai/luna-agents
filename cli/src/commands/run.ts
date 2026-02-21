@@ -7,6 +7,7 @@ import { loadAgent } from '../core/persona-parser.js';
 import { buildContext, formatContext } from '../core/context-builder.js';
 import { streamLLM, resolveApiKey, defaultModel, PROVIDERS } from '../core/llm-client.js';
 import type { LLMConfig, Provider } from '../core/llm-client.js';
+import { OpenClawClient, isOpenClawRunning } from '../core/openclaw-client.js';
 
 const providerNames = Object.keys(PROVIDERS).join(', ');
 
@@ -28,9 +29,21 @@ Examples:
     .option('-f, --files <files...>', 'Specific files to include')
     .option('-o, --output <path>', 'Output file path')
     .option('--cloud', 'Use LunaOS cloud API instead of local LLM')
+    .option('--openclaw', 'Execute via OpenClaw Gateway')
+    .option('--openclaw-url <url>', 'Remote OpenClaw Gateway URL (wss://host:18789)')
+    .option('--openclaw-token <token>', 'OpenClaw Gateway auth token')
+    .option('--auto', 'Auto-detect best backend (OpenClaw → cloud → local)')
     .option('--verbose', 'Show debug info')
     .action(async (agentSlug: string, options) => {
         const startTime = Date.now();
+
+        // Auto-detect backend if --auto is specified
+        if (options.auto && !options.cloud && !options.openclaw) {
+            const openClawUp = await isOpenClawRunning();
+            if (openClawUp) {
+                options.openclaw = true;
+            }
+        }
 
         // 1. Load agent persona
         const spinner = ora({ text: 'Loading agent...', color: 'yellow' }).start();
@@ -44,7 +57,7 @@ Examples:
 
         spinner.text = `Loading ${chalk.hex('#E8A317')(agent.name)} agent...`;
 
-        // 2. Resolve API key (skip for cloud mode)
+        // 2. Resolve API key (skip for cloud/openclaw mode)
         const provider = (options.provider || 'anthropic') as Provider;
         const providerInfo = PROVIDERS[provider];
 
@@ -54,14 +67,15 @@ Examples:
             process.exit(1);
         }
 
-        const apiKey = options.cloud ? '' : resolveApiKey(provider);
+        const apiKey = (options.cloud || options.openclaw) ? '' : resolveApiKey(provider);
 
-        if (!options.cloud && !apiKey) {
+        if (!options.cloud && !options.openclaw && !apiKey) {
             spinner.fail(chalk.red(`Missing ${providerInfo.name} API key`));
             console.log('');
             console.log(chalk.dim(`  Set your API key:`));
             console.log(`    export ${providerInfo.envVar}=your-key-here`);
             console.log(chalk.dim(`  Or run: ${chalk.cyan('luna init')} to configure`));
+            console.log(chalk.dim(`  Or use: ${chalk.cyan('--openclaw')} to route through OpenClaw`));
             console.log('');
             process.exit(1);
         }
@@ -99,12 +113,109 @@ Examples:
             userMessage = `Please provide guidance for a project in the current directory: ${path.basename(process.cwd())}`;
         }
 
-        // 5. Execute — cloud or local
+        // 5. Execute — openclaw, cloud, or local
         spinner.succeed(chalk.hex('#E8A317')(`🌙 ${agent.name}`));
 
         let fullOutput = '';
 
-        if (options.cloud) {
+        if (options.openclaw || options.openclawUrl) {
+            // --- OPENCLAW MODE: execute via OpenClaw Gateway (local or remote) ---
+            const gwUrl = options.openclawUrl
+                || process.env.OPENCLAW_GATEWAY_URL
+                || 'ws://127.0.0.1:18789';
+            const gwToken = options.openclawToken
+                || process.env.OPENCLAW_GATEWAY_TOKEN
+                || '';
+            const isRemote = gwUrl.startsWith('wss://') || !gwUrl.includes('127.0.0.1');
+
+            console.log(chalk.dim(`  Mode: 🦞 openclaw ${isRemote ? '(remote)' : '(local)'}`));
+            console.log(chalk.dim(`  Gateway: ${gwUrl}`));
+            console.log(chalk.dim('─'.repeat(60)));
+            console.log('');
+
+            const client = new OpenClawClient({
+                gatewayUrl: gwUrl,
+                token: gwToken,
+            });
+
+            try {
+                const connectSpinner = ora({ text: 'Connecting to OpenClaw Gateway...', color: 'red' }).start();
+                await client.connect();
+                connectSpinner.succeed(chalk.red('Connected to OpenClaw Gateway'));
+
+                // Build the full task with Luna persona + context
+                const lunaTask = [
+                    `You are acting as the "${agent.name}" Luna agent.`,
+                    ``,
+                    `## Your Role`,
+                    agent.systemPrompt.split('\n').slice(0, 30).join('\n'), // First 30 lines of system prompt
+                    ``,
+                    `## Task`,
+                    userMessage,
+                ].join('\n');
+
+                // Spawn a dedicated sub-agent session for this Luna task
+                console.log(chalk.dim('  Spawning Luna agent session...'));
+
+                const spawnResult = await client.spawnSubAgent(lunaTask, {
+                    label: `luna-${agent.slug}`,
+                    cleanup: 'keep',
+                    timeoutSeconds: 300,
+                });
+
+                if (spawnResult.accepted) {
+                    console.log(chalk.dim(`  Session: ${spawnResult.sessionKey}`));
+                    console.log(chalk.dim(`  Run ID:  ${spawnResult.runId}`));
+                    console.log('');
+
+                    // Poll for results via session history
+                    let attempts = 0;
+                    const maxAttempts = 60; // 5 minutes at 5-sec intervals
+
+                    while (attempts < maxAttempts) {
+                        await new Promise(r => setTimeout(r, 5000));
+                        attempts++;
+
+                        try {
+                            const history = await client.getSessionHistory(spawnResult.sessionKey);
+                            const lastAssistant = history
+                                .filter((m: any) => m.role === 'assistant')
+                                .pop();
+
+                            if (lastAssistant?.content) {
+                                fullOutput = typeof lastAssistant.content === 'string'
+                                    ? lastAssistant.content
+                                    : JSON.stringify(lastAssistant.content);
+                                process.stdout.write(fullOutput);
+                                break;
+                            }
+                        } catch {
+                            // Session still running, keep polling
+                            if (options.verbose) {
+                                process.stdout.write(chalk.dim('.'));
+                            }
+                        }
+                    }
+
+                    if (!fullOutput) {
+                        console.log(chalk.yellow('  ⚠ Session timed out — check OpenClaw for results'));
+                        console.log(chalk.dim(`    openclaw sessions history ${spawnResult.sessionKey}`));
+                    }
+                } else {
+                    console.error(chalk.red('  ✗ OpenClaw rejected the agent spawn'));
+                }
+            } catch (error: any) {
+                console.error('');
+                console.error(chalk.red(`  ✗ OpenClaw execution failed: ${error.message}`));
+                if (error.message.includes('Failed to connect') || error.message.includes('timeout')) {
+                    console.error(chalk.dim('    Is OpenClaw running? Start with: openclaw gateway'));
+                    console.error(chalk.dim('    Or use: luna run --cloud / luna run --provider anthropic'));
+                }
+                process.exit(1);
+            } finally {
+                client.disconnect();
+            }
+        } else if (options.cloud) {
             // --- CLOUD MODE: call LunaOS Engine API ---
             console.log(chalk.dim(`  Mode: ☁️  cloud | Provider: ${provider}`));
             console.log(chalk.dim('─'.repeat(60)));

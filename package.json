@@ -53,9 +53,13 @@
     "mcp-servers/luna-vision-rag-client"
   ],
   "devDependencies": {
+    "@types/ws": "^8.18.1",
     "concurrently": "^8.2.2"
   },
   "bin": {
     "luna-setup": "./setup.sh"
+  },
+  "dependencies": {
+    "ws": "^8.19.0"
   }
 }
