@@ -1,60 +1,46 @@
-.claude
-cli-tools/
-.DS_Store
-.idea/
-luna-agents.iml
-
-# IDE files
-*.iml
-.idea/
-.vscode/
-
-# OS files
-.DS_Store
-Thumbs.db
-
 # Dependencies
 node_modules/
-**/node_modules/
-package-lock.json
-**/package-lock.json
+.pnpm-store/
 
-# Temporary documentation
-*_FIXED.md
-*_COMPLETE.md
-
-# Planning and status documents (not core documentation)
-*_PLAN.md
-*_SUCCESS.md
-*_SUMMARY.md
-*_RESULTS.md
-*_REPORT.md
-DEPLOYMENT_SUCCESS.md
-FINAL_DEPLOYMENT.md
-CUSTOM_DOMAIN_SUCCESS.md
-TEST_RESULTS.md
-TEST_SUMMARY.md
-LAUNCH_SUMMARY.md
-NEW_FEATURES_SUMMARY.md
-RAG_GLM_INTEGRATION_PLAN.md
-RAG_INTEGRATION_TEST_REPORT.md
-
-# Backup files
-*.backup
-*.bak
-
-# Build artifacts
+# Build output
 dist/
 build/
+out/
+.next/
+.turbo/
+*.tgz
 
-# Environment files
+# Cloudflare
+.wrangler/
+.dev.vars
+
+# Environment
 .env
 .env.local
 .env.*.local
 
-# Log files
+# IDE
+.idea/
+.vscode/
+*.iml
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Testing
+coverage/
+test-results/
+playwright-report/
+playwright/.cache/
+
+# Logs
 *.log
 npm-debug.log*
 yarn-debug.log*
-yarn-error.log*
-.vercel
+
+# AI Agent temp files
+AI_AGENT_*.md
+AI_WORKDAY_*.md
