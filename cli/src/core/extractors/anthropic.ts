@@ -1,5 +1,5 @@
-import { BaseExtractor } from './base';
-import type { Page } from 'playwright';
+import { BaseExtractor } from './base.js';
+import type { Page } from 'playwright-core';
 
 export class AnthropicExtractor extends BaseExtractor {
     name = 'Anthropic';
@@ -27,8 +27,7 @@ export class AnthropicExtractor extends BaseExtractor {
         await page.click('button[type="submit"]');
 
         // 5. Extract key
-        // Anthropic shows key in a modal with copy button
-        await this.waitForSelector(page, '.font-mono', 10000); // Usually the key is in monospace font
+        await this.waitForSelector(page, '.font-mono', 10000);
 
         // Look for text starting with sk-ant-
         const keyElement = await page.$('p:has-text("sk-ant-")');

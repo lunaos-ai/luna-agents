@@ -7,8 +7,7 @@ export function activate(context: vscode.ExtensionContext) {
 
     console.log('LunaOS VS Code extension is now active!');
 
-    const outputChannel = vscode.window.createOutputChannel("LunaOS");
-    const runner = new AgentRunner(outputChannel);
+    const runner = new AgentRunner(context.extensionUri);
 
     // Register luna.runAgent command
     let runAgentDisposable = vscode.commands.registerCommand('luna.runAgent', async () => {
