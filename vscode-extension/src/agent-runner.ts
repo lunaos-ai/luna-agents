@@ -1,49 +1,50 @@
 import * as vscode from 'vscode';
 import { spawn } from 'child_process';
 import * as path from 'path';
+import { AgentWebviewPanel } from './webview';
 
 export class AgentRunner {
-    private outputChannel: vscode.OutputChannel;
+    private extensionUri: vscode.Uri;
 
-    constructor(outputChannel: vscode.OutputChannel) {
-        this.outputChannel = outputChannel;
+    constructor(extensionUri: vscode.Uri) {
+        this.extensionUri = extensionUri;
     }
 
     public async runAgent(agentName: string, filePath?: string) {
-        // Show output channel
-        this.outputChannel.show(true);
-        this.outputChannel.clear();
-        this.outputChannel.appendLine(`🚀 LunaOS: Running agent '${agentName}'...`);
+        // Create or show the webview panel
+        AgentWebviewPanel.createOrShow(this.extensionUri, `LunaOS: ${agentName}`);
+        AgentWebviewPanel.clearContent();
+
+        // 1. Loading state UI
+        AgentWebviewPanel.appendContent(`<div class="header">
+            <div class="spinner"></div>
+            <h2>Running ${agentName}...</h2>
+        </div>\n\n`);
+
         if (filePath) {
-            this.outputChannel.appendLine(`📂 Context: ${filePath}`);
+            AgentWebviewPanel.appendContent(`> **Context File:** \`${filePath}\`\n\n`);
         }
-        this.outputChannel.appendLine('---');
+
+        AgentWebviewPanel.appendContent(`---\n\n`);
 
         // Check if luna CLI is installed
-        // We'll try running 'luna --version' first
         try {
             await this.checkCliInstalled();
         } catch (error) {
-            vscode.window.showErrorMessage('LunaOS CLI is not installed or not in PATH. Run "npm i -g @luna-agents/cli" to install.');
-            this.outputChannel.appendLine('❌ Error: LunaOS CLI not found.');
+            AgentWebviewPanel.appendContent(`\n\n<div class="error-msg">❌ Error: LunaOS CLI is not installed or not in PATH.</div>\n\nRun \`npm i -g @luna-agents/cli\` to install it.`);
+            vscode.window.showErrorMessage('LunaOS CLI is not installed or not in PATH.');
             return;
         }
 
         // Prepare args
         const args = ['run', agentName];
-
-        // If there's an active file, maybe we want to pass it as context?
-        // The CLI currently auto-detects context. Maybe subsequent versions support explicit context files.
-        // For now, let's rely on CLI auto-detection.
         if (filePath) {
-            // If CLI supports passing a file, add it here.
-            // e.g. args.push('--file', filePath);
+            // Note: If CLI is updated to take --file <path>, add it here
+            // args.push('--file', filePath);
         }
 
         const workspaceFolders = vscode.workspace.workspaceFolders;
         const cwd = workspaceFolders ? workspaceFolders[0].uri.fsPath : process.cwd();
-
-        this.outputChannel.appendLine(`📂 Working Directory: ${cwd}`);
 
         const child = spawn('luna', args, {
             cwd,
@@ -51,26 +52,34 @@ export class AgentRunner {
             env: process.env // Inherit env vars (PATH, etc)
         });
 
+        // Ensure we strip ANSI color codes from terminal output before sending to Webview Markdown parsing
+        const stripAnsi = (str: string) => str.replace(/[\u001b\u009b][[()#;?]*(?:[0-9]{1,4}(?:;[0-9]{0,4})*)?[0-9A-ORZcf-nqry=><]/g, '');
+
         child.stdout.on('data', (data) => {
-            this.outputChannel.append(data.toString());
+            const cleanStr = stripAnsi(data.toString());
+            AgentWebviewPanel.appendContent(cleanStr);
         });
 
         child.stderr.on('data', (data) => {
-            // CLI uses stderr for spinner/progress sometimes, or actual errors
-            this.outputChannel.append(data.toString());
+            // Some tools output progress to stderr, keep it clean
+            const cleanStr = stripAnsi(data.toString());
+            // Optionally, we could format stderr differently, but we'll append for now
+            AgentWebviewPanel.appendContent(cleanStr);
         });
 
         child.on('error', (error) => {
-            this.outputChannel.appendLine(`❌ Execution error: ${error.message}`);
+            AgentWebviewPanel.appendContent(`\n\n<div class="error-msg">❌ Execution error: ${error.message}</div>`);
             vscode.window.showErrorMessage(`Failed to run agent: ${error.message}`);
         });
 
         child.on('close', (code) => {
+            // Replace the spinner with a success or failure indicator
+            AgentWebviewPanel.appendContent(`\n\n---`);
             if (code === 0) {
-                this.outputChannel.appendLine('\n✅ Agent execution completed successfully.');
+                AgentWebviewPanel.appendContent(`\n\n<div class="success-msg">✅ Agent execution completed successfully.</div>`);
                 vscode.window.showInformationMessage(`LunaOS: ${agentName} run completed.`);
             } else {
-                this.outputChannel.appendLine(`\n❌ Agent execution failed with code ${code}.`);
+                AgentWebviewPanel.appendContent(`\n\n<div class="error-msg">❌ Agent execution failed with code ${code}.</div>`);
                 vscode.window.showErrorMessage(`LunaOS: ${agentName} run failed.`);
             }
         });

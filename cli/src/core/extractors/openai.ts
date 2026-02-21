@@ -1,5 +1,5 @@
-import { BaseExtractor } from './base';
-import type { Page } from 'playwright';
+import { BaseExtractor } from './base.js';
+import type { Page } from 'playwright-core';
 
 export class OpenAIExtractor extends BaseExtractor {
     name = 'OpenAI';

@@ -1,126 +1,65 @@
-import { spawn } from 'child_process';
-import path from 'path';
-import fs from 'fs';
-import { BaseExtractor } from './extractors/base';
 import chalk from 'chalk';
-import ora from 'ora';
-
-// Dynamic import for playwright type
-import type { Browser, Page, ChromiumBrowser } from 'playwright';
+import { chromium, type Browser, type Page } from 'playwright-core';
+import { BaseExtractor } from './extractors/base.js';
 
 export class KeyProvisioner {
-    private static async getPlaywright(): Promise<typeof import('playwright') | null> {
-        try {
-            return await import('playwright');
-        } catch (e) {
-            return null;
-        }
-    }
-
-    private static async isPlaywrightInstalled(): Promise<boolean> {
-        return !!(await this.getPlaywright());
-    }
-
-    private static async installPlaywright(): Promise<boolean> {
-        const spinner = ora('Installing Playwright...').start();
-        try {
-            // Install playwright locally
-            await new Promise<void>((resolve, reject) => {
-                const child = spawn('npm', ['install', 'playwright', '--no-save'], { stdio: 'inherit' });
-                child.on('close', (code) => {
-                    if (code === 0) resolve();
-                    else reject(new Error(`npm install failed with code ${code}`));
-                });
-            });
-
-            // Install browsers
-            spinner.text = 'Installing browsers...';
-            const playwright = await import('playwright');
-            // This part is tricky - usually `npx playwright install` does the binary fetching.
-            // Let's rely on npx for the browser install part.
-            await new Promise<void>((resolve, reject) => {
-                const child = spawn('npx', ['playwright', 'install', 'chromium'], { stdio: 'inherit' });
-                child.on('close', (code) => {
-                    if (code === 0) resolve();
-                    else reject(new Error(`npx playwright install failed with code ${code}`));
-                });
-            });
-
-            spinner.succeed('Playwright installed successfully.');
-            return true;
-        } catch (error) {
-            spinner.fail('Failed to install Playwright.');
-            console.error(error);
-            return false;
-        }
-    }
-
     static async provision(extractor: BaseExtractor): Promise<string | null> {
-        console.log(chalk.blue(`\n🤖 Starting automated key provisioning for ${extractor.name}...\n`));
+        console.log(`\n${chalk.cyan('→')} Starting automated API key setup for ${chalk.white.bold(extractor.name)}...`);
+        console.log(chalk.dim('  Opening browser... Please log in when prompted.'));
+        console.log(chalk.yellow('  ⚠ Do not close the browser! We will extract the key automatically.'));
 
-        let playwright = await this.getPlaywright();
-        if (!playwright) {
-            console.log(chalk.yellow('Playwright is required for this feature but not installed.'));
-            // @ts-ignore
-            const inquirer = (await import('inquirer')).default;
-            const answers = await inquirer.prompt([{
-                type: 'confirm',
-                name: 'shouldInstall',
-                message: 'Would you like to install Playwright now? (It will be installed locally)',
-                default: true
-            }]);
-            const shouldInstall = (answers as any).shouldInstall;
+        let executablePath = '';
+        const platform = process.platform;
 
-            if (shouldInstall) {
-                const success = await this.installPlaywright();
-                if (!success) return null;
-                playwright = await this.getPlaywright();
-            } else {
-                console.log(chalk.red('Cannot proceed without Playwright.'));
-                return null;
-            }
+        if (platform === 'darwin') {
+            executablePath = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
+        } else if (platform === 'win32') {
+            executablePath = 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe';
+        } else {
+            executablePath = '/usr/bin/google-chrome';
         }
 
-        if (!playwright) return null;
-
-        const spinner = ora('Launching browser...').start();
-        let browser: ChromiumBrowser | null = null;
+        let browser: Browser | null = null;
         try {
-            // Launch headed browser so user can see and interact
-            browser = await playwright.chromium.launch({ headless: false });
-            const context = await browser.newContext();
+            browser = await chromium.launch({
+                headless: false,
+                executablePath,
+                args: ['--disable-blink-features=AutomationControlled']
+            });
+
+            const context = await browser.newContext({
+                viewport: { width: 1280, height: 800 },
+                userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36'
+            });
+
             const page = await context.newPage();
 
-            spinner.text = `Navigating to ${extractor.name} login...`;
-            await page.goto(extractor.loginUrl);
-            spinner.stop();
+            console.log(chalk.dim(`  Navigating to ${extractor.loginUrl}...`));
+            await page.goto(extractor.loginUrl, { waitUntil: 'domcontentloaded' });
 
-            console.log(chalk.cyan(`\n👉 Please log in to ${extractor.name} in the browser window.`));
-            console.log(chalk.dim('   The CLI is waiting for you to complete login...'));
-
-            // Wait for user to navigate away from login page or reach a dashboard-like URL? 
-            // Or just wait for a specific selector that indicates logged-in state?
-            // Let the extractor handle the waits.
+            console.log(chalk.cyan(`  Waiting for user to log in...`));
 
             const key = await extractor.extract(page);
 
             if (key) {
-                console.log(chalk.green(`\n✅ Successfully retrieved API key!`));
+                console.log(`\n${chalk.green('✓')} Successfully extracted ${extractor.name} API key!`);
                 return key;
             } else {
-                console.log(chalk.red('\n❌ Failed to retrieve API key.'));
+                console.log(`\n${chalk.red('✗')} Failed to extract key. You may need to generate it manually.`);
                 return null;
             }
+
         } catch (error: any) {
-            // If browser closed by user, that's okay
-            if (error.message.includes('Target closed') || error.message.includes('browser has been closed')) {
-                console.log(chalk.yellow('\nBrowser closed by user.'));
-            } else {
-                console.error(chalk.red('\nError during provisioning:'), error);
+            console.log(`\n${chalk.red('✗')} Automation failed: ${error.message}`);
+            if (error.message.includes('executablePath')) {
+                console.log(chalk.yellow(`  Could not find Chrome at ${executablePath}. Please install Chrome or enter key manually.`));
             }
             return null;
         } finally {
-            if (browser) await browser.close();
+            if (browser) {
+                console.log(chalk.dim('  Closing browser...'));
+                await browser.close();
+            }
         }
     }
 }
