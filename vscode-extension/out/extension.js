@@ -8,8 +8,7 @@ const agent_runner_1 = require("./agent-runner");
 // Your extension is activated the very first time the command is executed
 function activate(context) {
     console.log('LunaOS VS Code extension is now active!');
-    const outputChannel = vscode.window.createOutputChannel("LunaOS");
-    const runner = new agent_runner_1.AgentRunner(outputChannel);
+    const runner = new agent_runner_1.AgentRunner(context.extensionUri);
     // Register luna.runAgent command
     let runAgentDisposable = vscode.commands.registerCommand('luna.runAgent', async () => {
         // 1. Get list of available agents (hardcoded for now, or fetch from CLI later)
