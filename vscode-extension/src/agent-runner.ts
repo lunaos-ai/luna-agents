@@ -36,11 +36,12 @@ export class AgentRunner {
             return;
         }
 
-        // Prepare args
         const args = ['run', agentName];
         if (filePath) {
-            // Note: If CLI is updated to take --file <path>, add it here
-            // args.push('--file', filePath);
+            // VS Code telemetry hook: Auto-sync active file context for RAG
+            args.push('--files', filePath);
+            const fileName = path.basename(filePath);
+            AgentWebviewPanel.appendContent(`> **Syncing telemetry:** Injecting \`${fileName}\` for RAG context...\n\n`);
         }
 
         const workspaceFolders = vscode.workspace.workspaceFolders;
