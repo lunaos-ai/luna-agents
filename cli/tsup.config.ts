@@ -3,6 +3,7 @@ import { defineConfig } from 'tsup';
 export default defineConfig({
     entry: ['src/index.ts'],
     format: ['esm'],
+    platform: 'node',
     target: 'node18',
     outDir: 'dist',
     clean: true,
@@ -12,5 +13,6 @@ export default defineConfig({
     banner: {
         js: '#!/usr/bin/env node',
     },
-    external: ['fsevents'],
+    skipNodeModulesBundle: true,
+    external: ['fsevents', 'playwright-core'],
 });
