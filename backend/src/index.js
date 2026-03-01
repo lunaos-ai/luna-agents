@@ -2,6 +2,7 @@ import { RAGController } from './rag-controller.js';
 import { TeamController } from './team-controller.js';
 import { SharedWorkspaceController } from './shared-workspace-controller.js';
 import { TeamAnalyticsController } from './team-analytics-controller.js';
+import { RealtimeAnalyticsController } from './realtime-analytics-controller.js';
 import { DatabasePerformanceController } from './database-performance-controller.js';
 import CachingMiddleware from './caching-middleware.js';
 import CacheManager from './cache-manager.js';
@@ -15,6 +16,7 @@ export default {
     const teamController = new TeamController(env);
     const sharedWorkspaceController = new SharedWorkspaceController(env);
     const analyticsController = new TeamAnalyticsController(env);
+    const realtimeAnalytics = new RealtimeAnalyticsController(env);
     const performanceController = new DatabasePerformanceController(env);
     const cachingMiddleware = new CachingMiddleware(env);
     const rateLimiter = new RateLimiter(env);
@@ -337,7 +339,7 @@ async function handleGetRequest(pathParts, url, request, env, ragController, tea
 
     case 'analytics':
       // Handle analytics GET operations
-      return await handleAnalyticsRoutes(pathParts.slice(1), request, analyticsController);
+      return await handleAnalyticsRoutes(pathParts.slice(1), request, analyticsController, realtimeAnalytics);
 
     case 'performance':
       // Handle performance monitoring GET operations
@@ -447,7 +449,7 @@ async function handlePostRequest(pathParts, request, env, ragController, teamCon
 
     case 'analytics':
       // Handle analytics operations
-      return await handleAnalyticsRoutes(pathParts.slice(1), request, analyticsController);
+      return await handleAnalyticsRoutes(pathParts.slice(1), request, analyticsController, realtimeAnalytics);
 
     case 'performance':
       // Handle performance monitoring operations
@@ -819,9 +821,27 @@ async function handleWorkspaceRoutes(pathParts, request, workspaceController) {
 /**
  * Handle analytics routes
  */
-async function handleAnalyticsRoutes(pathParts, request, analyticsController) {
+async function handleAnalyticsRoutes(pathParts, request, analyticsController, realtimeAnalyticsController) {
   const method = request.method;
   const route = pathParts[0];
+
+  // Real-time analytics sub-routes: /analytics/realtime/*
+  if (route === 'realtime' && realtimeAnalyticsController) {
+    const url = new URL(request.url);
+    const userId = url.searchParams.get('userId') ||
+      request.headers.get('X-User-ID') ||
+      request.headers.get('Authorization')?.replace('Bearer ', '');
+    if (!userId) {
+      return new Response(JSON.stringify({ error: 'Missing userId' }), {
+        status: 401, headers: { 'Content-Type': 'application/json' }
+      });
+    }
+    return realtimeAnalyticsController.handle(
+      new Request(request.url.replace('/realtime', ''), { method: request.method, body: request.body, headers: request.headers }),
+      userId
+    );
+  }
+
   const url = new URL(request.url);
   let userId = url.searchParams.get('userId') ||
                 request.headers.get('X-User-ID') ||
