@@ -26,7 +26,41 @@
                 "command": "luna.runCodeReview",
                 "title": "Luna: Run Code Review"
             }
-        ]
+        ],
+        "keybindings": [
+            {
+                "command": "luna.runAgent",
+                "key": "ctrl+shift+l",
+                "mac": "cmd+shift+l"
+            },
+            {
+                "command": "luna.runCodeReview",
+                "key": "ctrl+shift+r",
+                "mac": "cmd+shift+r",
+                "when": "editorTextFocus"
+            }
+        ],
+        "configuration": {
+            "title": "LunaOS Agents",
+            "properties": {
+                "lunaos.cliPath": {
+                    "type": "string",
+                    "default": "luna",
+                    "description": "Path to the Luna CLI executable"
+                },
+                "lunaos.defaultProvider": {
+                    "type": "string",
+                    "enum": ["anthropic", "openai", "deepseek"],
+                    "default": "anthropic",
+                    "description": "Default LLM provider for agent execution"
+                },
+                "lunaos.defaultModel": {
+                    "type": "string",
+                    "default": "",
+                    "description": "Default model (leave empty to use provider default)"
+                }
+            }
+        }
     },
     "scripts": {
         "vscode:prepublish": "npm run package",

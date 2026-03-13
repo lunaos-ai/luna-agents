@@ -284,26 +284,11 @@ describe('parsePersona — direct file parsing', () => {
         expect(rag!.category).toBe('intelligence');
     });
 
-    it('should assign free tier to free agents', async () => {
-        const { loadAgent } = await import('../src/core/persona-parser.js');
-
-        const freeAgents = ['code-review', 'testing-validation', 'documentation', 'deployment', 'requirements-analyzer', 'design-architect'];
-        for (const slug of freeAgents) {
-            const agent = await loadAgent(slug);
-            expect(agent).not.toBeNull();
-            expect(agent!.tier).toBe('free');
-        }
-    });
-
-    it('should assign pro tier to non-free agents', async () => {
-        const { loadAgent } = await import('../src/core/persona-parser.js');
-
-        const proAgents = ['auth', '365-security', 'rag', 'analytics', 'seo'];
-        for (const slug of proAgents) {
-            const agent = await loadAgent(slug);
-            if (agent) {
-                expect(agent.tier).toBe('pro');
-            }
+    it('should assign free tier to all agents', async () => {
+        const { loadAllAgents } = await import('../src/core/persona-parser.js');
+        const agents = await loadAllAgents();
+        for (const agent of agents) {
+            expect(agent.tier).toBe('free');
         }
     });
 
@@ -634,20 +619,20 @@ describe('Agent Categories', () => {
         expect(counts['intelligence']).toBeGreaterThanOrEqual(2);
     });
 
-    it('should have exactly 6 free agents', async () => {
+    it('should have exactly 28 free agents', async () => {
         const { loadAllAgents } = await import('../src/core/persona-parser.js');
         const agents = await loadAllAgents();
 
         const freeAgents = agents.filter(a => a.tier === 'free');
-        expect(freeAgents.length).toBe(6);
+        expect(freeAgents.length).toBe(28);
     });
 
-    it('should have 22 pro agents', async () => {
+    it('should have 0 pro agents (all agents are free)', async () => {
         const { loadAllAgents } = await import('../src/core/persona-parser.js');
         const agents = await loadAllAgents();
 
         const proAgents = agents.filter(a => a.tier === 'pro');
-        expect(proAgents.length).toBe(22);
+        expect(proAgents.length).toBe(0);
     });
 });
 

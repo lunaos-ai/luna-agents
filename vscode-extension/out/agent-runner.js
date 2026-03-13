@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.AgentRunner = void 0;
 const vscode = require("vscode");
 const child_process_1 = require("child_process");
+const path = require("path");
 const webview_1 = require("./webview");
 class AgentRunner {
     constructor(extensionUri) {
@@ -30,18 +31,26 @@ class AgentRunner {
             vscode.window.showErrorMessage('LunaOS CLI is not installed or not in PATH.');
             return;
         }
-        // Prepare args
+        const config = vscode.workspace.getConfiguration('lunaos');
+        const cliPath = config.get('cliPath', 'luna');
+        const provider = config.get('defaultProvider', '');
+        const model = config.get('defaultModel', '');
         const args = ['run', agentName];
         if (filePath) {
-            // Note: If CLI is updated to take --file <path>, add it here
-            // args.push('--file', filePath);
+            args.push('--files', filePath);
+            const fileName = path.basename(filePath);
+            webview_1.AgentWebviewPanel.appendContent(`> **Context:** \`${fileName}\`\n\n`);
         }
+        if (provider)
+            args.push('--provider', provider);
+        if (model)
+            args.push('--model', model);
         const workspaceFolders = vscode.workspace.workspaceFolders;
         const cwd = workspaceFolders ? workspaceFolders[0].uri.fsPath : process.cwd();
-        const child = (0, child_process_1.spawn)('luna', args, {
+        const child = (0, child_process_1.spawn)(cliPath, args, {
             cwd,
-            shell: process.platform === 'win32', // Use shell on Windows for path resolution
-            env: process.env // Inherit env vars (PATH, etc)
+            shell: process.platform === 'win32',
+            env: process.env,
         });
         // Ensure we strip ANSI color codes from terminal output before sending to Webview Markdown parsing
         const stripAnsi = (str) => str.replace(/[\u001b\u009b][[()#;?]*(?:[0-9]{1,4}(?:;[0-9]{0,4})*)?[0-9A-ORZcf-nqry=><]/g, '');
@@ -73,10 +82,11 @@ class AgentRunner {
         });
     }
     checkCliInstalled() {
+        const cliPath = vscode.workspace.getConfiguration('lunaos').get('cliPath', 'luna');
         return new Promise((resolve, reject) => {
-            const check = (0, child_process_1.spawn)('luna', ['--version'], {
+            const check = (0, child_process_1.spawn)(cliPath, ['--version'], {
                 shell: process.platform === 'win32',
-                env: process.env
+                env: process.env,
             });
             check.on('error', (err) => {
                 reject(err);

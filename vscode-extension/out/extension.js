@@ -1,50 +1,51 @@
 "use strict";
+/**
+ * LunaOS VS Code Extension — entry point
+ *
+ * Commands:
+ *   luna.runAgent       — pick an agent from QuickPick, run it
+ *   luna.runCodeReview  — shortcut for code-review agent
+ */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.activate = activate;
 exports.deactivate = deactivate;
 const vscode = require("vscode");
 const agent_runner_1 = require("./agent-runner");
-// This method is called when your extension is activated
-// Your extension is activated the very first time the command is executed
+const agent_loader_1 = require("./agent-loader");
 function activate(context) {
-    console.log('LunaOS VS Code extension is now active!');
     const runner = new agent_runner_1.AgentRunner(context.extensionUri);
-    // Register luna.runAgent command
-    let runAgentDisposable = vscode.commands.registerCommand('luna.runAgent', async () => {
-        // 1. Get list of available agents (hardcoded for now, or fetch from CLI later)
-        const agents = [
-            'code-review',
-            'testing-validation',
-            'documentation',
-            'deployment',
-            'requirements-analyzer',
-            'design-architect',
-            'security-audit',
-            'api-design'
-        ];
-        // 2. Show QuickPick
-        const selectedAgent = await vscode.window.showQuickPick(agents, {
+    // Status bar item
+    const statusItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 100);
+    statusItem.text = '$(luna) LunaOS';
+    statusItem.tooltip = 'LunaOS Agents — click to run an agent';
+    statusItem.command = 'luna.runAgent';
+    statusItem.show();
+    context.subscriptions.push(statusItem);
+    // Run Agent command
+    const runAgentCmd = vscode.commands.registerCommand('luna.runAgent', async () => {
+        const cliPath = vscode.workspace.getConfiguration('lunaos').get('cliPath', 'luna');
+        const agents = await (0, agent_loader_1.loadAgents)(cliPath);
+        const items = agents.map(a => ({
+            label: a.name,
+            description: a.description,
+            detail: a.category,
+        }));
+        const selected = await vscode.window.showQuickPick(items, {
             placeHolder: 'Select an AI agent to run',
-            title: 'LunaOS: Run Agent'
+            title: 'LunaOS: Run Agent',
+            matchOnDescription: true,
         });
-        if (selectedAgent) {
-            // 3. Prompt for input/context (optional, or rely on file)
-            // For now, let's just run it. The CLI might need context, but let's assume it reads from files.
-            // Maybe we pass the current file path?
+        if (selected) {
             const editor = vscode.window.activeTextEditor;
-            const currentFile = editor ? editor.document.fileName : undefined;
-            runner.runAgent(selectedAgent, currentFile);
+            runner.runAgent(selected.label, editor?.document.fileName);
         }
     });
-    // Register luna.runCodeReview shortcut
-    let runCodeReviewDisposable = vscode.commands.registerCommand('luna.runCodeReview', () => {
+    // Code Review shortcut
+    const codeReviewCmd = vscode.commands.registerCommand('luna.runCodeReview', () => {
         const editor = vscode.window.activeTextEditor;
-        const currentFile = editor ? editor.document.fileName : undefined;
-        runner.runAgent('code-review', currentFile);
+        runner.runAgent('code-review', editor?.document.fileName);
     });
-    context.subscriptions.push(runAgentDisposable);
-    context.subscriptions.push(runCodeReviewDisposable);
+    context.subscriptions.push(runAgentCmd, codeReviewCmd);
 }
-// This method is called when your extension is deactivated
 function deactivate() { }
 //# sourceMappingURL=extension.js.map
