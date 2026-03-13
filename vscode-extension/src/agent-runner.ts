@@ -36,21 +36,27 @@ export class AgentRunner {
             return;
         }
 
+        const config = vscode.workspace.getConfiguration('lunaos');
+        const cliPath = config.get<string>('cliPath', 'luna');
+        const provider = config.get<string>('defaultProvider', '');
+        const model = config.get<string>('defaultModel', '');
+
         const args = ['run', agentName];
         if (filePath) {
-            // VS Code telemetry hook: Auto-sync active file context for RAG
             args.push('--files', filePath);
             const fileName = path.basename(filePath);
-            AgentWebviewPanel.appendContent(`> **Syncing telemetry:** Injecting \`${fileName}\` for RAG context...\n\n`);
+            AgentWebviewPanel.appendContent(`> **Context:** \`${fileName}\`\n\n`);
         }
+        if (provider) args.push('--provider', provider);
+        if (model) args.push('--model', model);
 
         const workspaceFolders = vscode.workspace.workspaceFolders;
         const cwd = workspaceFolders ? workspaceFolders[0].uri.fsPath : process.cwd();
 
-        const child = spawn('luna', args, {
+        const child = spawn(cliPath, args, {
             cwd,
-            shell: process.platform === 'win32', // Use shell on Windows for path resolution
-            env: process.env // Inherit env vars (PATH, etc)
+            shell: process.platform === 'win32',
+            env: process.env,
         });
 
         // Ensure we strip ANSI color codes from terminal output before sending to Webview Markdown parsing
@@ -87,10 +93,11 @@ export class AgentRunner {
     }
 
     private checkCliInstalled(): Promise<void> {
+        const cliPath = vscode.workspace.getConfiguration('lunaos').get<string>('cliPath', 'luna');
         return new Promise((resolve, reject) => {
-            const check = spawn('luna', ['--version'], {
+            const check = spawn(cliPath, ['--version'], {
                 shell: process.platform === 'win32',
-                env: process.env
+                env: process.env,
             });
 
             check.on('error', (err) => {

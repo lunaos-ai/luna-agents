@@ -101,7 +101,7 @@ Examples:
 
                     // Agent access
                     const tier = usage.tier || 'free';
-                    const agentCount = tier === 'free' ? 6 : 28;
+                    const agentCount = 28;
                     console.log(`  ${chalk.dim('Agents:')}   ${chalk.white(agentCount.toString())}${chalk.dim(`/28 available`)}`);
                 }
             } catch {

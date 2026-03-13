@@ -12,15 +12,6 @@ export interface AgentPersona {
     filePath: string;
 }
 
-const FREE_AGENTS = new Set([
-    'code-review',
-    'testing-validation',
-    'documentation',
-    'deployment',
-    'requirements-analyzer',
-    'design-architect',
-]);
-
 const CATEGORY_MAP: Record<string, string> = {
     'requirements-analyzer': 'build',
     'design-architect': 'build',
@@ -105,7 +96,7 @@ export function parsePersona(filePath: string): AgentPersona {
         : `${title} agent`;
 
     const category = CATEGORY_MAP[slug] || 'other';
-    const tier = FREE_AGENTS.has(slug) ? 'free' : 'pro';
+    const tier = 'free';
 
     return {
         name: title,
