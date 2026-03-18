@@ -10,6 +10,7 @@ import { indexCommand } from './commands/index.js';
 import { chainCommand } from './commands/chain.js';
 import { configCommand } from './commands/config.js';
 import { loginCommand } from './commands/login.js';
+import { ragCommand } from './commands/rag.js';
 import { handleError } from './utils/error-handler.js';
 
 const program = new Command();
@@ -30,6 +31,7 @@ ${chalk.dim('Examples:')}
   ${chalk.cyan('luna index')}                 Index project for RAG context
   ${chalk.cyan('luna keys add anthropic')}    Add an API key
   ${chalk.cyan('luna config set model gpt-4o')}  Change default model
+  ${chalk.cyan('luna rag "how does auth work?"')} Semantic code search
   ${chalk.cyan('luna status')}                Show project status
 
 ${chalk.dim('Quick start:')}
@@ -47,6 +49,7 @@ program.addCommand(chainCommand);
 program.addCommand(indexCommand);
 program.addCommand(configCommand);
 program.addCommand(loginCommand);
+program.addCommand(ragCommand);
 program.addCommand(statusCommand);
 program.addCommand(keysCommand);
 program.addCommand(createAgentCommand);
