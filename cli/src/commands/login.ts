@@ -40,6 +40,7 @@ function openUrl(url: string): void {
 }
 
 export const loginCommand = new Command('login')
+    .alias('auth')
     .description('Authenticate with LunaOS cloud')
     .addHelpText('after', `
 Examples:

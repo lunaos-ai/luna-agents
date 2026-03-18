@@ -24,6 +24,7 @@ function getCloudToken(): string | null {
 }
 
 export const indexCommand = new Command('index')
+    .alias('ix')
     .description('Index your project for RAG — agents will use your codebase as context')
     .addHelpText('after', `
 Examples:

@@ -6,6 +6,7 @@ import yaml from 'yaml';
 import { loadCredentials, getApiUrl, loadConfig } from '../utils/config-store.js';
 
 export const statusCommand = new Command('status')
+    .aliases(['s', 'stat'])
     .description('Show LunaOS project status, plan, and usage')
     .addHelpText('after', `
 Examples:

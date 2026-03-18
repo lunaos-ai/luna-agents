@@ -61,6 +61,7 @@ async function openUrl(url: string): Promise<void> {
 // ─── Keys parent command ─────────────────────────────────────────────────────
 
 export const keysCommand = new Command('keys')
+    .alias('k')
     .description('Manage API keys for LLM providers');
 
 // ─── luna keys list ──────────────────────────────────────────────────────────

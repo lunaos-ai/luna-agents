@@ -45,6 +45,7 @@ const PROVIDER_LIST: Array<{ key: Provider; label: string; tag?: string }> = [
 ];
 
 export const initCommand = new Command('init')
+    .alias('i')
     .description('Initialize LunaOS in your project')
     .addHelpText('after', `
 Examples:
