@@ -37,6 +37,7 @@ const GLOBAL_CONFIG = path.join(GLOBAL_DIR, 'config.yaml');
 const CRED_PATH = path.join(GLOBAL_DIR, 'credentials.yaml');
 
 export const configCommand = new Command('config')
+    .alias('cfg')
     .description('View and manage LunaOS configuration')
     .action(() => {
         showConfig();
@@ -98,6 +99,26 @@ configCommand
         }
 
         console.log('');
+    });
+
+// ─── luna config set-key (shortcut for keys add) ─────
+
+configCommand
+    .command('set-key')
+    .description('Quick shortcut to set a provider API key (alias for `luna keys add`)')
+    .argument('[provider]', 'Provider name (e.g. anthropic, openai, deepseek)')
+    .action(async (provider?: string) => {
+        console.log('');
+        console.log(chalk.dim('  Redirecting to: ') + chalk.cyan(`luna keys add ${provider || ''}`));
+        console.log(chalk.dim('  For full key management, use: ') + chalk.cyan('luna keys'));
+        console.log('');
+
+        // Dynamically import and execute the keys add command
+        const { keysCommand } = await import('./keys.js');
+        const addCmd = keysCommand.commands.find(c => c.name() === 'add');
+        if (addCmd) {
+            await addCmd.parseAsync(provider ? ['node', 'luna', provider] : ['node', 'luna'], { from: 'user' });
+        }
     });
 
 // ─── luna config path ────────────────────────────────

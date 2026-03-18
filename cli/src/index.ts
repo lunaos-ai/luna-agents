@@ -24,20 +24,25 @@ program
   .version('0.1.0')
   .addHelpText('after', `
 ${chalk.dim('Examples:')}
-  ${chalk.cyan('luna init')}                  Initialize LunaOS in your project
-  ${chalk.cyan('luna list')}                  List all 28+ agents
-  ${chalk.cyan('luna run code-review')}       Run code review on your project
-  ${chalk.cyan('luna chain full-review')}     Run multi-agent review chain
-  ${chalk.cyan('luna index')}                 Index project for RAG context
-  ${chalk.cyan('luna keys add anthropic')}    Add an API key
-  ${chalk.cyan('luna config set model gpt-4o')}  Change default model
-  ${chalk.cyan('luna rag "how does auth work?"')} Semantic code search
-  ${chalk.cyan('luna status')}                Show project status
+  ${chalk.cyan('luna r code-review')}         Run an agent ${chalk.dim('(r = run)')}
+  ${chalk.cyan('luna q "how does auth work?"')} Search codebase ${chalk.dim('(q = rag)')}
+  ${chalk.cyan('luna ch full-review')}        Run agent chain ${chalk.dim('(ch = chain)')}
+  ${chalk.cyan('luna ls')}                    List all 28+ agents ${chalk.dim('(ls = list)')}
+  ${chalk.cyan('luna ix')}                    Index for RAG ${chalk.dim('(ix = index)')}
+  ${chalk.cyan('luna s')}                     Project status ${chalk.dim('(s = status)')}
+  ${chalk.cyan('luna k add anthropic')}       Add API key ${chalk.dim('(k = keys)')}
+  ${chalk.cyan('luna cfg set model gpt-4o')}  Set config ${chalk.dim('(cfg = config)')}
+  ${chalk.cyan('luna new my-agent')}          Create agent ${chalk.dim('(new = create-agent)')}
+  ${chalk.cyan('luna auth')}                  Login ${chalk.dim('(auth = login)')}
+
+${chalk.dim('Shortcuts cheat sheet:')}
+  ${chalk.dim('r')}=run  ${chalk.dim('q')}=rag/ask  ${chalk.dim('ch')}=chain  ${chalk.dim('ls')}=list  ${chalk.dim('ix')}=index
+  ${chalk.dim('s')}=status  ${chalk.dim('k')}=keys  ${chalk.dim('cfg')}=config  ${chalk.dim('new')}=create-agent  ${chalk.dim('i')}=init
 
 ${chalk.dim('Quick start:')}
-  ${chalk.dim('1.')} ${chalk.cyan('luna init')}           — choose your LLM provider & set API key
-  ${chalk.dim('2.')} ${chalk.cyan('luna run code-review')}  — run your first agent
-  ${chalk.dim('3.')} ${chalk.cyan('luna chain full-review')} — run a full review chain
+  ${chalk.dim('1.')} ${chalk.cyan('luna i')}              — setup provider & API key
+  ${chalk.dim('2.')} ${chalk.cyan('luna r code-review')}  — run your first agent
+  ${chalk.dim('3.')} ${chalk.cyan('luna ch full-review')} — run a full review chain
 
 ${chalk.dim('Docs:')} ${chalk.cyan('https://docs.lunaos.ai')}
 `);

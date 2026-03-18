@@ -12,6 +12,7 @@ import { OpenClawClient, isOpenClawRunning } from '../core/openclaw-client.js';
 const providerNames = Object.keys(PROVIDERS).join(', ');
 
 export const runCommand = new Command('run')
+    .alias('r')
     .description('Run an agent on your project')
     .argument('<agent>', 'Agent name (e.g., code-review, testing-validation, deployment)')
     .addHelpText('after', `

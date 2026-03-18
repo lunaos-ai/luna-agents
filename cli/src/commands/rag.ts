@@ -22,6 +22,7 @@ import { registerUpgradeCommands } from './rag-upgrade.js';
 const LUNA = chalk.hex('#E8A317');
 
 export const ragCommand = new Command('rag')
+    .aliases(['q', 'ask'])
     .description('Intelligent code search & context powered by Luna RAG')
     .addHelpText('after', `
 ${chalk.dim('Examples:')}

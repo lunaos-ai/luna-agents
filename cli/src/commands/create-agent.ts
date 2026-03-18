@@ -102,6 +102,7 @@ Numbered list of specific actions to take, ordered by priority.
 }
 
 export const createAgentCommand = new Command('create-agent')
+    .aliases(['new', 'mk'])
     .description('Create a custom AI agent persona')
     .argument('<name>', 'Agent name (kebab-case, e.g. "my-reviewer")')
     .option('-d, --description <desc>', 'Short description of what the agent does')

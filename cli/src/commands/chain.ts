@@ -32,6 +32,7 @@ function getCloudToken(): string | null {
 }
 
 export const chainCommand = new Command('chain')
+    .alias('ch')
     .description('Run a multi-agent chain — agents execute sequentially, piping output forward')
     .argument('[preset]', 'Preset chain to run (e.g., full-review, new-feature, deploy, security-audit, api-design)')
     .addHelpText('after', `
