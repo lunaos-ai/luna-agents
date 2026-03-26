@@ -159,7 +159,8 @@
     "luna-deploy",
     "luna-docs",
     "luna-monitor",
-    "luna-postlaunch"
+    "luna-postlaunch",
+    "luna-ls-products"
   ],
   "files": [
     "README.md",
