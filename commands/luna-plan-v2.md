@@ -1,5 +1,5 @@
 ---
-name: luna-plan
+name: luna-plan-v2
 displayName: Luna Task Planning (API Enhanced)
 description: Break down design into ordered, actionable implementation tasks with backend integration
 version: 2.0.0
