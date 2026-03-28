@@ -1,5 +1,5 @@
 ---
-name: luna-deploy
+name: ll-deploy
 displayName: Luna Deployment
 description: Deploy application to staging and production environments
 version: 1.0.0

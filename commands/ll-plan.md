@@ -1,5 +1,5 @@
 ---
-name: luna-plan
+name: ll-plan
 displayName: Luna Task Planning
 description: Break down design into ordered, actionable implementation tasks
 version: 1.0.0

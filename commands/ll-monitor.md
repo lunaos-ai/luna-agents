@@ -1,5 +1,5 @@
 ---
-name: luna-monitor
+name: ll-monitor
 displayName: Luna Monitoring & Observability
 description: Set up comprehensive monitoring, dashboards, and alerts
 version: 1.0.0

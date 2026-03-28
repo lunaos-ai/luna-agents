@@ -1,5 +1,5 @@
 ---
-name: luna-execute
+name: ll-execute
 displayName: Luna Task Execution
 description: Implement tasks from the implementation plan in order
 version: 1.0.0

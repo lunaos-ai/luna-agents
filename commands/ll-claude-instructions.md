@@ -1,5 +1,5 @@
 ---
-name: luna-claude-instructions
+name: ll-claude-instructions
 displayName: Luna Claude Instructions Builder
 description: Generate a comprehensive instructions file for the Claude Chrome browser extension from your codebase
 version: 1.0.0

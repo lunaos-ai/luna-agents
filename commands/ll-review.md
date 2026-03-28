@@ -1,5 +1,5 @@
 ---
-name: luna-review
+name: ll-review
 displayName: Luna Code Review
 description: Perform comprehensive code review of implemented features
 version: 1.0.0

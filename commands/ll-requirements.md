@@ -1,5 +1,5 @@
 ---
-name: luna-requirements
+name: ll-requirements
 displayName: Luna Requirements Analysis
 description: Analyze the project codebase and generate comprehensive requirements document
 version: 1.0.0

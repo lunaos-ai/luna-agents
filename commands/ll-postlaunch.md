@@ -1,5 +1,5 @@
 ---
-name: luna-postlaunch
+name: ll-postlaunch
 displayName: Luna Post-Launch Review
 description: Analyze launch metrics and provide recommendations for improvement
 version: 1.0.0

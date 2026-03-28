@@ -1,5 +1,5 @@
 ---
-name: luna-docs
+name: ll-docs
 displayName: Luna Documentation
 description: Create comprehensive user, developer, and API documentation
 version: 1.0.0

@@ -1,5 +1,5 @@
 ---
-name: luna-onboarding
+name: ll-onboarding
 displayName: Luna Onboarding Guide Builder
 description: Generate an onboarding guide — setup steps, first-use walkthrough, progressive disclosure, role-based paths
 version: 1.0.0

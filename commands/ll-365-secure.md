@@ -1,5 +1,5 @@
 ---
-name: luna-365-secure
+name: ll-365-secure
 displayName: Luna Microsoft 365 Security
 description: Apply Microsoft 365 / Azure AD security hardening and BFF session authentication
 version: 1.0.0
