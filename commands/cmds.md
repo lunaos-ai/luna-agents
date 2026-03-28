@@ -36,6 +36,8 @@ Quick reference for all shortcuts. Type any of these in Claude Code:
 | `/cfg` | Configuration | `/luna-config` |
 | `/dock` | Dockerize | `/luna-dockerize` |
 | `/cf` | Cloudflare deploy | `/luna-cloudflare-auto` |
+| `/auth` | Build Auth.js system | `/ll-auth` |
+| `/brand` | Generate brand identity | `/ll-brand` |
 
 ## Full Pipeline
 
