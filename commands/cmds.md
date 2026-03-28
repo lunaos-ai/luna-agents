@@ -38,6 +38,7 @@ Quick reference for all shortcuts. Type any of these in Claude Code:
 | `/cf` | Cloudflare deploy | `/luna-cloudflare-auto` |
 | `/auth` | Build Auth.js system | `/ll-auth` |
 | `/brand` | Generate brand identity | `/ll-brand` |
+| `/rules` | Apply session rules (100-line cap, full tests, Playwright e2e) | `/ll-rules` |
 
 ## Full Pipeline
 
