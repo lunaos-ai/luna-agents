@@ -1,5 +1,5 @@
 ---
-name: luna-test
+name: ll-test
 displayName: Luna Testing & Validation
 description: Create comprehensive test suites and validate against requirements
 version: 1.0.0

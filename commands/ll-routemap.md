@@ -1,5 +1,5 @@
 ---
-name: luna-routemap
+name: ll-routemap
 displayName: Luna Route Map Builder
 description: Build a complete routing and navigation map with pages, params, guards, and auth matrix
 version: 1.0.0

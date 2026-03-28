@@ -1,5 +1,5 @@
 ---
-name: luna-flowdocs
+name: ll-flowdocs
 displayName: Luna Flow & Skills Documentation
 description: Document all user flows, interaction patterns, and skills with Mermaid diagrams
 version: 1.0.0

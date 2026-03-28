@@ -1,5 +1,5 @@
 ---
-name: luna-ls-products
+name: ll-ls-products
 displayName: Luna LemonSqueezy Products
 description: Scan project and generate an HTML page with LemonSqueezy product definitions — descriptions, pricing tiers, features, and AI image prompts for hero, icon, social card, thumbnail, and variant cards
 version: 2.0.0

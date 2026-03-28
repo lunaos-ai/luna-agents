@@ -1,5 +1,5 @@
 ---
-name: luna-config
+name: ll-config
 displayName: Luna Configuration Wizard
 description: Configure Luna plugin to connect with Claude Agent Platform
 version: 1.0.0

@@ -1,5 +1,5 @@
 ---
-name: luna-hld
+name: ll-hld
 displayName: Luna High-Level Design Builder
 description: Generate a high-level design document from existing code — architecture, components, data flow, deployment
 version: 1.0.0

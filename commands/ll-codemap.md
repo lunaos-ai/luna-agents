@@ -1,5 +1,5 @@
 ---
-name: luna-codemap
+name: ll-codemap
 displayName: Luna Code Map Builder
 description: Build a visual code structure map with file tree, exports, imports, and dependency graph
 version: 1.0.0

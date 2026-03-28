@@ -1,5 +1,5 @@
 ---
-name: luna-payments-review
+name: ll-payments
 displayName: Luna Payments System Review
 description: Review or suggest payment system architecture — providers, webhooks, subscriptions, pricing, security
 version: 1.0.0

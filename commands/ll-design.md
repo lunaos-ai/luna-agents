@@ -1,5 +1,5 @@
 ---
-name: luna-design
+name: ll-design
 displayName: Luna Design Architecture
 description: Transform requirements into comprehensive technical design specification
 version: 1.0.0
