@@ -146,6 +146,16 @@
       "name": "luna-post-launch-review",
       "displayName": "Post-Launch Review",
       "category": "analysis"
+    },
+    {
+      "name": "luna-auth",
+      "displayName": "Auth Builder",
+      "category": "authentication"
+    },
+    {
+      "name": "luna-brand",
+      "displayName": "Brand Builder",
+      "category": "branding"
     }
   ],
   "commands": [
@@ -178,7 +188,9 @@
     "ll-rag-upgrade",
     "ll-shortcuts",
     "ll-ui-convert",
-    "ll-e2e-test"
+    "ll-e2e-test",
+    "ll-auth",
+    "ll-brand"
   ],
   "files": [
     "README.md",
