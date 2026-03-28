@@ -81,8 +81,8 @@
     "type": "workflow",
     "framework": "claude-code",
     "entryPoints": {
-      "agents": "./agents",
-      "commands": "./commands"
+      "agents": "../agents",
+      "commands": "../commands"
     },
     "configuration": {
       "supportsMultiProject": true,
@@ -153,6 +153,7 @@
     "luna-design",
     "luna-hig",
     "luna-plan",
+    "luna-plan-v2",
     "luna-execute",
     "luna-review",
     "luna-test",
@@ -160,7 +161,23 @@
     "luna-docs",
     "luna-monitor",
     "luna-postlaunch",
-    "luna-ls-products"
+    "luna-ls-products",
+    "luna-codemap",
+    "luna-flowdocs",
+    "luna-hld",
+    "luna-onboarding",
+    "luna-claude-instructions",
+    "luna-routemap",
+    "luna-payments-review",
+    "luna-config",
+    "luna-365-secure",
+    "luna-cloudflare-auto",
+    "luna-dockerize",
+    "luna-rag",
+    "luna-rag-guided",
+    "luna-rag-upgrade",
+    "luna-shortcuts",
+    "luna-ui-convert"
   ],
   "files": [
     "README.md",
