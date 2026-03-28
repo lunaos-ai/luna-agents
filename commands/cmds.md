@@ -68,11 +68,22 @@ Quick reference for all shortcuts. Type any of these in Claude Code:
 | `/cf` | Cloudflare deploy | `/ll-cloudflare` |
 | `/sec` | Security audit | `/ll-365-secure` |
 
+## AI & Intelligence
+
+| Type | Does | Full command |
+|------|------|-------------|
+| `/nexa` | Nexa semantic code analysis (review, bugs, explain) | `/ll-nexa` |
+| `/lam` | Goal-driven autonomous actions (Large Action Model) | `/ll-lam` |
+| `/oh` | Delegate to OpenHands autonomous agent | `/ll-openhands` |
+| `/chain` | Chain agents together (rag->nexa->openhands) | `/ll-agent-chain` |
+| `/vision` | Screenshot-to-code, UI analysis, visual diff | `/ll-vision` |
+| `/search` | Multi-engine search (RAG + Nexa + grep) | `/ll-smart-search` |
+| `/q` | RAG codebase search | `/ll-rag` |
+
 ## Tools
 
 | Type | Does | Full command |
 |------|------|-------------|
-| `/q` | Search codebase (RAG) | `/ll-rag` |
 | `/hig` | Apple HIG audit | `/ll-hig` |
 | `/ui` | Convert to HIG design | `/ll-ui-convert` |
 | `/docs` | Generate docs | `/ll-docs` |
@@ -90,6 +101,20 @@ Quick reference for all shortcuts. Type any of these in Claude Code:
 /feature "description" -> implements, tests, reviews, fixes until done -> /pr
 ```
 
+## AI Pipeline
+
+```
+/search "understand" -> /nexa review -> /lam "achieve goal" -> /test -> /pr
+```
+
+## Agent Chain Examples
+
+```
+/chain "rag -> nexa review -> openhands fix -> test"
+/chain "nexa debt -> refactor -> test -> pr"
+/chain "(lint + test + typecheck) -> deploy"
+```
+
 ## Tips
 
 - `/feature` is the autopilot — plan, implement, test, fix in a loop
@@ -97,5 +122,8 @@ Quick reference for all shortcuts. Type any of these in Claude Code:
 - `/parallel build,test,lint` — run multiple checks simultaneously
 - `/fix "bug description"` — systematic fix with failing test first
 - `/rules` at session start — enforces 100-line cap + full tests
-- `/q how does X work?` — ask anything about your code
+- `/search "how does X work?"` — multi-engine code search
+- `/nexa review src/` — AI code analysis with Nexa
+- `/lam "add feature X"` — autonomous goal-driven implementation
+- `/chain "rag -> nexa -> fix"` — compose agent pipelines
 - `/cmds` — show this cheat sheet anytime
