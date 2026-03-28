@@ -188,6 +188,63 @@ export function flattenConfig(obj: Record<string, any>, prefix = ''): Array<{ ke
     return result;
 }
 
+// ─── Provider key helpers ────────────────────────────
+
+/**
+ * Provider env-var mapping (mirrors PROVIDERS from llm-client)
+ */
+const PROVIDER_ENV_VARS: Record<string, string> = {
+    anthropic: 'ANTHROPIC_API_KEY',
+    openai: 'OPENAI_API_KEY',
+    deepseek: 'DEEPSEEK_API_KEY',
+    xai: 'XAI_API_KEY',
+    google: 'GOOGLE_API_KEY',
+    mistral: 'MISTRAL_API_KEY',
+    cohere: 'COHERE_API_KEY',
+    perplexity: 'PERPLEXITY_API_KEY',
+    together: 'TOGETHER_API_KEY',
+    groq: 'GROQ_API_KEY',
+    fireworks: 'FIREWORKS_API_KEY',
+    openrouter: 'OPENROUTER_API_KEY',
+};
+
+/**
+ * Get API key for a provider (env var → credentials file)
+ */
+export function getProviderKey(provider: string): string | null {
+    const envVar = PROVIDER_ENV_VARS[provider];
+    if (!envVar) return null;
+
+    // 1. Environment variable
+    if (process.env[envVar]) return process.env[envVar]!;
+
+    // 2. Credentials file
+    const creds = loadCredentials();
+    return creds[envVar] || null;
+}
+
+/**
+ * Set API key for a provider
+ */
+export function setProviderKey(provider: string, key: string): void {
+    const envVar = PROVIDER_ENV_VARS[provider];
+    if (!envVar) throw new Error(`Unknown provider: ${provider}`);
+
+    const creds = loadCredentials();
+    creds[envVar] = key;
+    saveCredentials(creds);
+}
+
+/**
+ * List all providers that have a key configured
+ */
+export function listConfiguredProviders(): string[] {
+    const creds = loadCredentials();
+    return Object.entries(PROVIDER_ENV_VARS)
+        .filter(([, envVar]) => creds[envVar] || process.env[envVar])
+        .map(([provider]) => provider);
+}
+
 export const KNOWN_KEYS = [
     'provider',
     'model',
