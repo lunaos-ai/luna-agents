@@ -209,7 +209,13 @@
     "ll-debug",
     "ll-storybook",
     "ll-deps",
-    "ll-pr"
+    "ll-pr",
+    "ll-nexa",
+    "ll-openhands",
+    "ll-lam",
+    "ll-agent-chain",
+    "ll-vision",
+    "ll-smart-search"
   ],
   "files": [
     "README.md",
