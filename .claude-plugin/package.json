@@ -190,7 +190,8 @@
     "ll-ui-convert",
     "ll-e2e-test",
     "ll-auth",
-    "ll-brand"
+    "ll-brand",
+    "ll-rules"
   ],
   "files": [
     "README.md",
