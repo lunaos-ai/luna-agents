@@ -177,7 +177,8 @@
     "ll-rag-guided",
     "ll-rag-upgrade",
     "ll-shortcuts",
-    "ll-ui-convert"
+    "ll-ui-convert",
+    "ll-e2e-test"
   ],
   "files": [
     "README.md",
