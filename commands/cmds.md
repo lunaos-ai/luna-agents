@@ -89,57 +89,97 @@ Quick reference for all shortcuts. Type any of these in Claude Code:
 | `/docs` | Generate docs | `/ll-docs` |
 | `/cfg` | Configuration | `/ll-config` |
 
-## Pipeline Runner
+## Luna Pipe — AI Programming Language
 
 | Type | Does | Full command |
 |------|------|-------------|
-| `/pipe` | Combine commands: `>>` sequential, `~~` parallel | `/ll-pipe` |
+| `/pipe` | Compose Luna command pipelines | `/ll-pipe` |
+| `/workflow` | Save, load, share named pipelines | `/ll-workflow` |
+| `/assert` | Validate project constraints | `/ll-assert` |
 
-### Operators
+### Flow & Loops
 ```
->>   sequential (run one after another)
-~~   parallel (run all at once)
-( )  group commands
-?>>  run next only if previous succeeded
-!>>  run next only if previous failed
+>>   sequential                          req >> des >> plan
+~~   parallel                            rev ~~ test ~~ sec
+( )  group                               (rev ~~ test) >> ship
+?>>  if success                          test ?>> ship
+!>>  if failure                          test !>> fix
 *N   loop N times                        go *5
-*N?  loop up to N, stop on success       (fix >> test) *3?
-*N!  loop up to N, stop on failure       go *10!
-*?   loop until success (max 10)         (fix >> test) *?
-@before:CMD  run before each step        @before:rules
-@after:CMD   run after each step         @after:test
-@each:CMD    run before+after each step  @each:rev
+*N?  loop, stop on success               (fix >> test) *3?
+*N!  loop, stop on failure               go *10!
+*?   loop until success                  (fix >> test) *?
 ```
 
-### Pipeline Examples (all Luna commands)
+### Hooks & Context
+```
+@before:CMD   before each step           @before:rules
+@after:CMD    after each step            @after:test
+@each:CMD     before+after each step     @each:rev
+with scope:X  set scope for block        with scope:billing (go >> test)
+in REPO       target repo                in lunaos-engine (test >> ship)
+```
+
+### Variables & Conditions
+```
+$var = CMD    capture output              $r = rev
+if COND       branch on condition         if $test.coverage < 90 >> fix
+else          else branch                 else >> ship
+match VAR     switch on value             match $env >> prod: ship
+```
+
+### Safety & Control
+```
+assert COND   fail if false              assert files.max_lines <= 100
+approve "M"   pause for confirmation     approve "Ship to prod?"
+try (CMDS)    try block                  try (go >> test >> ship)
+catch (CMDS)  on error                   catch (rollback >> fix)
+finally (C)   always run                 finally (docs >> changelog)
+timeout Nm    timeout                    timeout 5m (nexa review)
+retry N       retry on failure           retry 3 test
+```
+
+### Workflows & Reactivity
+```
+def N = PIPE  save workflow              def qg = (rev ~~ test ~~ sec)
+run NAME      run workflow               run qg ?>> ship
+import NAME   load from file             import team-pipeline
+watch PATH    run on file change         watch src/ >> test
+on EVENT      run on event               on git:push >> test >> ship
+snapshot      checkpoint state           snapshot >> refactor >> diff
+map [ITEMS]   apply to each              map [auth, billing] >> (go >> test)
+reduce CMD    merge results              reduce pr
+log "MSG"     log to report              log "Deploy complete"
+```
+
+### Pipeline Examples
 
 ```
 # Standard dev workflow
-/pipe req >> des >> plan >> go >> rev >> test >> ship
+/pipe req >> des >> plan >> go *5 >> rev >> test >> ship
 
-# Quality gate (parallel Luna checks, then deploy)
-/pipe (rev ~~ test ~~ sec ~~ a11y) >> ship
+# Quality gate
+/pipe (rev ~~ test ~~ sec ~~ a11y) ?>> ship
 
-# Conditional deploy
-/pipe test ?>> ship !>> fix
+# Full workflow with safety nets
+/pipe try (
+  @before:rules @after:test go *5 >>
+  assert files.max_lines <= 100 >>
+  assert $test.coverage >= 90 >>
+  approve "Ship?" >> ship
+) catch (rollback >> fix >> test) finally (docs >> changelog)
 
-# AI-powered pipeline
+# Named workflows
+/pipe def qg = (rev ~~ test ~~ sec)
+/pipe go *5 >> run qg ?>> pr !>> (fix >> test) *3?
+
+# AI-powered
 /pipe search "auth" >> nexa review >> lam "improve auth" >> test >> pr
 
-# Implement 5 tasks, quality gate, ship
-/pipe go *5 >> (rev ~~ test ~~ sec) >> ship
+# Multi-repo deploy
+/pipe in lunaos-engine (test >> ship) ~~ in lunaos-dashboard (test >> ship)
 
-# Auto-fix loop (try 3 times)
-/pipe (fix "bug" >> test) *3? >> pr
-
-# Apply rules + test after every task
-/pipe @before:rules @after:test go *5 >> ship
-
-# Feature with quality gates
-/pipe feature "add billing" >> (rev ~~ test) ?>> pr
-
-# Full project from scratch
-/pipe req >> des >> plan >> @before:rules @after:test go *10! >> rev >> sec >> ship >> docs >> watch
+# Watch mode
+/pipe watch src/ >> test >> rev
 ```
 
 ## Tips
