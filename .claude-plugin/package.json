@@ -215,7 +215,8 @@
     "ll-lam",
     "ll-agent-chain",
     "ll-vision",
-    "ll-smart-search"
+    "ll-smart-search",
+    "ll-pipe"
   ],
   "files": [
     "README.md",
