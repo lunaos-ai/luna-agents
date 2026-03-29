@@ -184,23 +184,23 @@ Use `/pipe` to chain commands with operators:
 # >> sequential (one after another)
 /pipe req >> des >> plan >> go >> rev >> test >> ship
 
-# ~~ parallel (all at once)
-/pipe lint ~~ test ~~ typecheck ~~ security
+# ~~ parallel (Luna quality checks at once)
+/pipe rev ~~ test ~~ sec ~~ a11y
 
 # () group + mix
-/pipe (lint ~~ test ~~ typecheck) >> ship
+/pipe (rev ~~ test ~~ sec) >> ship
 
-# ?>> conditional (next only if previous succeeded)
-/pipe test ?>> deploy
+# ?>> conditional (ship only if tests pass)
+/pipe test ?>> ship
 
-# !>> fail branch (next only if previous failed)
-/pipe test ?>> deploy !>> fix
+# !>> fail branch (fix if tests fail)
+/pipe test ?>> ship !>> fix
 
 # AI-powered pipeline
 /pipe search "auth" >> nexa review >> lam "improve auth" >> test >> pr
 
 # Implement 5 tasks, quality gate, ship
-/pipe go *5 >> (lint ~~ test ~~ typecheck) >> ship
+/pipe go *5 >> (rev ~~ test ~~ sec) >> ship
 
 # Auto-fix loop (try 3 times until tests pass)
 /pipe (fix "bug" >> test) *3? >> pr
@@ -209,15 +209,18 @@ Use `/pipe` to chain commands with operators:
 /pipe @before:rules @after:test go *5 >> ship
 
 # Feature autopilot with quality gate
-/pipe feature "add billing" >> (lint ~~ test) ?>> pr
+/pipe feature "add billing" >> (rev ~~ test) ?>> pr
+
+# Full project from scratch
+/pipe req >> des >> plan >> @before:rules @after:test go *10! >> rev >> sec >> ship >> docs >> watch
 ```
 
 | Operator | Meaning | Example |
 |:---------|:--------|:--------|
 | `>>` | Sequential — left finishes, then right starts | `req >> des >> plan` |
-| `~~` | Parallel — all run simultaneously | `lint ~~ test ~~ typecheck` |
-| `( )` | Group — treated as a single unit | `(lint ~~ test) >> ship` |
-| `?>>` | Success gate — next only if previous passed | `test ?>> deploy` |
+| `~~` | Parallel — all run simultaneously | `rev ~~ test ~~ sec` |
+| `( )` | Group — treated as a single unit | `(rev ~~ test) >> ship` |
+| `?>>` | Success gate — next only if previous passed | `test ?>> ship` |
 | `!>>` | Fail branch — next only if previous failed | `test !>> fix` |
 | `*N` | Loop N times | `go *5` |
 | `*N?` | Loop up to N times, stop on success | `(fix >> test) *3?` |
@@ -225,7 +228,7 @@ Use `/pipe` to chain commands with operators:
 | `*?` | Loop until success (max 10) | `(fix >> test) *?` |
 | `@before:CMD` | Run before each step | `@before:rules` |
 | `@after:CMD` | Run after each step | `@after:test` |
-| `@each:CMD` | Run before + after each step | `@each:lint` |
+| `@each:CMD` | Run before + after each step | `@each:rev` |
 
 ### API
 
