@@ -4,7 +4,7 @@ displayName: Luna Browser Test
 description: Full browser integration testing — launch app, navigate flows, screenshot, auto-fix failures
 version: 1.0.0
 category: testing
-agent: luna-testing-validation
+agent: luna-full-test
 parameters:
   - name: url
     type: string

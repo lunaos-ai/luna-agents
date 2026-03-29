@@ -4,7 +4,7 @@ displayName: Luna E2E Flow Generator
 description: Auto-generate Playwright E2E tests from your routes and components — login, CRUD, billing, all flows
 version: 1.0.0
 category: testing
-agent: luna-testing-validation
+agent: luna-full-test
 parameters:
   - name: scope
     type: string

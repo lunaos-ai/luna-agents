@@ -4,7 +4,7 @@ displayName: Luna Self-Heal
 description: Continuously test, screenshot, detect issues, and auto-fix your app in a loop until healthy
 version: 1.0.0
 category: automation
-agent: luna-task-executor
+agent: luna-full-test
 parameters:
   - name: url
     type: string

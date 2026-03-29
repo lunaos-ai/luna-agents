@@ -153,6 +153,11 @@
       "category": "authentication"
     },
     {
+      "name": "luna-full-test",
+      "displayName": "Full Test Agent",
+      "category": "testing"
+    },
+    {
       "name": "luna-brand",
       "displayName": "Brand Builder",
       "category": "branding"
