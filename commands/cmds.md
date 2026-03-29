@@ -89,30 +89,38 @@ Quick reference for all shortcuts. Type any of these in Claude Code:
 | `/docs` | Generate docs | `/ll-docs` |
 | `/cfg` | Configuration | `/ll-config` |
 
-## Full Pipeline
+## Pipeline Runner
 
-```
-/req -> /des -> /plan -> /go -> /rev -> /test -> /sec -> /hig -> /ship -> /watch -> /retro
-```
+| Type | Does | Full command |
+|------|------|-------------|
+| `/pipe` | Combine commands: `>>` sequential, `~~` parallel | `/ll-pipe` |
 
-## Autopilot Pipeline
-
+### Operators
 ```
-/feature "description" -> implements, tests, reviews, fixes until done -> /pr
-```
-
-## AI Pipeline
-
-```
-/search "understand" -> /nexa review -> /lam "achieve goal" -> /test -> /pr
+>>   sequential (run one after another)
+~~   parallel (run all at once)
+( )  group commands
+?>>  run next only if previous succeeded
+!>>  run next only if previous failed
 ```
 
-## Agent Chain Examples
+### Pipeline Examples
 
 ```
-/chain "rag -> nexa review -> openhands fix -> test"
-/chain "nexa debt -> refactor -> test -> pr"
-/chain "(lint + test + typecheck) -> deploy"
+# Standard dev workflow (sequential)
+/pipe req >> des >> plan >> go >> rev >> test >> ship
+
+# Quality gate (parallel checks, then deploy)
+/pipe (lint ~~ test ~~ typecheck ~~ security) >> ship
+
+# Conditional deploy (deploy if pass, fix if fail)
+/pipe test ?>> deploy !>> fix
+
+# AI-powered pipeline
+/pipe search "auth" >> nexa review >> lam "improve auth" >> test >> pr
+
+# Feature with quality gates
+/pipe feature "add billing" >> (lint ~~ test) ?>> pr
 ```
 
 ## Tips
