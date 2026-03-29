@@ -6,7 +6,7 @@
 </p>
 
 <p align="center">
-  <strong>28 specialized AI agents for every stage of your software development lifecycle.</strong>
+  <strong>28 specialized AI agents · 70+ commands for every stage of your software development lifecycle.</strong>
   <br>
   One CLI. One API. From requirements to production.
 </p>
@@ -92,6 +92,124 @@ luna agents list
 # Search your codebase with AI
 luna rag search "How does authentication work?"
 ```
+
+### Claude Code Commands (70+)
+
+Luna Agents includes 70+ slash commands for Claude Code. Type `/cmds` to see all.
+
+#### Dev Workflow (sequential)
+
+| Shortcut | Command | What It Does |
+|:---------|:--------|:-------------|
+| `/req` | `/ll-requirements` | Analyze codebase, generate requirements |
+| `/des` | `/ll-design` | Transform requirements into technical design |
+| `/plan` | `/ll-plan` | Break design into ordered tasks |
+| `/go` | `/ll-execute` | Implement next task from plan |
+| `/rev` | `/ll-review` | Comprehensive code review |
+| `/test` | `/ll-test` | Create test suites, validate coverage |
+| `/ship` | `/ll-deploy` | Deploy to staging and production |
+| `/watch` | `/ll-monitor` | Set up monitoring and alerts |
+| `/retro` | `/ll-postlaunch` | Analyze launch metrics |
+
+#### Autopilot & Automation
+
+| Shortcut | Command | What It Does |
+|:---------|:--------|:-------------|
+| `/feature` | `/ll-feature` | Full feature lifecycle — plan, implement, test, review, fix in a loop until done |
+| `/parallel` | `/ll-parallel` | Run multiple agents simultaneously (build + test + lint) |
+| `/fix` | `/ll-fix` | Systematic bug fix: failing test → bisect → fix → verify |
+| `/debug` | `/ll-debug` | Scientific debugging with persistent state across resets |
+| `/refactor` | `/ll-refactor` | Split oversized files, extract logic, rename across codebase |
+| `/pr` | `/ll-pr` | Generate PR with summary, test plan, linked issues |
+
+#### Quality & Testing
+
+| Shortcut | Command | What It Does |
+|:---------|:--------|:-------------|
+| `/rules` | `/ll-rules` | Apply session rules: 100-line cap, full tests, Playwright e2e |
+| `/perf` | `/ll-perf` | Performance profiling (bundle, queries, Web Vitals) |
+| `/a11y` | `/ll-a11y` | WCAG 2.2 accessibility audit |
+| `/deps` | `/ll-deps` | Dependency audit, cleanup, license check |
+| `/mock` | `/ll-mock` | Generate test fixtures, factories, MSW handlers |
+| `/storybook` | `/ll-storybook` | Generate component stories catalog |
+
+#### Code Generation
+
+| Shortcut | Command | What It Does |
+|:---------|:--------|:-------------|
+| `/auth` | `/ll-auth` | Auth.js v5 with 7 social OAuth providers + HTML setup guide |
+| `/brand` | `/ll-brand` | Generate brand identity from codebase (colors, logo, typography) |
+| `/api-client` | `/ll-api-client` | Generate typed API client SDK from routes/OpenAPI |
+| `/migrate` | `/ll-migrate` | Database migration generator with up/down SQL |
+| `/i18n` | `/ll-i18n` | Internationalization with RTL support |
+| `/ci` | `/ll-ci` | CI/CD pipeline generator (GitHub Actions / GitLab) |
+| `/changelog` | `/ll-changelog` | Auto changelog from git history |
+
+#### AI & Intelligence
+
+| Shortcut | Command | What It Does |
+|:---------|:--------|:-------------|
+| `/nexa` | `/ll-nexa` | Nexa semantic code analysis (review, bugs, explain, debt) |
+| `/lam` | `/ll-lam` | Large Action Model — goal-driven autonomous actions |
+| `/oh` | `/ll-openhands` | Delegate to OpenHands autonomous coding agent |
+| `/chain` | `/ll-agent-chain` | Chain agents: `rag→nexa→openhands→test` |
+| `/vision` | `/ll-vision` | Screenshot-to-code, UI comparison, visual diff |
+| `/search` | `/ll-smart-search` | Multi-engine search (RAG + Nexa + grep) |
+| `/q` | `/ll-rag` | RAG codebase search |
+
+#### Infrastructure & DevOps
+
+| Shortcut | Command | What It Does |
+|:---------|:--------|:-------------|
+| `/env` | `/ll-env` | Validate and manage .env files |
+| `/rollback` | `/ll-rollback` | Generate rollback procedures and runbooks |
+| `/dock` | `/ll-dockerize` | Containerize your app |
+| `/cf` | `/ll-cloudflare` | Cloudflare deployment automation |
+| `/sec` | `/ll-365-secure` | OWASP security audit |
+
+#### Tools
+
+| Shortcut | Command | What It Does |
+|:---------|:--------|:-------------|
+| `/hig` | `/ll-hig` | Apple HIG compliance audit |
+| `/ui` | `/ll-ui-convert` | Convert UI to Apple HIG design |
+| `/docs` | `/ll-docs` | Generate user, developer, API docs |
+| `/cfg` | `/ll-config` | Configure Luna plugin |
+
+### Pipeline Runner — Combine Commands
+
+Use `/pipe` to chain commands with operators:
+
+```bash
+# >> sequential (one after another)
+/pipe req >> des >> plan >> go >> rev >> test >> ship
+
+# ~~ parallel (all at once)
+/pipe lint ~~ test ~~ typecheck ~~ security
+
+# () group + mix
+/pipe (lint ~~ test ~~ typecheck) >> ship
+
+# ?>> conditional (next only if previous succeeded)
+/pipe test ?>> deploy
+
+# !>> fail branch (next only if previous failed)
+/pipe test ?>> deploy !>> fix
+
+# AI-powered pipeline
+/pipe search "auth" >> nexa review >> lam "improve auth" >> test >> pr
+
+# Feature autopilot with quality gate
+/pipe feature "add billing" >> (lint ~~ test) ?>> pr
+```
+
+| Operator | Meaning |
+|:---------|:--------|
+| `>>` | Sequential — left finishes, then right starts |
+| `~~` | Parallel — all run simultaneously |
+| `( )` | Group — treated as a single unit |
+| `?>>` | Success gate — next runs only if previous passed |
+| `!>>` | Fail branch — next runs only if previous failed |
 
 ### API
 
