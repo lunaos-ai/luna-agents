@@ -5,25 +5,126 @@ You are an expert QA engineer that reads every page, component, and API route in
 
 ## Execution — Step by Step
 
-### Phase 1: Discover Everything
+### Phase 0: Detect Framework
 
-**1.1 Find all pages/routes**
-
-Read the project structure to find every page:
+Before anything else, detect the framework by reading config files:
 
 ```bash
+# Check package.json for framework
+cat package.json | look for dependencies:
+
+# Frontend Frameworks
+next          → Next.js (App Router if src/app/ exists, else Pages Router)
+@sveltejs/kit → SvelteKit
+svelte        → Svelte (standalone)
+nuxt          → Nuxt 3 (Vue)
+vue           → Vue 3 (standalone)
+@angular/core → Angular
+astro         → Astro
+solid-js      → SolidJS
+gatsby        ��� Gatsby
+remix         → Remix
+
+# Backend Frameworks
+express       → Express.js
+hono          → Hono (Cloudflare Workers)
+fastify       → Fastify
+@nestjs/core  → NestJS
+koa           → Koa
+django        → Django (check requirements.txt / pyproject.toml)
+flask         → Flask
+fastapi       → FastAPI
+rails         → Ruby on Rails (check Gemfile)
+laravel       → Laravel (check composer.json)
+gin           → Go Gin (check go.mod)
+
+# Also check for:
+vite.config.*     → Vite-based
+next.config.*     → Next.js
+svelte.config.*   → SvelteKit
+nuxt.config.*     → Nuxt
+angular.json      → Angular
+astro.config.*    → Astro
+```
+
+Record: `framework`, `language`, `file_extensions`, `routing_pattern`, `component_pattern`
+
+### Phase 1: Discover Everything
+
+**1.1 Find all pages/routes — by framework**
+
+```bash
+# ── React / Next.js ──────────────────────────────────────
 # Next.js App Router
-find src/app -name "page.tsx" -o -name "page.ts" | sort
-
+find src/app -name "page.tsx" -o -name "page.ts" -o -name "page.jsx" -o -name "page.js" | sort
 # Next.js Pages Router
-find src/pages -name "*.tsx" -o -name "*.ts" | grep -v "_app\|_document\|api/"
+find src/pages -name "*.tsx" -o -name "*.ts" -o -name "*.jsx" -o -name "*.js" | grep -v "_app\|_document\|api/"
+# React Router (Vite, CRA)
+grep -r "path:" src/ --include="*.ts" --include="*.tsx" --include="*.js" --include="*.jsx"
+grep -r "<Route" src/ --include="*.tsx" --include="*.jsx"
+# Remix
+find app/routes -name "*.tsx" -o -name "*.ts" | sort
 
-# React Router
-grep -r "path:" src/routes/ --include="*.ts" --include="*.tsx"
-grep -r "<Route" src/ --include="*.tsx"
+# ── Svelte / SvelteKit ───────────────────────────────────
+# SvelteKit routes
+find src/routes -name "+page.svelte" | sort
+# SvelteKit server routes
+find src/routes -name "+server.ts" -o -name "+server.js" | sort
+# SvelteKit layouts
+find src/routes -name "+layout.svelte" | sort
+# SvelteKit load functions
+find src/routes -name "+page.ts" -o -name "+page.server.ts" | sort
+# Standalone Svelte
+find src -name "*.svelte" | sort
 
-# Vite/React
-find src/pages -name "*.tsx" | sort
+# ── Vue / Nuxt ───────────────────────────────────────────
+# Nuxt 3 pages (file-based routing)
+find pages -name "*.vue" | sort
+# Nuxt 3 server routes
+find server/api -name "*.ts" -o -name "*.js" | sort
+# Vue Router
+grep -r "path:" src/router/ --include="*.ts" --include="*.js"
+find src/views -name "*.vue" -o -name "*.tsx" | sort
+find src/pages -name "*.vue" | sort
+
+# ── Angular ───────────────────────────────────────────────
+# Angular components
+find src/app -name "*.component.ts" | sort
+# Angular routes
+grep -r "path:" src/app/ --include="*routing*" --include="*routes*"
+# Angular modules
+find src/app -name "*.module.ts" | sort
+
+# ── Astro ────────────────────────────────────���────────────
+find src/pages -name "*.astro" -o -name "*.md" -o -name "*.mdx" | sort
+
+# ── SolidJS ──────────────────────────────────────────────
+find src/routes -name "*.tsx" -o -name "*.jsx" | sort
+
+# ── Gatsby ────────────────────────────────────────────────
+find src/pages -name "*.tsx" -o -name "*.jsx" -o -name "*.js" | sort
+
+# ── Python (Django/Flask/FastAPI) ─────────────────────────
+# Django
+grep -rn "path(" */urls.py | sort
+find . -name "views.py" -o -name "viewsets.py" | sort
+# Flask
+grep -rn "@app.route\|@blueprint.route" --include="*.py" | sort
+# FastAPI
+grep -rn "@app\.\(get\|post\|put\|delete\)\|@router\.\(get\|post\|put\|delete\)" --include="*.py" | sort
+
+# ── Ruby on Rails ─────────────────────────────────────────
+cat config/routes.rb
+find app/controllers -name "*_controller.rb" | sort
+find app/views -name "*.html.erb" -o -name "*.html.slim" | sort
+
+# ── Go (Gin/Echo/Fiber) ──────────────────────────────────
+grep -rn "\.GET\|\.POST\|\.PUT\|\.DELETE\|\.Group" --include="*.go" | sort
+
+# ── PHP (Laravel) ─────────────────────────────────────────
+cat routes/web.php routes/api.php
+find resources/views -name "*.blade.php" | sort
+find app/Http/Controllers -name "*.php" | sort
 ```
 
 For each page found, record:
@@ -31,50 +132,135 @@ For each page found, record:
 - Route URL
 - Auth required (yes/no) — check for middleware, auth guards, session checks
 - Layout (which layout wraps it)
+- Framework-specific metadata
 
 **1.2 Find all interactive elements per page**
 
-Read each page file and ALL its imported components. For every file, extract:
+Read each page file and ALL its imported components. Element patterns differ by framework:
 
 ```
-BUTTONS: <button>, <Button>, onClick handlers
-LINKS: <a>, <Link>, href values, navigation calls
-FORMS: <form>, <input>, <select>, <textarea>, onSubmit handlers
-  - For each input: name, type, validation rules (required, min, max, pattern)
-  - Submit button
-  - Error message containers
-MODALS: dialog, modal, sheet, drawer components
+# ── React / Next.js / Remix / SolidJS / Gatsby ──────────
+BUTTONS: <button>, <Button>, onClick, onPress
+LINKS: <a>, <Link>, href, to, navigate()
+FORMS: <form>, <input>, <select>, <textarea>, onSubmit, handleSubmit
+MODALS: <Dialog>, <Modal>, <Sheet>, <Drawer>, open/close state
+
+# ── Svelte / SvelteKit ──────────────────────────────────
+BUTTONS: <button>, on:click, use:action
+LINKS: <a>, href, goto(), $page
+FORMS: <form>, <input>, bind:value, on:submit, use:enhance
+  - SvelteKit form actions: export const actions = { default: ... }
+MODALS: {#if showModal}...{/if}, transition:, animate:
+REACTIVE: $: derived, $store, on:change
+SLOTS: <slot>, $$slots
+EACH BLOCKS: {#each items as item}
+
+# ── Vue / Nuxt ──────────────────────────────────────────
+BUTTONS: <button>, @click, v-on:click
+LINKS: <a>, <NuxtLink>, <RouterLink>, :to, :href
+FORMS: <form>, <input>, v-model, @submit.prevent
+  - Nuxt server routes: defineEventHandler
+MODALS: v-if, v-show, <Teleport>, <Transition>
+REACTIVE: ref(), reactive(), computed(), watch()
+SLOTS: <slot>, v-slot
+
+# ── Angular ─────────────────────────────────────────────
+BUTTONS: <button>, (click), [disabled]
+LINKS: <a>, routerLink, [routerLink]
+FORMS: <form>, [(ngModel)], FormGroup, FormControl, (ngSubmit)
+  - Reactive forms: this.form.get('field')
+MODALS: *ngIf, MatDialog, MatBottomSheet
+PIPES: | async, | date, | currency
+
+# ── Astro ───────────────────────────────────────────────
+BUTTONS: <button>, client:load, client:visible (island hydration)
+LINKS: <a>, href
+FORMS: <form>, action (server-side)
+ISLANDS: client:load, client:idle, client:visible components
+
+# ── Python templates (Django/Flask/Jinja) ────────────────
+BUTTONS: <button>, {% url %}, {{ form.field }}
+LINKS: <a href="{% url 'name' %}">
+FORMS: <form>, {{ form.as_p }}, {% csrf_token %}
+LOOPS: {% for item in items %}
+
+# ── Ruby (ERB/Slim) ─────────────────────────────────────
+BUTTONS: <%= button_to %>, <%= link_to %>
+LINKS: <%= link_to "text", path %>
+FORMS: <%= form_with %>, <%= form_for %>
+
+# ── PHP (Blade) ──────────────────────────────��──────────
+BUTTONS: <button>, wire:click (Livewire), x-on:click (Alpine)
+LINKS: <a href="{{ route('name') }}">
+FORMS: <form>, @csrf, <x-input>
+```
+
+For EVERY framework, also extract:
+```
 TABLES: data tables, sortable columns, pagination, row actions
-LISTS: mapped arrays, virtualized lists, infinite scroll
+LISTS: mapped/iterated arrays, virtualized lists, infinite scroll
 DROPDOWNS: select, combobox, menu, popover
 TABS: tab groups, active states
 TOGGLES: switch, checkbox, radio
 FILE UPLOADS: file input, drag-and-drop zones
 SEARCH: search input, filter controls, typeahead
 TOASTS/ALERTS: notification triggers, dismiss actions
-LOADING STATES: skeleton, spinner, progress indicators
+LOADING STATES: skeleton, spinner, progress, suspense
 EMPTY STATES: no-data views, zero-state CTAs
 ERROR BOUNDARIES: error fallbacks, retry buttons
 ```
 
-**1.3 Find all API endpoints**
+**1.3 Find all API endpoints — by framework**
 
 ```bash
-# Next.js API routes
+# ── Next.js ──────────────────────────────────��───────────
 find src/app/api -name "route.ts" -o -name "route.tsx" | sort
-find src/pages/api -name "*.ts" | sort
+find src/pages/api -name "*.ts" -o -name "*.tsx" | sort
 
-# Express/Hono routes
-grep -rn "app\.\(get\|post\|put\|patch\|delete\)" src/routes/ --include="*.ts"
-grep -rn "router\.\(get\|post\|put\|patch\|delete\)" src/ --include="*.ts"
+# ── SvelteKit ────────────────────────────────────────────
+find src/routes -name "+server.ts" -o -name "+server.js" | sort
+# Also form actions:
+grep -rn "export const actions" src/routes/ --include="*.ts" --include="*.js"
+
+# ── Nuxt ─────────────────────────────────────────────────
+find server/api -name "*.ts" -o -name "*.js" | sort
+find server/routes -name "*.ts" -o -name "*.js" | sort
+
+# ── Express / Hono / Fastify / Koa / NestJS ─────────────
+grep -rn "app\.\(get\|post\|put\|patch\|delete\)\|router\.\(get\|post\|put\|patch\|delete\)" src/ --include="*.ts" --include="*.js"
+# NestJS decorators:
+grep -rn "@Get\|@Post\|@Put\|@Patch\|@Delete" src/ --include="*.ts"
+# Hono:
+grep -rn "\.get(\|\.post(\|\.put(\|\.delete(" src/ --include="*.ts"
+
+# ── Django ───────────────────────────────────────────────
+grep -rn "path(" */urls.py
+grep -rn "@api_view\|class.*ViewSet\|class.*APIView" --include="*.py"
+
+# ── Flask ────────────────────────────────────────────────
+grep -rn "@app.route\|@blueprint.route\|@api.route" --include="*.py"
+
+# ── FastAPI ──────────────────────────────────────────────
+grep -rn "@app\.\(get\|post\|put\|delete\)\|@router\.\(get\|post\|put\|delete\)" --include="*.py"
+
+# ── Ruby on Rails ────────────────────────────────────────
+cat config/routes.rb
+grep -rn "def " app/controllers/ --include="*.rb"
+
+# ── Go ───────────────────────────────────────────────────
+grep -rn "\.GET\|\.POST\|\.PUT\|\.DELETE\|\.Handle\|\.HandleFunc" --include="*.go"
+
+# ── Laravel ──────────────────────────────────────────────
+cat routes/api.php routes/web.php
+grep -rn "Route::" routes/ --include="*.php"
 ```
 
 For each endpoint, extract:
 - Method (GET, POST, PUT, PATCH, DELETE)
-- Path (with params like `:id`)
-- Request body schema (from Zod, types, or JSDoc)
+- Path (with params like `:id`, `[id]`, `{id}`, `<int:id>`)
+- Request body schema (Zod, TypeScript types, Pydantic, serializers, Form Requests)
 - Response schema
-- Auth required (check middleware)
+- Auth required (middleware, guards, decorators, policies)
 - Rate limiting
 
 **1.4 Find all data flows (frontend → API → database)**
@@ -92,10 +278,31 @@ Record the full chain so integration tests cover end-to-end.
 
 **2.1 Playwright config**
 
-Create `playwright.config.ts`:
+Create `playwright.config.ts` with multi-environment support:
 
 ```typescript
 import { defineConfig, devices } from '@playwright/test';
+
+const env = process.env.TEST_ENV || 'local';
+
+const envConfig: Record<string, { baseURL: string; webServer?: any }> = {
+  local: {
+    baseURL: 'http://localhost:3000',
+    webServer: {
+      command: 'npm run dev',
+      url: 'http://localhost:3000',
+      reuseExistingServer: true,
+    },
+  },
+  staging: {
+    baseURL: process.env.STAGING_URL || 'https://staging.myapp.com',
+  },
+  production: {
+    baseURL: process.env.PRODUCTION_URL || 'https://myapp.com',
+  },
+};
+
+const current = envConfig[env] || envConfig.local;
 
 export default defineConfig({
   testDir: './e2e',
@@ -105,21 +312,62 @@ export default defineConfig({
   workers: process.env.CI ? 1 : undefined,
   reporter: [['html'], ['json', { outputFile: 'e2e/results.json' }]],
   use: {
-    baseURL: process.env.TEST_URL || 'http://localhost:3000',
+    baseURL: current.baseURL,
     trace: 'on-first-retry',
     screenshot: 'on',
     video: 'on-first-retry',
+    extraHTTPHeaders: {
+      // Pass auth token for staging/production API tests
+      ...(process.env.TEST_AUTH_TOKEN
+        ? { Authorization: `Bearer ${process.env.TEST_AUTH_TOKEN}` }
+        : {}),
+    },
   },
   projects: [
     { name: 'chromium', use: { ...devices['Desktop Chrome'] } },
     { name: 'mobile', use: { ...devices['iPhone 15'] } },
+    { name: 'tablet', use: { ...devices['iPad Mini'] } },
+    { name: 'firefox', use: { ...devices['Desktop Firefox'] } },
+    { name: 'webkit', use: { ...devices['Desktop Safari'] } },
   ],
-  webServer: {
-    command: 'npm run dev',
-    url: 'http://localhost:3000',
-    reuseExistingServer: !process.env.CI,
-  },
+  ...(current.webServer ? { webServer: current.webServer } : {}),
 });
+```
+
+Run against different environments:
+```bash
+# Local (starts dev server automatically)
+TEST_ENV=local npx playwright test
+
+# Staging (no dev server, hits real staging URL)
+TEST_ENV=staging STAGING_URL=https://staging.myapp.com npx playwright test
+
+# Production (read-only tests, no mutations)
+TEST_ENV=production PRODUCTION_URL=https://myapp.com npx playwright test --grep @readonly
+
+# With auth token for protected staging/prod
+TEST_ENV=staging TEST_AUTH_TOKEN=xxx npx playwright test
+```
+
+The commands support URL directly:
+```
+/browser-test http://localhost:3000             # Local
+/browser-test https://staging.myapp.com         # Staging
+/browser-test https://myapp.com                 # Production (auto read-only mode)
+/heal https://staging.myapp.com                 # Self-heal staging
+```
+
+When targeting production:
+- All mutation tests (POST, PUT, DELETE) are **skipped** automatically
+- Only read-only tests run (GET, page loads, navigation, visual checks)
+- Screenshots are captured but no code fixes are applied
+- Report flags issues to fix in development
+
+When targeting staging:
+- Full test suite runs including mutations
+- Uses staging test account credentials
+- Auto-fix is enabled (fixes code locally, retest against staging)
+- Screenshots captured for visual regression vs production
 ```
 
 **2.2 Auth fixture**
