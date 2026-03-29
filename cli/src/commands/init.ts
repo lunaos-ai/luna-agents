@@ -267,7 +267,7 @@ Examples:
         console.log(`    ${chalk.green('✓')} .luna/reports/`);
         console.log('');
         console.log(chalk.dim('  Try it now:'));
-        console.log(`    ${chalk.cyan('luna list')}              — see all 28 agents`);
+        console.log(`    ${chalk.cyan('luna list')}              — see all 140+ commands`);
         console.log(`    ${chalk.cyan(`luna run code-review`)}   — review your code`);
         console.log('');
     });
