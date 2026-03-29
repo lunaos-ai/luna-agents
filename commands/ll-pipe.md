@@ -35,6 +35,10 @@ Combine Luna commands with `>>` (sequential) and `~~` (parallel).
 | `( )` | Group commands | `(lint ~~ test) >> deploy` |
 | `?>>` | Run next only if previous succeeded | `test ?>> deploy` |
 | `!>>` | Run next only if previous failed | `test !>> fix` |
+| `*N` | Loop N times | `go *5` (run execute 5 times) |
+| `*N?` | Loop up to N times, stop on success | `(fix >> test) *3?` |
+| `*N!` | Loop up to N times, stop on failure | `go *10!` (stop when task fails) |
+| `*?` | Loop until success (max 10) | `(fix >> test) *?` |
 
 ## Usage
 
@@ -62,6 +66,33 @@ Runs lint, test, and typecheck in parallel. When ALL pass, deploys.
 ```
 If tests pass, deploy. If tests fail, run fix.
 
+### Loop — repeat N times
+```
+/pipe go *5
+```
+Runs execute 5 times (implement 5 tasks in a row).
+
+```
+/pipe (go >> test) *10!
+```
+Implement + test, repeat up to 10 times — stops on first failure.
+
+```
+/pipe (fix "login bug" >> test) *3?
+```
+Try fix + test up to 3 times — stops when tests pass.
+
+```
+/pipe (fix >> test) *?
+```
+Keep fixing and testing until it passes (max 10 iterations).
+
+### Loop + Conditional — auto-fix loops
+```
+/pipe go *5 >> (lint ~~ test) ?>> pr !>> (fix >> test) *3?
+```
+Execute 5 tasks, run quality checks in parallel. If pass, create PR. If fail, try fix+test up to 3 times.
+
 ### Full pipeline examples
 
 ```
@@ -80,8 +111,14 @@ If tests pass, deploy. If tests fail, run fix.
 # Parallel builds + sequential deploy
 /pipe (build ~~ test ~~ e2e) >> ship >> watch
 
-# Fix loop
-/pipe fix "bug" >> test ?>> pr !>> (debug >> fix "bug" >> test)
+# Implement all tasks then ship
+/pipe go *10! >> (lint ~~ test) >> ship
+
+# Auto-fix loop (try 3 times)
+/pipe (fix "bug" >> test) *3? >> pr
+
+# Full autopilot: implement 5 tasks, quality gate, auto-fix, PR
+/pipe go *5 >> (lint ~~ test ~~ typecheck) ?>> pr !>> (fix >> test) *3?
 ```
 
 ## Command References
@@ -113,9 +150,13 @@ All Luna commands work in pipes:
 3. **Groups (`()`)**: Treated as a single unit — all must complete before moving on
 4. **Conditional (`?>>`)**: Next runs only if previous exited successfully
 5. **Fail branch (`!>>`)**: Next runs only if previous failed
-6. **Scope inheritance**: All commands in a pipe share the same project scope
-7. **Fail-fast**: By default, pipeline stops on first failure (use `?>>` / `!>>` for control)
-8. **Report**: Each command's output is captured in the pipeline report
+6. **Loop (`*N`)**: Repeats command or group N times
+7. **Loop until success (`*N?`)**: Repeats up to N times, stops when command succeeds
+8. **Loop until failure (`*N!`)**: Repeats up to N times, stops when command fails
+9. **Loop forever (`*?`)**: Repeats until success, max 10 iterations (safety cap)
+10. **Scope inheritance**: All commands in a pipe share the same project scope
+11. **Fail-fast**: By default, pipeline stops on first failure (use `?>>` / `!>>` for control)
+12. **Report**: Each command's output is captured in the pipeline report
 
 ## Tips
 

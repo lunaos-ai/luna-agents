@@ -199,17 +199,27 @@ Use `/pipe` to chain commands with operators:
 # AI-powered pipeline
 /pipe search "auth" >> nexa review >> lam "improve auth" >> test >> pr
 
+# Implement 5 tasks, quality gate, ship
+/pipe go *5 >> (lint ~~ test ~~ typecheck) >> ship
+
+# Auto-fix loop (try 3 times until tests pass)
+/pipe (fix "bug" >> test) *3? >> pr
+
 # Feature autopilot with quality gate
 /pipe feature "add billing" >> (lint ~~ test) ?>> pr
 ```
 
-| Operator | Meaning |
-|:---------|:--------|
-| `>>` | Sequential — left finishes, then right starts |
-| `~~` | Parallel — all run simultaneously |
-| `( )` | Group — treated as a single unit |
-| `?>>` | Success gate — next runs only if previous passed |
-| `!>>` | Fail branch — next runs only if previous failed |
+| Operator | Meaning | Example |
+|:---------|:--------|:--------|
+| `>>` | Sequential — left finishes, then right starts | `req >> des >> plan` |
+| `~~` | Parallel — all run simultaneously | `lint ~~ test ~~ typecheck` |
+| `( )` | Group — treated as a single unit | `(lint ~~ test) >> ship` |
+| `?>>` | Success gate — next only if previous passed | `test ?>> deploy` |
+| `!>>` | Fail branch — next only if previous failed | `test !>> fix` |
+| `*N` | Loop N times | `go *5` |
+| `*N?` | Loop up to N times, stop on success | `(fix >> test) *3?` |
+| `*N!` | Loop up to N times, stop on failure | `go *10!` |
+| `*?` | Loop until success (max 10) | `(fix >> test) *?` |
 
 ### API
 
