@@ -2,7 +2,7 @@
   "name": "luna-agents-marketplace",
   "owner": {
     "name": "Shachar Solomon",
-    "email": "info@finsavvyai.com",
+    "email": "info@lunaos.ai",
     "url": "https://github.com/shacharsol"
   },
   "plugins": [
@@ -13,7 +13,7 @@
       "version": "2.0.0",
       "author": {
         "name": "Shachar Solomon",
-        "email": "info@finsavvyai.com"
+        "email": "info@lunaos.ai"
       },
       "homepage": "https://github.com/shacharsol/luna-agent#readme",
       "repository": "https://github.com/shacharsol/luna-agent",

@@ -29,11 +29,11 @@ describe('Persona Parser', () => {
         expect(agent).toBeNull();
     });
 
-    it('should load all 28 agents', async () => {
+    it('should load all 53 agents', async () => {
         const { loadAllAgents } = await import('../src/core/persona-parser.js');
         const agents = await loadAllAgents();
 
-        expect(agents.length).toBe(28);
+        expect(agents.length).toBe(53);
 
         // Each agent should have required fields
         for (const agent of agents) {
