@@ -220,7 +220,11 @@
     "ll-workflow",
     "ll-watch-pipe",
     "ll-assert",
-    "ll-config-rules"
+    "ll-config-rules",
+    "ll-browser-test",
+    "ll-visual-regression",
+    "ll-e2e-flow",
+    "ll-heal"
   ],
   "files": [
     "README.md",
