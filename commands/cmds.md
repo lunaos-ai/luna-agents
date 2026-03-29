@@ -108,26 +108,26 @@ Quick reference for all shortcuts. Type any of these in Claude Code:
 *?   loop until success (max 10)         (fix >> test) *?
 @before:CMD  run before each step        @before:rules
 @after:CMD   run after each step         @after:test
-@each:CMD    run before+after each step  @each:lint
+@each:CMD    run before+after each step  @each:rev
 ```
 
-### Pipeline Examples
+### Pipeline Examples (all Luna commands)
 
 ```
-# Standard dev workflow (sequential)
+# Standard dev workflow
 /pipe req >> des >> plan >> go >> rev >> test >> ship
 
-# Quality gate (parallel checks, then deploy)
-/pipe (lint ~~ test ~~ typecheck ~~ security) >> ship
+# Quality gate (parallel Luna checks, then deploy)
+/pipe (rev ~~ test ~~ sec ~~ a11y) >> ship
 
-# Conditional deploy (deploy if pass, fix if fail)
-/pipe test ?>> deploy !>> fix
+# Conditional deploy
+/pipe test ?>> ship !>> fix
 
 # AI-powered pipeline
 /pipe search "auth" >> nexa review >> lam "improve auth" >> test >> pr
 
 # Implement 5 tasks, quality gate, ship
-/pipe go *5 >> (lint ~~ test ~~ typecheck) >> ship
+/pipe go *5 >> (rev ~~ test ~~ sec) >> ship
 
 # Auto-fix loop (try 3 times)
 /pipe (fix "bug" >> test) *3? >> pr
@@ -136,7 +136,10 @@ Quick reference for all shortcuts. Type any of these in Claude Code:
 /pipe @before:rules @after:test go *5 >> ship
 
 # Feature with quality gates
-/pipe feature "add billing" >> (lint ~~ test) ?>> pr
+/pipe feature "add billing" >> (rev ~~ test) ?>> pr
+
+# Full project from scratch
+/pipe req >> des >> plan >> @before:rules @after:test go *10! >> rev >> sec >> ship >> docs >> watch
 ```
 
 ## Tips
