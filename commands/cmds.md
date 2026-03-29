@@ -96,6 +96,7 @@ Quick reference for all shortcuts. Type any of these in Claude Code:
 | `/pipe` | Compose Luna command pipelines | `/ll-pipe` |
 | `/workflow` | Save, load, share named pipelines | `/ll-workflow` |
 | `/assert` | Validate project constraints | `/ll-assert` |
+| `/config-rules` | Persistent rules (auto-apply every session) | `/ll-config-rules` |
 
 ### Flow & Loops
 ```

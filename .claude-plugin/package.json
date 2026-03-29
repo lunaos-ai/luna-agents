@@ -219,7 +219,8 @@
     "ll-pipe",
     "ll-workflow",
     "ll-watch-pipe",
-    "ll-assert"
+    "ll-assert",
+    "ll-config-rules"
   ],
   "files": [
     "README.md",
