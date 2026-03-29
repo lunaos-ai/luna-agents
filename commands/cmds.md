@@ -102,6 +102,10 @@ Quick reference for all shortcuts. Type any of these in Claude Code:
 ( )  group commands
 ?>>  run next only if previous succeeded
 !>>  run next only if previous failed
+*N   loop N times                        go *5
+*N?  loop up to N, stop on success       (fix >> test) *3?
+*N!  loop up to N, stop on failure       go *10!
+*?   loop until success (max 10)         (fix >> test) *?
 ```
 
 ### Pipeline Examples
@@ -118,6 +122,12 @@ Quick reference for all shortcuts. Type any of these in Claude Code:
 
 # AI-powered pipeline
 /pipe search "auth" >> nexa review >> lam "improve auth" >> test >> pr
+
+# Implement 5 tasks, quality gate, ship
+/pipe go *5 >> (lint ~~ test ~~ typecheck) >> ship
+
+# Auto-fix loop (try 3 times)
+/pipe (fix "bug" >> test) *3? >> pr
 
 # Feature with quality gates
 /pipe feature "add billing" >> (lint ~~ test) ?>> pr
