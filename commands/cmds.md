@@ -46,6 +46,27 @@ Quick reference for all shortcuts. Type any of these in Claude Code:
 | `/mock` | Generate test fixtures & MSW handlers | `/ll-mock` |
 | `/storybook` | Generate component stories | `/ll-storybook` |
 
+## Browser Testing & Self-Healing
+
+| Type | Does | Full command |
+|------|------|-------------|
+| `/e2e-flow` | Auto-generate Playwright E2E tests from routes | `/ll-e2e-flow` |
+| `/browser-test` | Launch app, test flows, screenshot, auto-fix | `/ll-browser-test` |
+| `/vr` | Visual regression — screenshot diff before/after | `/ll-visual-regression` |
+| `/heal` | Self-heal loop: test, screenshot, fix, retest | `/ll-heal` |
+
+### The Killer Pipe
+```
+# Generate E2E tests, run them in browser, auto-fix failures, ship when healthy
+/pipe e2e-flow >> browser-test http://localhost:3000 ?>> pr !>> (fix >> browser-test) *3?
+
+# Self-healing deploy
+/pipe go *5 >> heal http://localhost:3000 ?>> ship
+
+# Full visual QA
+/pipe hig >> browser-test >> vr >> a11y >> approve "Ship?" >> ship
+```
+
 ## Code Generation
 
 | Type | Does | Full command |
