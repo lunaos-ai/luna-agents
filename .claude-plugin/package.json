@@ -216,7 +216,10 @@
     "ll-agent-chain",
     "ll-vision",
     "ll-smart-search",
-    "ll-pipe"
+    "ll-pipe",
+    "ll-workflow",
+    "ll-watch-pipe",
+    "ll-assert"
   ],
   "files": [
     "README.md",

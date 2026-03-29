@@ -1,18 +1,19 @@
 ---
 name: ll-pipe
 displayName: Luna Pipeline Runner
-description: Combine Luna commands — >> for sequential, ~~ for parallel execution
-version: 1.0.0
+description: Luna's AI programming language — combine commands with operators, variables, conditions, loops, and workflows
+version: 2.0.0
 category: workflow
 agent: luna-task-executor
 parameters:
   - name: pipeline
     type: string
-    description: Pipeline expression using >> (sequential) and ~~ (parallel)
+    description: Pipeline expression or saved workflow name
     required: true
     prompt: true
 workflow:
   - parse_pipeline_expression
+  - resolve_variables_and_imports
   - validate_commands
   - execute_pipeline
   - collect_results
@@ -22,179 +23,241 @@ output:
 prerequisites: []
 ---
 
-# Luna Pipeline Runner
+# Luna Pipe — AI Programming Language
 
-Combine Luna commands with `>>` (sequential), `~~` (parallel), loops, and hooks.
+Compose Luna commands into powerful pipelines with variables, conditions, loops, workflows, and more.
 
-**All commands in a pipe are Luna commands** — shortcuts or full names.
+**Every command in a pipe is a Luna command.**
+
+---
 
 ## Operators
 
+### Flow Control
+
 | Operator | Meaning | Example |
 |----------|---------|---------|
-| `>>` | Run sequentially (left finishes, then right starts) | `req >> des >> plan` |
-| `~~` | Run in parallel (both start simultaneously) | `rev ~~ test ~~ sec` |
-| `( )` | Group commands | `(rev ~~ test) >> ship` |
-| `?>>` | Run next only if previous succeeded | `test ?>> ship` |
-| `!>>` | Run next only if previous failed | `test !>> fix` |
+| `>>` | Sequential | `req >> des >> plan` |
+| `~~` | Parallel | `rev ~~ test ~~ sec` |
+| `( )` | Group | `(rev ~~ test) >> ship` |
+| `?>>` | If success | `test ?>> ship` |
+| `!>>` | If failure | `test !>> fix` |
+
+### Loops
+
+| Operator | Meaning | Example |
+|----------|---------|---------|
 | `*N` | Loop N times | `go *5` |
-| `*N?` | Loop up to N times, stop on success | `(fix >> test) *3?` |
-| `*N!` | Loop up to N times, stop on failure | `go *10!` |
+| `*N?` | Loop up to N, stop on success | `(fix >> test) *3?` |
+| `*N!` | Loop up to N, stop on failure | `go *10!` |
 | `*?` | Loop until success (max 10) | `(fix >> test) *?` |
-| `@before:CMD` | Run Luna CMD before each step | `@before:rules` |
-| `@after:CMD` | Run Luna CMD after each step | `@after:test` |
-| `@each:CMD` | Run Luna CMD before + after each step | `@each:rev` |
 
-## Usage
+### Hooks
 
-### Sequential — one after another
+| Operator | Meaning | Example |
+|----------|---------|---------|
+| `@before:CMD` | Run before each step | `@before:rules` |
+| `@after:CMD` | Run after each step | `@after:test` |
+| `@each:CMD` | Before + after each step | `@each:rev` |
+
+### Variables
+
+| Operator | Meaning | Example |
+|----------|---------|---------|
+| `$name = CMD` | Capture output into variable | `$report = rev` |
+| `$name` | Use variable as input to next step | `fix $report` |
+| `$CMD.field` | Access output field | `$test.coverage` |
+
+### Conditionals
+
+| Operator | Meaning | Example |
+|----------|---------|---------|
+| `if COND >> CMD` | Run if condition true | `if $test.coverage < 90 >> fix` |
+| `else >> CMD` | Run if condition false | `else >> ship` |
+| `match VAR` | Switch on value | `match $env >> staging: ... >> prod: ...` |
+
+### Error Handling
+
+| Operator | Meaning | Example |
+|----------|---------|---------|
+| `try (CMDS)` | Try block | `try (go >> test >> ship)` |
+| `catch (CMDS)` | Run on error | `catch (rollback >> fix)` |
+| `finally (CMDS)` | Always run | `finally (docs >> changelog)` |
+
+### Assertions
+
+| Operator | Meaning | Example |
+|----------|---------|---------|
+| `assert COND` | Fail pipeline if false | `assert $test.coverage >= 90` |
+| `assert files.max_lines <= 100` | Check file constraints | `assert files.max_lines <= 100` |
+
+### Approval Gates
+
+| Operator | Meaning | Example |
+|----------|---------|---------|
+| `approve "MSG"` | Pause for user confirmation | `approve "Ship to prod?"` |
+
+### Context Blocks
+
+| Operator | Meaning | Example |
+|----------|---------|---------|
+| `with scope:NAME` | Set scope for block | `with scope:billing (go *3 >> test)` |
+| `with model:NAME` | Set AI model for block | `with model:opus (nexa review)` |
+
+### Multi-Repo
+
+| Operator | Meaning | Example |
+|----------|---------|---------|
+| `in REPO (CMDS)` | Run in specific repo | `in lunaos-engine (test >> ship)` |
+
+### Map/Reduce
+
+| Operator | Meaning | Example |
+|----------|---------|---------|
+| `map [ITEMS] >> CMD` | Apply to each item | `map [auth, billing, teams] >> (go >> test)` |
+| `reduce CMD` | Merge results | `reduce pr` |
+
+### Watch & Events
+
+| Operator | Meaning | Example |
+|----------|---------|---------|
+| `watch PATH >> CMD` | Run on file change | `watch src/ >> test` |
+| `on EVENT >> CMD` | Run on event | `on git:push >> (rev ~~ test) ?>> ship` |
+
+### Timing
+
+| Operator | Meaning | Example |
+|----------|---------|---------|
+| `timeout Nm CMD` | Timeout after N minutes | `timeout 5m (nexa review)` |
+| `retry N CMD` | Retry N times on failure | `retry 3 test` |
+
+### Snapshots
+
+| Operator | Meaning | Example |
+|----------|---------|---------|
+| `snapshot` | Checkpoint current state | `snapshot >> go *5` |
+| `diff` | Show changes since snapshot | `diff >> rev >> pr` |
+
+### Named Workflows
+
+| Operator | Meaning | Example |
+|----------|---------|---------|
+| `def NAME = PIPE` | Define reusable workflow | `def qg = (rev ~~ test ~~ sec)` |
+| `run NAME` | Execute saved workflow | `run qg ?>> ship` |
+| `import NAME` | Load from .luna/pipelines/ | `import team-pipeline` |
+
+### Logging
+
+| Operator | Meaning | Example |
+|----------|---------|---------|
+| `log "MSG"` | Log message to report | `log "Starting deploy"` |
+
+---
+
+## Complete Examples
+
+### Standard Dev Workflow
 ```
-/pipe req >> des >> plan >> go
-```
-Runs `/req`, then `/des`, then `/plan`, then `/go` — each waits for the previous.
-
-### Parallel — all at once
-```
-/pipe rev ~~ test ~~ sec ~~ a11y
-```
-Runs code review, tests, security audit, and accessibility audit simultaneously.
-
-### Mixed — parallel then sequential
-```
-/pipe (rev ~~ test ~~ sec) >> ship
-```
-Runs review, test, and security in parallel. When ALL pass, deploys.
-
-### Conditional — succeed/fail branching
-```
-/pipe test ?>> ship !>> fix
-```
-If `/test` passes, run `/ship`. If `/test` fails, run `/fix`.
-
-### Loop — repeat N times
-```
-/pipe go *5
-```
-Runs `/go` (execute next task) 5 times in a row.
-
-```
-/pipe (go >> test) *10!
-```
-Execute task + test, repeat up to 10 times — stops on first test failure.
-
-```
-/pipe (fix "login bug" >> test) *3?
-```
-Try `/fix` + `/test` up to 3 times — stops when tests pass.
-
-```
-/pipe (fix >> test) *?
-```
-Keep fixing and testing until it passes (max 10 iterations).
-
-### Loop + Conditional — auto-fix loops
-```
-/pipe go *5 >> (rev ~~ test) ?>> pr !>> (fix >> test) *3?
-```
-Execute 5 tasks, run review + tests in parallel. If pass, create PR. If fail, try fix+test up to 3 times.
-
-### Hooks — run Luna command before/after each step
-
-```
-/pipe @before:rules go *5 >> rev >> ship
-```
-Applies `/rules` before every step — ensures 100-line cap, full tests, Playwright e2e on every task.
-
-```
-/pipe @after:test go *5
-```
-Runs `/test` after each `/go` — validates every task immediately.
-
-```
-/pipe @before:rules @after:test go *3 >> rev >> ship
-```
-Apply `/rules` before each step AND run `/test` after each step.
-
-```
-/pipe @each:rev req >> des >> plan >> go *5
-```
-Code review runs both before and after every step in the pipeline.
-
-```
-/pipe @after:rev go *5 >> (test ~~ sec) ?>> pr
-```
-Code review after every task, then quality gate, then PR.
-
-```
-/pipe @before:rules @after:(test ~~ rev) go *10! >> ship
-```
-Apply `/rules` before each step. After each step, run `/test` and `/rev` in parallel.
-
-### Full pipeline examples
-
-```
-# Standard dev workflow
-/pipe req >> des >> plan >> go >> rev >> test >> ship
-
-# Full workflow with monitoring
-/pipe req >> des >> plan >> go *5 >> rev >> test >> sec >> hig >> ship >> watch >> retro
-
-# Quality gate before deploy
-/pipe (rev ~~ test ~~ sec ~~ a11y) >> (ship ~~ docs)
-
-# Feature autopilot with quality gates
-/pipe feature "add billing" >> (rev ~~ test) ?>> pr !>> fix
-
-# AI-powered pipeline
-/pipe search "auth" >> nexa review >> lam "improve auth" >> test >> pr
-
-# Parallel quality + sequential deploy
-/pipe (rev ~~ test ~~ sec ~~ perf) >> ship >> watch
-
-# Implement all tasks then ship
-/pipe go *10! >> (rev ~~ test) >> ship
-
-# Auto-fix loop (try 3 times)
-/pipe (fix "bug" >> test) *3? >> pr
-
-# Full autopilot: implement 5 tasks, quality gate, auto-fix, PR
-/pipe go *5 >> (rev ~~ test ~~ sec) ?>> pr !>> (fix >> test) *3?
-
-# Brand + auth + deploy
-/pipe brand >> auth >> hig >> test >> ship
-
-# AI review then fix
-/pipe nexa review >> nexa bugs >> (fix >> test) *3? >> pr
-
-# Complete project from scratch
-/pipe req >> des >> plan >> @before:rules @after:test go *10! >> rev >> sec >> hig >> ship >> docs >> watch
-
-# Refactor with safety net
-/pipe @after:test refactor *3 >> rev >> pr
-
-# Database migration with validation
-/pipe migrate >> test >> ship ?>> watch !>> rollback
-
-# i18n setup with quality check
-/pipe i18n >> hig >> a11y >> test >> pr
-
-# Generate everything for launch
-/pipe brand >> auth >> ci >> env >> docs >> changelog >> ship
+/pipe req >> des >> plan >> go *5 >> rev >> test >> ship
 ```
 
-## Command References
-
-Use shortcut names or full names — both work:
-
+### Full Workflow with All Safety Nets
 ```
-# These are equivalent:
-/pipe req >> des >> plan
-/pipe ll-requirements >> ll-design >> ll-plan
+/pipe try (
+  req >> des >> plan >>
+  @before:rules @after:test go *5 >>
+  (rev ~~ sec ~~ a11y) >>
+  assert $test.coverage >= 90 >>
+  assert files.max_lines <= 100 >>
+  approve "Ship to production?" >>
+  ship >> watch
+) catch (
+  rollback >> fix >> test
+) finally (
+  docs >> changelog
+)
 ```
+
+### Quality Gate with Variables
+```
+/pipe $result = (rev ~~ test ~~ sec) >>
+  if $result.pass >> ship >> docs
+  else >> fix >> test >> ship
+```
+
+### Named Workflows
+```
+/pipe def quality = (rev ~~ test ~~ sec ~~ a11y)
+/pipe def safe-ship = quality ?>> approve "Ship?" >> ship !>> fix >> quality
+
+/pipe go *5 >> run safe-ship >> docs >> changelog
+```
+
+### Multi-Repo Deploy
+```
+/pipe in lunaos-engine (test >> ship) ~~
+      in lunaos-dashboard (test >> ship) ~~
+      in lunaos-studio (test >> ship) >>
+  log "All services deployed"
+```
+
+### Map Across Features
+```
+/pipe map [auth, billing, teams, workflows] >> (
+  with scope:$item (go >> test >> rev)
+) >> reduce pr
+```
+
+### AI Autopilot with Assertions
+```
+/pipe search "auth patterns" >>
+  nexa review >>
+  lam "improve auth security" >>
+  test >>
+  assert $test.pass >>
+  assert $test.coverage >= 90 >>
+  rev >> pr
+```
+
+### Watch Mode (Continuous)
+```
+/pipe watch src/**/*.ts >> test >> rev
+```
+
+### Event-Driven
+```
+/pipe on git:push >> (rev ~~ test ~~ sec) ?>> ship !>> fix >> test
+/pipe on schedule:daily >> deps >> sec >> perf
+```
+
+### Retry with Timeout
+```
+/pipe timeout 10m (nexa review) >> retry 3 (test) >> ship
+```
+
+### Snapshot + Diff for Safe Refactoring
+```
+/pipe snapshot >> refactor *3 >> diff >> test >> rev >> pr
+```
+
+### Feature with Auto-Fix Loop
+```
+/pipe @before:rules feature "add billing page" >>
+  (rev ~~ test ~~ sec) ?>> pr
+  !>> (fix >> test) *3? >> pr
+```
+
+### Brand Launch Pipeline
+```
+/pipe brand >> auth >> hig >> a11y >>
+  test >> approve "Launch?" >>
+  ship >> docs >> changelog >>
+  log "Launched!"
+```
+
+---
 
 ## Available Luna Commands
-
-All Luna commands work in pipes:
 
 **Workflow**: `req`, `des`, `plan`, `go`, `rev`, `test`, `ship`, `watch`, `retro`
 **Autopilot**: `feature`, `parallel`, `fix`, `debug`, `refactor`, `pr`
@@ -204,22 +267,30 @@ All Luna commands work in pipes:
 **AI**: `nexa`, `lam`, `oh`, `chain`, `vision`, `search`, `q`
 **Tools**: `hig`, `ui`, `docs`, `cfg`
 
+---
+
 ## Execution Rules
 
-1. **Sequential (`>>`)**: Next Luna command starts only after previous completes
-2. **Parallel (`~~`)**: All Luna commands in the group start simultaneously
-3. **Groups (`()`)**: Treated as a single unit — all must complete before moving on
-4. **Conditional (`?>>`)**: Next runs only if previous Luna command succeeded
-5. **Fail branch (`!>>`)**: Next runs only if previous Luna command failed
-6. **Loop (`*N`)**: Repeats Luna command or group N times
-7. **Loop until success (`*N?`)**: Repeats up to N times, stops when command succeeds
-8. **Loop until failure (`*N!`)**: Repeats up to N times, stops when command fails
-9. **Loop forever (`*?`)**: Repeats until success, max 10 iterations (safety cap)
-10. **Before hook (`@before:CMD`)**: Runs Luna CMD before each step in the pipe
-11. **After hook (`@after:CMD`)**: Runs Luna CMD after each step in the pipe
-12. **Each hook (`@each:CMD`)**: Runs Luna CMD both before and after each step
-13. **Hook groups**: Hooks support `()` for parallel — `@after:(test ~~ rev)`
-14. **Multiple hooks**: Stack them — `@before:rules @after:test`
-15. **Scope inheritance**: All Luna commands in a pipe share the same project scope
-16. **Fail-fast**: By default, pipeline stops on first failure (use `?>>` / `!>>` for control)
-17. **Report**: Each command's output is captured in the pipeline report
+1. All commands in a pipe are Luna commands (shortcuts or full names)
+2. `>>` sequential — next starts after previous completes
+3. `~~` parallel — all start simultaneously
+4. `()` groups — treated as single unit
+5. `?>>` / `!>>` — branch on success/failure
+6. `*N` loops — repeat N times with variants `*N?`, `*N!`, `*?`
+7. `@before` / `@after` / `@each` — hooks run on every step
+8. `$var` — capture and pass output between steps
+9. `if/else/match` — branch on conditions or values
+10. `try/catch/finally` — structured error handling
+11. `assert` — fail pipeline if condition not met
+12. `approve` — pause for human confirmation
+13. `with` — set context (scope, model) for a block
+14. `in` — target specific repo
+15. `map/reduce` — apply pipeline to list, merge results
+16. `watch/on` — reactive and event-driven execution
+17. `timeout/retry` — timing controls
+18. `snapshot/diff` — track changes across pipeline
+19. `def/run/import` — named reusable workflows
+20. `log` — pipeline logging
+21. Scope inheritance — all steps share project context
+22. Fail-fast by default — use `?>>` / `!>>` / `try` for control
+23. Report generated at `.luna/{project}/pipeline-report.md`
