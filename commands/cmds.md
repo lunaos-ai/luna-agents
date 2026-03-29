@@ -106,6 +106,9 @@ Quick reference for all shortcuts. Type any of these in Claude Code:
 *N?  loop up to N, stop on success       (fix >> test) *3?
 *N!  loop up to N, stop on failure       go *10!
 *?   loop until success (max 10)         (fix >> test) *?
+@before:CMD  run before each step        @before:rules
+@after:CMD   run after each step         @after:test
+@each:CMD    run before+after each step  @each:lint
 ```
 
 ### Pipeline Examples
@@ -128,6 +131,9 @@ Quick reference for all shortcuts. Type any of these in Claude Code:
 
 # Auto-fix loop (try 3 times)
 /pipe (fix "bug" >> test) *3? >> pr
+
+# Apply rules + test after every task
+/pipe @before:rules @after:test go *5 >> ship
 
 # Feature with quality gates
 /pipe feature "add billing" >> (lint ~~ test) ?>> pr

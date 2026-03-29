@@ -205,6 +205,9 @@ Use `/pipe` to chain commands with operators:
 # Auto-fix loop (try 3 times until tests pass)
 /pipe (fix "bug" >> test) *3? >> pr
 
+# Apply rules before + test after every step
+/pipe @before:rules @after:test go *5 >> ship
+
 # Feature autopilot with quality gate
 /pipe feature "add billing" >> (lint ~~ test) ?>> pr
 ```
@@ -220,6 +223,9 @@ Use `/pipe` to chain commands with operators:
 | `*N?` | Loop up to N times, stop on success | `(fix >> test) *3?` |
 | `*N!` | Loop up to N times, stop on failure | `go *10!` |
 | `*?` | Loop until success (max 10) | `(fix >> test) *?` |
+| `@before:CMD` | Run before each step | `@before:rules` |
+| `@after:CMD` | Run after each step | `@after:test` |
+| `@each:CMD` | Run before + after each step | `@each:lint` |
 
 ### API
 
