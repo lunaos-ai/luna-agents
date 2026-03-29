@@ -39,6 +39,9 @@ Combine Luna commands with `>>` (sequential) and `~~` (parallel).
 | `*N?` | Loop up to N times, stop on success | `(fix >> test) *3?` |
 | `*N!` | Loop up to N times, stop on failure | `go *10!` (stop when task fails) |
 | `*?` | Loop until success (max 10) | `(fix >> test) *?` |
+| `@before:CMD` | Run CMD before each step in the pipe | `@before:rules` |
+| `@after:CMD` | Run CMD after each step in the pipe | `@after:test` |
+| `@each:CMD` | Run CMD both before and after each step | `@each:lint` |
 
 ## Usage
 
@@ -92,6 +95,38 @@ Keep fixing and testing until it passes (max 10 iterations).
 /pipe go *5 >> (lint ~~ test) ?>> pr !>> (fix >> test) *3?
 ```
 Execute 5 tasks, run quality checks in parallel. If pass, create PR. If fail, try fix+test up to 3 times.
+
+### Hooks — run before/after each step
+
+```
+/pipe @before:rules go *5 >> rev >> ship
+```
+Applies `/rules` before every step — ensures 100-line cap, full tests, Playwright e2e on every task.
+
+```
+/pipe @after:test go *5
+```
+Runs `/test` after each `/go` execution — validates every task immediately.
+
+```
+/pipe @before:rules @after:test go *3 >> rev >> ship
+```
+Apply rules before each step AND run tests after each step.
+
+```
+/pipe @each:lint req >> des >> plan >> go *5
+```
+Lint runs both before and after every step in the pipeline.
+
+```
+/pipe @after:rev go *5 >> (lint ~~ test) ?>> pr
+```
+Code review after every task, then quality gate, then PR.
+
+```
+/pipe @before:rules @after:(test ~~ lint) go *10! >> ship
+```
+Apply rules before each step. After each step, run test and lint in parallel.
 
 ### Full pipeline examples
 
@@ -154,9 +189,14 @@ All Luna commands work in pipes:
 7. **Loop until success (`*N?`)**: Repeats up to N times, stops when command succeeds
 8. **Loop until failure (`*N!`)**: Repeats up to N times, stops when command fails
 9. **Loop forever (`*?`)**: Repeats until success, max 10 iterations (safety cap)
-10. **Scope inheritance**: All commands in a pipe share the same project scope
-11. **Fail-fast**: By default, pipeline stops on first failure (use `?>>` / `!>>` for control)
-12. **Report**: Each command's output is captured in the pipeline report
+10. **Before hook (`@before:CMD`)**: Runs CMD before each step in the pipe
+11. **After hook (`@after:CMD`)**: Runs CMD after each step in the pipe
+12. **Each hook (`@each:CMD`)**: Runs CMD both before and after each step
+13. **Hook groups**: Hooks support `()` for parallel — `@after:(test ~~ lint)`
+14. **Multiple hooks**: Stack them — `@before:rules @after:test`
+15. **Scope inheritance**: All commands in a pipe share the same project scope
+16. **Fail-fast**: By default, pipeline stops on first failure (use `?>>` / `!>>` for control)
+17. **Report**: Each command's output is captured in the pipeline report
 
 ## Tips
 
