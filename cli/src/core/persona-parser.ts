@@ -47,7 +47,7 @@ const CATEGORY_MAP: Record<string, string> = {
  * Find the agents directory — works both in dev and when installed globally
  */
 function findAgentsDir(): string {
-    const thisFile = fileURLToPath(import.meta.url);
+    const thisFile = typeof __filename !== 'undefined' ? __filename : fileURLToPath(import.meta.url);
     const thisDir = path.dirname(thisFile);
 
     // Candidates in priority order:

@@ -1,8 +1,11 @@
 import { defineConfig } from 'tsup';
+import { builtinModules } from 'node:module';
+
+const nodeBuiltins = builtinModules.flatMap((m) => [m, `node:${m}`]);
 
 export default defineConfig({
     entry: ['src/index.ts'],
-    format: ['esm'],
+    format: ['cjs'],
     platform: 'node',
     target: 'node18',
     outDir: 'dist',
@@ -13,6 +16,6 @@ export default defineConfig({
     banner: {
         js: '#!/usr/bin/env node',
     },
-    skipNodeModulesBundle: true,
-    external: ['fsevents', 'playwright-core'],
+    noExternal: [/.*/],
+    external: [...nodeBuiltins, 'fsevents', 'playwright-core', 'playwright'],
 });
