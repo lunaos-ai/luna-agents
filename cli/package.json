@@ -1,11 +1,11 @@
 {
     "name": "luna-agents-cli",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "description": "AI agent platform CLI — run 28+ specialized coding agents from your terminal",
     "type": "module",
-    "main": "dist/index.js",
+    "main": "dist/index.cjs",
     "bin": {
-        "luna": "dist/index.js"
+        "luna": "dist/index.cjs"
     },
     "scripts": {
         "build": "tsup",
