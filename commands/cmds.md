@@ -83,17 +83,25 @@ Quick reference for all shortcuts. Type any of these in Claude Code:
 
 | Type | Does | Full command |
 |------|------|-------------|
-| `/promote` | Full AI promotion — llms.txt, MCP registries, SEO, GPT Actions | `/ll-promote` |
+| `/go-viral` | **Everything** — AI files + MCP registry + content + awesome lists | `/ll-go-viral` |
+| `/promote` | Technical AI promotion — llms.txt, MCP registries, SEO, GPT Actions | `/ll-promote` |
+| `/organic-promote` | Organic content — Dev.to, Product Hunt, HN, Reddit, awesome lists | `/ll-organic-promote` |
 | `/ai-index` | Generate AI discovery files (llms.txt, ai-plugin.json, mcp.json) | `/ll-ai-index` |
 | `/mcp-publish` | Publish MCP server to Official Registry, Smithery, Glama | `/ll-mcp-publish` |
 
 ### The Promote Pipe
 ```
-# Full promotion: generate files, deploy, publish, verify
-/pipe ai-index >> ship >> mcp-publish >> promote verify
+# Nuclear option — everything at once
+/go-viral --product_name MyApp --domain myapp.com --repo org/repo --competitors "Tool A" --category devtools --install_command "npx myapp init"
 
-# Continuous SEO: deploy, promote, verify endpoints
-/pipe ship >> promote seo >> promote verify
+# Step by step
+/pipe ai-index >> ship >> mcp-publish >> promote verify >> organic-promote
+
+# Just technical promotion
+/pipe promote full >> promote verify
+
+# Just organic content
+/organic-promote --product_name MyApp --domain myapp.com --repo org/repo --competitors "Tool A" --category devtools --install_command "npx myapp init"
 ```
 
 ## Infrastructure & DevOps
