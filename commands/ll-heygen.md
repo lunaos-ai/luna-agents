@@ -1,152 +1,203 @@
 ---
 name: ll-heygen
-displayName: Luna HeyGen Video
-description: Generate professional AI avatar product demo videos with HeyGen — screenshots + script → polished video
-version: 1.0.0
+displayName: Luna HeyGen Transform
+description: Transform any webapp into HeyGen-style professional dark UI — design tokens, components, layouts, flows, and AI avatar video generation
+version: 2.0.0
 category: creative
 agent: luna-task-executor
 parameters:
   - name: url
     type: string
-    description: Product URL to demo (e.g., https://lunaos.ai)
+    description: Target webapp URL or local path to transform
     required: true
     prompt: true
-  - name: style
+  - name: mode
     type: string
-    description: "Style: product-tour, feature-demo, changelog, pitch, social-clip"
+    description: "Mode: transform (apply design system), video (generate demo video), full (both)"
     required: false
-    default: product-tour
+    default: full
   - name: avatar
     type: string
-    description: "HeyGen avatar ID (or 'default' for platform default)"
+    description: "HeyGen avatar ID for video (or 'default')"
     required: false
     default: default
 mcp_servers:
   - playwright
   - zai-mcp-server
-prerequisites:
-  - HEYGEN_API_KEY in .env or environment
+prerequisites: []
 ---
 
-# Luna HeyGen — AI Avatar Product Videos
+# Luna HeyGen Transform
 
-Generate polished product demo videos with an AI avatar presenter using HeyGen.
+Transform any webapp into the HeyGen-style professional dark UI design system, then generate an AI avatar product video. Uses the exact design tokens, components, and patterns from the HeyGen/Pushci transformation guide.
 
-## How It Works
+## What This Command Does
 
-### Phase 1: Capture Product Screenshots
-Luna navigates your product with Playwright, capturing annotated screenshots at each key section with CodeRailFlow-style overlays (captions, highlights, step badges).
+### Transform Mode
+Analyzes the target webapp and generates a complete redesign using the HeyGen dark UI pattern:
 
-### Phase 2: Generate Voice Script
-For each screenshot, Luna writes a natural voiceover script using the Claw Gateway AI. The script is conversational, not robotic — it tells a story.
+1. **Audit** — Screenshots the current webapp, identifies all pages and components
+2. **Map** — Maps existing elements to the HeyGen design system equivalents
+3. **Generate** — Produces a transformation guide specific to that webapp:
+   - CSS variables (design tokens) mapped to the app's brand color
+   - Component-by-component transformation specs
+   - Page layout restructuring (sidebar + content pattern)
+   - Navigation redesign
+   - Typography scale application
+   - Motion/transition specs
+4. **Apply** — Generates the actual CSS/component code to transform the app
+5. **Output** — Full transformation guide as an interactive HTML page (like the reference)
 
-### Phase 3: Send to HeyGen API
-Luna calls the HeyGen v2 API to generate the video:
+### Video Mode
+Captures the transformed (or existing) webapp and produces a HeyGen AI avatar video.
 
-```
-POST https://api.heygen.com/v2/video/generate
-x-api-key: {HEYGEN_API_KEY}
+### Full Mode (default)
+Does both: transform the design, then record the demo video.
 
-{
-  "title": "LunaOS Product Tour",
-  "video_inputs": [
-    {
-      "character": { "type": "avatar", "avatar_id": "..." },
-      "voice": { "type": "text", "voice_id": "...", "input_text": "..." },
-      "background": { "type": "image", "url": "screenshot-01.png" }
-    },
-    // ... one scene per screenshot
-  ],
-  "dimension": { "width": 1280, "height": 720 }
+## Design System Applied
+
+### Core Design Tokens
+```css
+:root {
+  /* Backgrounds (3-level depth) */
+  --bg-root:    #0d0d0d;   /* body */
+  --bg-surface: #141414;   /* sidebar, cards */
+  --bg-raised:  #1a1a1a;   /* inputs, hover */
+  --bg-hover:   #222222;   /* active state */
+
+  /* Borders */
+  --border:     #2a2a2a;   /* subtle divider */
+  --border-em:  #333333;   /* emphasized */
+
+  /* Text */
+  --text-1:     #f0f0f0;   /* headings */
+  --text-2:     #a0a0a0;   /* body */
+  --text-3:     #666666;   /* meta */
+
+  /* Brand Accent (adapted per app) */
+  --accent:     #7c5cfc;
+  --accent-dark:#6b4ef0;
+  --accent-glow:rgba(124,92,252,0.15);
+
+  /* Semantic */
+  --success: #22c55e;
+  --info:    #3b82f6;
+  --warning: #f97316;
+  --danger:  #ef4444;
+
+  /* Radius Scale */
+  --r-sm: 6px;  --r-md: 10px;  --r-lg: 14px;  --r-xl: 20px;
+
+  /* Layout */
+  --sidebar-w: 220px;
+  --content-p: 28px 32px;
+
+  /* Transitions */
+  --t-fast:   all 0.15s ease;
+  --t-spring: all 0.2s cubic-bezier(0.34, 1.3, 0.7, 1);
+
+  /* Typography */
+  --font-ui:  'SF Pro Display', system-ui, sans-serif;
+  --font-mono:'SF Mono', 'Fira Code', monospace;
 }
 ```
 
-Each scene uses the product screenshot as the background with the AI avatar presenting in the corner.
+### Layout Pattern
+- **App shell**: 2-column flex (fixed sidebar + scrollable main)
+- **Sidebar**: 220px wide, `--bg-surface`, border-right
+- **Content**: max-width 1100px, padding 28px 32px
+- **Cards**: `--bg-surface`, 1px border, radius 14px, padding 18px
+- **Grids**: auto-fill minmax(200px, 1fr), 14px gap
 
-### Phase 4: Poll + Download
-Luna polls `GET /v1/video_status.get?video_id={id}` until complete, then downloads the final MP4.
+### Typography Scale
+| Role | Size | Weight | Color |
+|------|------|--------|-------|
+| Page title | 22px | 600 | --text-1 |
+| Section heading | 18px | 600 | --text-1 |
+| Card title | 14px | 600 | --text-1 |
+| Body / nav | 13.5px | 400 | --text-2 |
+| Label | 12px | 600 | contextual |
+| Caption | 11px | 400 | --text-3 |
+| Divider label | 10px | 600 | uppercase tracking .1em |
+
+### Component Patterns
+- **Buttons**: Primary (accent bg), Secondary (raised bg + border), Ghost (transparent + border)
+- **Inputs**: raised bg, border-em, 9px 12px padding, focus = accent border + glow
+- **Cards**: surface bg, border, r-lg, hover = border-em + translateY(-1px)
+- **Pills/Tabs**: border bottom 2px, active = accent color + border
+- **Badges**: tinted bg (15% opacity) + semantic color text
+- **Nav items**: 8px padding, r-sm radius, icon 16px + 10px gap
+
+### Motion
+- Hover: translateY(-1px) on cards, scale(0.97) on button press
+- Focus: 3px box-shadow with accent-glow
+- Page transitions: fade 0.2s or slide 0.3s
+- Spring easing: cubic-bezier(0.34, 1.3, 0.7, 1) for interactive elements
 
 ## Usage
 
 ```bash
-# Full product tour with AI avatar
-/heygen https://lunaos.ai product-tour
+# Transform + video
+/heygen https://myapp.com
 
-# Feature demo focused on one section
-/heygen https://lunaos.ai feature-demo
+# Just apply the design system
+/heygen https://myapp.com transform
 
-# Short social media clip (30 seconds)
-/heygen https://lunaos.ai social-clip
+# Just generate video
+/heygen https://myapp.com video
 
-# Investor pitch
-/heygen https://lunaos.ai pitch
+# Transform a local project
+/heygen http://localhost:3000 transform
 
-# Use specific avatar
-/heygen https://lunaos.ai product-tour --avatar josh_lite3_20230714
+# With specific accent color (adapt the purple to your brand)
+/heygen https://myapp.com --accent "#3b82f6"
 ```
-
-## Prerequisites
-
-1. Sign up at https://heygen.com (free trial: 1 credit = 1 minute)
-2. Get API key from https://app.heygen.com/settings#api
-3. Add to your `.env`:
-   ```
-   HEYGEN_API_KEY=your-key-here
-   ```
 
 ## Output
 
 ```
 .luna/{project}/heygen/
-  video.mp4              # Final video from HeyGen
-  screenshots/           # Annotated product screenshots
-    01-hero.png
-    02-features.png
+  transformation-guide.html   # Interactive guide (like the reference)
+  design-tokens.css           # Ready-to-paste CSS variables
+  components.css              # Component styles
+  layout.css                  # App shell + grid styles
+  page-specs/                 # Per-page transformation specs
+    home.md
+    dashboard.md
+    settings.md
     ...
-  script.json            # Voice script per scene
-  heygen-request.json    # API request (for debugging)
-  heygen-response.json   # API response with video_id
+  screenshots/                # Before/after captures
+    before/
+    after/
+  video/                      # HeyGen video assets
+    video.mp4
+    voice/
+    flow.json
+  checklist.md                # Transformation progress checklist
 ```
 
-## Video Styles
+## How It Adapts Per App
 
-### product-tour (default)
-Full walkthrough: hero → features → demo → pricing → auth → CTA.
-Duration: 60-90 seconds. Avatar presents each section.
+The agent doesn't blindly copy HeyGen's UI. It:
 
-### feature-demo
-Deep dive into one feature. Shows the UI, explains how it works.
-Duration: 30-60 seconds.
+1. **Detects the app's primary color** and maps it to `--accent`
+2. **Identifies the navigation pattern** and restructures to sidebar layout
+3. **Maps existing components** to the design system equivalents
+4. **Preserves content and functionality** — only changes visual presentation
+5. **Generates the transformation guide** as an interactive HTML page matching the reference format, but with the target app's specific pages, flows, and components
 
-### changelog
-What's new in the latest release. Lists changes with screenshots.
-Duration: 30-45 seconds.
-
-### pitch
-Investor-style: problem → solution → traction → ask.
-Duration: 60-120 seconds.
-
-### social-clip
-Short, punchy clip for Twitter/LinkedIn. Hook → demo → CTA.
-Duration: 15-30 seconds.
+## Reference
+The full design specification is at: `html/heygen-pushci-guide.html`
 
 ## In Pipes
 
 ```bash
-# Record demo, create HeyGen video, publish
-/pipe flow-record https://myapp.com >> heygen https://myapp.com >> publish youtube
+# Transform then audit
+/pipe heygen https://myapp.com transform >> site-audit https://myapp.com
 
-# Ship feature, create changelog video
-/pipe go >> heygen https://myapp.com changelog >> publish twitter
+# Full product launch
+/pipe heygen https://myapp.com full >> browser-test https://myapp.com >> ship
 
-# Full launch: deploy, record, produce video, share everywhere
-/pipe ship >> heygen https://myapp.com product-tour >> publish all
+# Transform, test, fix loop
+/pipe heygen https://myapp.com transform >> browser-test >> fix >> heal
 ```
-
-## Integration with CodeRailFlow
-
-When CodeRailFlow is configured, `/heygen` uses its overlay system for richer screenshots:
-- Step badges with progress indicator
-- Element highlights with glow effects
-- Smooth cursor animations between targets
-- Brand badge ("PRODUCT TOUR") in corner
