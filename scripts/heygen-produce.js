@@ -33,13 +33,11 @@ async function api(path, body) {
 }
 
 async function uploadAsset(filePath) {
-  const form = new FormData();
-  const blob = new Blob([fs.readFileSync(filePath)], { type: 'image/png' });
-  form.append('file', blob, path.basename(filePath));
-  const res = await fetch(`${API}/v1/asset`, {
+  const buf = fs.readFileSync(filePath);
+  const res = await fetch('https://upload.heygen.com/v1/asset', {
     method: 'POST',
-    headers: { 'x-api-key': KEY },
-    body: form,
+    headers: { 'X-API-KEY': KEY, 'Content-Type': 'image/png' },
+    body: buf,
   });
   const data = await res.json();
   return data.data?.url || data.data?.asset_id;
