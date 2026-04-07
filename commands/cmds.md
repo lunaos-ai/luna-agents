@@ -79,6 +79,23 @@ Quick reference for all shortcuts. Type any of these in Claude Code:
 | `/ci` | Generate CI/CD pipeline | `/ll-ci` |
 | `/changelog` | Auto-generate changelog from git | `/ll-changelog` |
 
+## AI Agent Promotion & SEO
+
+| Type | Does | Full command |
+|------|------|-------------|
+| `/promote` | Full AI promotion — llms.txt, MCP registries, SEO, GPT Actions | `/ll-promote` |
+| `/ai-index` | Generate AI discovery files (llms.txt, ai-plugin.json, mcp.json) | `/ll-ai-index` |
+| `/mcp-publish` | Publish MCP server to Official Registry, Smithery, Glama | `/ll-mcp-publish` |
+
+### The Promote Pipe
+```
+# Full promotion: generate files, deploy, publish, verify
+/pipe ai-index >> ship >> mcp-publish >> promote verify
+
+# Continuous SEO: deploy, promote, verify endpoints
+/pipe ship >> promote seo >> promote verify
+```
+
 ## Infrastructure & DevOps
 
 | Type | Does | Full command |
