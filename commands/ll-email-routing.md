@@ -89,22 +89,34 @@ When using `all`, configures these domains:
 
 ## Prerequisites
 
-Create a Cloudflare API token at https://dash.cloudflare.com/profile/api-tokens:
-- Zone / Zone / Read
-- Zone / Email Routing Rules / Edit  
-- Zone / Email Routing Addresses / Edit
-- Zone Resources: All zones
+Uses Cloudflare Global API Key (required for email routing API):
+1. Go to https://dash.cloudflare.com/profile/api-tokens
+2. Scroll to **Global API Key** → **View** → copy
+3. Set in `.env`:
+   ```
+   CLOUDFLARE_AUTH_EMAIL=your@email.com
+   CLOUDFLARE_API_TOKEN_GLOBAL=your_global_key
+   ```
 
-Set as: `CLOUDFLARE_EMAIL_TOKEN=xxx` in your `.env`
+## How It Runs
+
+The command executes two Cloudflare API calls per domain:
+1. `PUT /zones/{id}/email/routing/enable` — enables routing
+2. `PUT /zones/{id}/email/routing/rules/catch_all` — forwards all to destination
 
 ## Script
 
-The actual setup script is at:
-`scripts/setup-email-routing.sh`
+Setup script: `scripts/setup-email-routing.sh`
 
-Run manually:
 ```bash
-CLOUDFLARE_API_TOKEN=xxx bash scripts/setup-email-routing.sh
+# All domains at once
+CLOUDFLARE_AUTH_EMAIL=your@email.com \
+CLOUDFLARE_GLOBAL_KEY=xxx \
+bash scripts/setup-email-routing.sh
+
+# Or use the command
+/email-routing all
+/email-routing myapp.ai
 ```
 
 ## In Pipes
