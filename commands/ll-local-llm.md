@@ -70,9 +70,13 @@ Run AI agents entirely offline using llamafile. Downloads and runs a single bina
 | Model | Size | Speed | Best For |
 |-------|------|-------|----------|
 | qwen3.5-0.8b | 800 MB | Very fast | Quick tasks, offline dev |
+| **gemma4:e2b** | **3 GB** | **Very fast** | **Edge, audio+vision, 128K ctx** |
+| **gemma4:e4b** | **5 GB** | **Fast** | **Edge, audio+vision, 128K ctx** |
 | mistral-7b | 7 GB | Fast | General purpose |
 | llama-3.1-8b | 8 GB | Medium | Balanced quality |
 | codellama-13b | 13 GB | Slower | Code generation |
+| **gemma4:26b** | **15 GB** | **Fast (MoE)** | **Best open-source, 256K ctx, 3.8B active** |
+| **gemma4:31b** | **18 GB** | **Medium** | **Highest quality open model, 256K ctx** |
 
 ## Usage
 

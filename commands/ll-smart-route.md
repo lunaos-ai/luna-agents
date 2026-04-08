@@ -62,13 +62,13 @@ Self-learning agent routing inspired by SONA-style intelligent dispatch. Tracks 
 
 - Every execution records: task type, model used, success/failure, cost, latency
 - After 10+ executions per task type, routing becomes data-driven
-- Cold start uses sensible defaults (Haiku for simple, Sonnet for medium, Opus for complex)
+- Cold start uses sensible defaults (Gemma 4 local for simple, Haiku for medium, Sonnet for complex)
 - Performance data stored in Cloudflare KV with D1 backup for analytics
 
 ## Fallback Chain
 
 ```
-cheap model (Haiku) → mid model (Sonnet) → expensive model (Opus)
+free model (Gemma 4 local) → cheap model (Haiku) → mid model (Sonnet) → expensive model (Opus)
 ```
 
 - If the selected model fails or produces low-quality output, automatically escalates
@@ -78,8 +78,9 @@ cheap model (Haiku) → mid model (Sonnet) → expensive model (Opus)
 ## Cost Savings
 
 - Typical savings: 40-70% vs always using the most expensive model
-- Simple tasks (formatting, comments, renames) route to Haiku at ~$0.001/task
-- Complex tasks (architecture, security review) still route to Opus when needed
+- Simple tasks (formatting, comments, renames) route to Gemma 4 local at $0.000/task
+- Medium tasks (code review, tests) route to Haiku at ~$0.001/task
+- Complex tasks (architecture, security review) still route to Sonnet/Opus when needed
 - Dashboard shows cumulative savings over time
 
 ## Data Storage
