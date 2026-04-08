@@ -1,131 +1,102 @@
 ---
 name: ll-boost-project
 displayName: Luna Boost Project
-description: Analyze any project and generate a full integration plan using open-source tools, Claw Gateway, and Luna's intelligence features
-version: 1.0.0
+description: Analyze any project and generate an integration plan using open-source tools from GitHub
+version: 2.0.0
 category: analysis
 agent: luna-task-executor
 parameters:
   - name: path
     type: string
-    description: "Project path or URL (e.g., '.' for current, '/path/to/project', 'https://github.com/user/repo')"
+    description: "Project path (e.g., '.' for current)"
     required: false
     default: "."
     prompt: true
   - name: depth
     type: string
-    description: "Analysis depth: quick (5 min), full (15 min), deep (30 min)"
+    description: "quick, full, deep"
     required: false
     default: full
 prerequisites: []
 ---
 
-# Luna Boost Project — Supercharge Any Project with Open-Source Intelligence
+# Luna Boost Project — Leverage Open Source to Supercharge Any Project
 
-Analyzes any project's codebase, identifies what it does, what it's missing, and generates a specific integration plan using the full ecosystem of open-source tools, shared infrastructure, and Luna's intelligence features.
+Scans your codebase, classifies what it does, and maps it against 20+ curated open-source tools to generate a specific integration plan.
 
-## What This Command Does
+## Open-Source Tool Library
 
-1. **Scan** — reads the project structure, README, CLAUDE.md, package.json/go.mod, key source files
-2. **Classify** — identifies: stack, domain, maturity, strengths, gaps
-3. **Match** — maps the project against 15+ researched open-source tools
-4. **Plan** — generates a prioritized integration plan with specific code-level steps
-5. **Register** — optionally registers the project on the Claw Gateway
-6. **Output** — creates an implementation roadmap
+### AI / LLM
+- [llamafile](https://github.com/mozilla-ai/llamafile) — Run LLMs as single executables, free, offline
+- [any-llm](https://github.com/mozilla-ai/any-llm) — Unified Python SDK for multiple LLM providers
+- [nanoGPT](https://github.com/karpathy/nanoGPT) — Minimal GPT training (~300 lines)
+- [llm.c](https://github.com/karpathy/llm.c) — Train GPT-2/3 in raw C/CUDA
 
-## Open-Source Tools Available
+### 3D / Visual
+- [LLaMA-Mesh](https://github.com/nv-tlabs/LLaMA-Mesh) — Text-to-3D mesh generation
+- [3DGRUT](https://github.com/nv-tlabs/3dgrut) — 3D Gaussian ray tracing renderer
+- [PPISP](https://github.com/nv-tlabs/ppisp) — Camera correction for 3D renders
 
-### AI Infrastructure (share across all projects)
-| Tool | What It Provides |
-|------|-----------------|
-| **Claw Gateway** | Multi-provider LLM routing, caching, cost tracking — already deployed |
-| **ReasoningBank** | KV cache for prompt→response pairs — 30% token savings |
-| **Agent Booster** | Skip LLM for simple deterministic transforms — <1ms, $0 |
-| **Context Packing** | Trim context to relevant parts — 40-60% token savings |
-| **Smart Router** | Self-learning model selection — cheapest viable model |
-| **llamafile** | Run LLMs locally as single executable — free, offline |
+### Voice
+- [Voicebox](https://github.com/jamiepine/voicebox) — Free local TTS + voice cloning, 23 languages
 
-### Search & Data
-| Tool | What It Provides |
-|------|-----------------|
-| **Hybrid Search** | Sparse+Dense RRF fusion — 20-49% better retrieval |
-| **RuVector** | Self-learning vector DB — improves from every query |
-| **Graph RAG** | Knowledge graph for multi-hop code understanding |
+### Performance / Testing
+- [Perfetto](https://github.com/google/perfetto) — Performance tracing + SQL analysis
+- [flakestress](https://github.com/bradfitz/flakestress) — Detect flaky tests under stress
 
-### Developer Experience
-| Tool | What It Provides |
-|------|-----------------|
-| **Voicebox** | Free local TTS — narrate demos, accessibility audio |
-| **Perfetto** | Performance tracing — debug slow operations |
-| **flakestress** | Detect flaky tests — CI reliability |
-| **Victory** | React charting components — analytics dashboards |
+### Networking
+- [Tailscale](https://github.com/tailscale/tailscale) — Zero-config WireGuard mesh VPN
 
-### Gamification & Growth
-| Tool | What It Provides |
-|------|-----------------|
-| **Credit System** | Earn credits for contributions — gamification |
-| **Skill Marketplace** | Publish/install reusable components — ecosystem |
+### UI
+- [Victory](https://github.com/FormidableLabs/victory) — Composable React charts
+- [Spacedrive](https://github.com/spacedriveapp/spacedrive) — Rust + Tauri desktop reference
 
-### Architecture
-| Tool | What It Provides |
-|------|-----------------|
-| **Queen-Led Swarm** | Multi-agent task decomposition + parallel execution |
-| **Product Map** | Visual planning with hierarchical feature cards |
-| **Tailscale** | Secure mesh networking between services |
+### Agents
+- [Agent of Empires](https://github.com/njbrake/agent-of-empires) — Parallel AI agents with git worktrees
 
-## How It Analyzes
+### Search / Database
+- [RuVector](https://github.com/ruvnet/RuVector) — Self-learning vector DB, hybrid search, graph RAG
 
-### Step 1: Project Classification
-- Stack: Go / TypeScript / Python / Rust / Multi
-- Domain: SaaS / DevTool / FinTech / Security / AI / Marketplace
-- Maturity: early (< 50 files) / growing (50-500) / mature (500+)
-- Has AI: yes/no (checks for LLM calls, embeddings, AI imports)
-- Has billing: yes/no (checks for Stripe/LemonSqueezy/payment)
-- Has tests: coverage percentage
-- Has CI/CD: yes/no
+### Reference Architectures
+- [ruflo](https://github.com/ruvnet/ruflo) — Self-learning agent orchestration patterns
+- [flow-nexus](https://github.com/ruvnet/flow-nexus) — Gamified agentic platform patterns
+- [Dossier](https://github.com/ruvnet/Dossier) — Visual planning + context control patterns
 
-### Step 2: Gap Analysis
-For each tool, checks:
-- Does the project already have this capability?
-- Would this capability benefit the project?
-- What's the estimated integration effort?
-- What's the expected business impact?
+### Community
+- [KarpathyTalk](https://github.com/karpathy/KarpathyTalk) — Dev social platform (Go + SQLite + htmx)
+- [Inbox Zero](https://github.com/elie222/inbox-zero) — AI email management
+- [GitNexus](https://github.com/abhigyanpatwari/GitNexus) — Repo analytics
 
-### Step 3: Integration Plan
-Generates specific steps:
-```
-P1 (do now):
-  - Register on Claw Gateway (10 min)
-  - Add ReasoningBank caching (30 min)
-  
-P2 (this week):
-  - Implement Context Packing (2 hrs)
-  - Add Agent Booster for [detected patterns] (2 hrs)
-  
-P3 (next sprint):
-  - Embed Hybrid Search (4 hrs)
-  - Add Victory charts to dashboard (4 hrs)
-```
+## Matching Logic
 
-### Step 4: Claw Gateway Registration
-If not already registered, offers to:
-- Generate API key
-- Register project on the gateway
-- Add env vars to the project
+### By Stack
+- **Go** → llamafile, Perfetto, flakestress, Tailscale
+- **TypeScript/React** → Victory, Voicebox, any-llm
+- **Python** → any-llm, llamafile, nanoGPT, llm.c
+- **Rust** → Spacedrive patterns, 3DGRUT
+
+### By Domain
+- **SaaS** → Victory, Voicebox, Inbox Zero patterns
+- **DevTool** → llamafile, Perfetto, flakestress, Agent of Empires
+- **FinTech** → RuVector hybrid search, Tailscale
+- **AI/ML** → llamafile, nanoGPT, llm.c, LLaMA-Mesh
+- **Testing** → flakestress, Perfetto
+- **Marketing** → LLaMA-Mesh, Voicebox, Victory
+
+### By Gap
+- No charts → Victory
+- No tests → flakestress
+- No voice → Voicebox
+- No offline AI → llamafile
+- No search → RuVector
+- No perf monitoring → Perfetto
+- No 3D → LLaMA-Mesh
 
 ## Usage
 
 ```bash
-# Analyze current project
 /boost-project
-
-# Analyze specific project
 /boost-project /path/to/project
-
-# Quick scan
-/boost-project . quick
-
-# Deep analysis with implementation
 /boost-project . deep
 ```
 
@@ -133,48 +104,15 @@ If not already registered, offers to:
 
 ```
 .luna/{project}/boost/
-  analysis.md           # Full project classification
-  gap-analysis.md       # What's missing
-  integration-plan.md   # Prioritized steps
+  analysis.md           # Project classification
   tool-mapping.md       # Which tools apply and why
-  claw-registration.md  # Gateway setup instructions
+  integration-plan.md   # Prioritized steps with links
+  quick-wins.md         # < 1 hour improvements
 ```
-
-## Per-Domain Recommendations
-
-### If SaaS:
-→ Claw Gateway + ReasoningBank + billing (LemonSqueezy) + Victory charts
-
-### If DevTool (CLI/extension):
-→ llamafile local mode + Agent Booster + Perfetto tracing + flakestress
-
-### If FinTech/Security:
-→ Hybrid Search + Tailscale + audit logging + ReasoningBank for compliance caching
-
-### If AI/ML:
-→ Claw Gateway + Smart Router + Context Packing + Queen-Led Swarm
-
-### If Testing:
-→ flakestress + CodeRailFlow + Agent Booster + Voicebox narration
-
-## Cross-Project Synergies
-
-The analysis also identifies synergies with other portfolio projects:
-- Push-CI + PipeWarden = CI/CD security suite
-- Qestro + CodeRailFlow = testing + automation suite
-- QueryFlux + RuVector = intelligent data platform
-- Aegis + Hybrid Search = better AML screening
-- All projects + Claw Gateway = shared AI with cost tracking
 
 ## In Pipes
 
 ```bash
-# Boost then implement
 /pipe boost-project . >> go
-
-# Boost then audit then fix
-/pipe boost-project . >> site-audit https://myapp.com >> fix
-
-# Boost all projects in a directory
-/pipe boost-project /path/to/project1 >> boost-project /path/to/project2
+/pipe boost-project . >> site-audit https://myapp.com
 ```
