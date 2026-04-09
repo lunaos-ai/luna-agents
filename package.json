@@ -56,6 +56,17 @@
     "@types/ws": "^8.18.1",
     "concurrently": "^8.2.2"
   },
+  "files": [
+    ".claude-plugin/index.js",
+    ".claude-plugin/lib/",
+    ".claude-plugin/claude-plugin.json",
+    ".claude-plugin/package.json",
+    "commands/",
+    "agents/",
+    "setup.sh",
+    "README.md",
+    "LICENSE"
+  ],
   "bin": {
     "luna-setup": "./setup.sh"
   },
