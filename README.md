@@ -12,10 +12,10 @@
 </p>
 
 <p align="center">
-  <a href="https://www.npmjs.com/package/@luna-agents/cli"><img src="https://img.shields.io/npm/v/@luna-agents/cli?color=a855f7&label=CLI" alt="npm"></a>
+  <a href="https://www.npmjs.com/package/luna-agents"><img src="https://img.shields.io/npm/v/luna-agents?color=a855f7&label=npm" alt="npm"></a>
+  <a href="https://www.npmjs.com/package/luna-agents"><img src="https://img.shields.io/npm/dm/luna-agents?color=a855f7&label=downloads" alt="downloads"></a>
   <a href="https://lunaos.ai"><img src="https://img.shields.io/badge/website-lunaos.ai-3b82f6" alt="Website"></a>
   <a href="https://docs.lunaos.ai"><img src="https://img.shields.io/badge/docs-docs.lunaos.ai-10b981" alt="Docs"></a>
-  <a href="https://status.lunaos.ai"><img src="https://img.shields.io/badge/status-operational-10b981" alt="Status"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-888" alt="License"></a>
 </p>
 
@@ -24,15 +24,22 @@
 ## ⚡ Start in 30 Seconds
 
 ```bash
-# No install needed — run directly
-npx @luna-agents/cli run code-review
-
-# Or install globally
-npm i -g @luna-agents/cli
-luna run code-review
+# Install globally
+npm install -g luna-agents
+luna-setup
 ```
 
-That's it. The CLI reads your codebase, sends it to a specialized AI agent, and streams the results back.
+Then in Claude Code, any of **232 slash commands** work:
+
+```
+/luna-agents:plan       # Break a feature into tasks
+/luna-agents:go         # Implement next task
+/luna-agents:test       # Run tests
+/luna-agents:ship       # Deploy
+/luna-agents:cmds       # See all 232 commands
+```
+
+That's it. The plugin reads your codebase, routes work to specialized AI agents, and streams results back.
 
 ---
 
