@@ -1,6 +1,6 @@
 {
   "name": "luna-agents-plugin",
-  "version": "2.2.0",
+  "version": "2.3.0",
   "description": "🌙 Complete AI-powered development lifecycle management - From requirements to post-launch monitoring",
   "main": "index.js",
   "keywords": [
