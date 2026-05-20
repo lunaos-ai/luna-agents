@@ -22,7 +22,8 @@ const EVENTS = {
 function verifyWebhook(payload, signature, secret) {
   const hmac = crypto.createHmac('sha256', secret);
   const digest = hmac.update(payload).digest('hex');
-  return digest === signature;
+  if (digest.length !== signature.length) return false;
+  return crypto.timingSafeEqual(Buffer.from(digest), Buffer.from(signature));
 }
 
 /**
@@ -84,7 +85,7 @@ async function handleWebhook(req, res) {
     res.status(200).json({ received: true });
   } catch (error) {
     console.error('Webhook error:', error);
-    res.status(500).json({ error: error.message });
+    res.status(200).json({ received: false, error: 'Processing failed' });
   }
 }
 

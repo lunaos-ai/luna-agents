@@ -20,6 +20,8 @@ This file extends the workspace root policy at:
 - Core services:
   - `.claude-plugin/` -- Claude Code plugin entry point and slash command definitions
   - `cli/` -- standalone CLI with Commander.js; entry at `cli/src/`
+  - `cli/src/sec/` -- DevSecOps lifecycle handlers (orchestrator + tool runners + bundles + lifecycle installer). Wraps gitleaks, trufflehog, semgrep, osv-scanner, license-checker, checkov, tfsec, trivy, hadolint, dockle, syft, grype, cosign, nuclei, ZAP, jazzer.js, atheris, threagile.
+  - `templates/sec-lifecycle/` -- husky hooks + GitHub Actions workflows + dependabot config copied by `luna sec lifecycle install`
   - `mcp-servers/luna-nexa-rag/` -- RAG semantic search MCP server
   - `mcp-servers/luna-glm-vision/` -- GLM vision analysis MCP server
   - `mcp-servers/luna-vision-rag-client/` -- combined vision+RAG MCP client
@@ -83,6 +85,22 @@ npm run test:mcp          # MCP server tests only
 npm run install:all       # Install all workspace dependencies
 npm run start:mcp         # Start MCP server
 ```
+
+## Security Lifecycle (DevSecOps)
+
+| Phase | Subcommand | Wraps |
+|-------|------------|-------|
+| Pre-commit | `luna sec precommit` | gitleaks (staged) |
+| PR / push | `luna sec pr` | gitleaks + trufflehog + semgrep + osv-scanner + license-checker |
+| Build | `luna sec build --artifact <img>` | syft (SBOM) + grype + cosign sign |
+| Pre-deploy | `luna sec deploy --image <img>` | trivy + hadolint + dockle + checkov + tfsec |
+| Runtime DAST | `luna sec runtime --target-url <u>` | nuclei + ZAP baseline |
+| Continuous | `luna sec watch` | osv-scanner + iac drift + DAST baseline |
+| Umbrella | `luna sec push --mode {fast,full,ci}` | full sweep |
+| Lifecycle install | `luna sec lifecycle --action install` | wires husky + GHA + dependabot |
+| Aggregate report | `luna sec report` | rolls all summaries into SUMMARY.md |
+
+Each subcommand respects `.luna/{project}/security/config.yaml` and `LUNA_SEC_BYPASS=1` (audited). Default severity gate blocks Critical/High; override with `--strict false`. Full docs: `lunaos-docs/docs/security/lifecycle.md`.
 
 ## Local Notes
 

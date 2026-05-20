@@ -11,6 +11,7 @@ import { chainCommand } from './commands/chain.js';
 import { configCommand } from './commands/config.js';
 import { loginCommand } from './commands/login.js';
 import { ragCommand } from './commands/rag.js';
+import { secCommand } from './commands/sec.js';
 import { handleError } from './utils/error-handler.js';
 
 const program = new Command();
@@ -58,6 +59,7 @@ program.addCommand(ragCommand);
 program.addCommand(statusCommand);
 program.addCommand(keysCommand);
 program.addCommand(createAgentCommand);
+program.addCommand(secCommand);
 
 // Global error handler — catches unhandled rejections
 process.on('uncaughtException', (error) => {
