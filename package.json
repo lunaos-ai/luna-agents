@@ -72,5 +72,9 @@
   },
   "dependencies": {
     "ws": "^8.19.0"
+  },
+  "overrides": {
+    "onnxruntime-web": "^1.25.1",
+    "protobufjs": "^7.5.0"
   }
 }
