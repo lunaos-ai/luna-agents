@@ -12,6 +12,7 @@ import { configCommand } from './commands/config.js';
 import { loginCommand } from './commands/login.js';
 import { ragCommand } from './commands/rag.js';
 import { secCommand } from './commands/sec.js';
+import { keystoreCommand } from './commands/keystore.js';
 import { handleError } from './utils/error-handler.js';
 
 const program = new Command();
@@ -35,10 +36,11 @@ ${chalk.dim('Examples:')}
   ${chalk.cyan('luna cfg set model gpt-4o')}  Set config ${chalk.dim('(cfg = config)')}
   ${chalk.cyan('luna new my-agent')}          Create agent ${chalk.dim('(new = create-agent)')}
   ${chalk.cyan('luna auth')}                  Login ${chalk.dim('(auth = login)')}
+  ${chalk.cyan('luna ks install')}            Install shell secret helpers ${chalk.dim('(ks = keystore)')}
 
 ${chalk.dim('Shortcuts cheat sheet:')}
   ${chalk.dim('r')}=run  ${chalk.dim('q')}=rag/ask  ${chalk.dim('ch')}=chain  ${chalk.dim('ls')}=list  ${chalk.dim('ix')}=index
-  ${chalk.dim('s')}=status  ${chalk.dim('k')}=keys  ${chalk.dim('cfg')}=config  ${chalk.dim('new')}=create-agent  ${chalk.dim('i')}=init
+  ${chalk.dim('s')}=status  ${chalk.dim('k')}=keys  ${chalk.dim('ks')}=keystore  ${chalk.dim('cfg')}=config  ${chalk.dim('new')}=create-agent  ${chalk.dim('i')}=init
 
 ${chalk.dim('Quick start:')}
   ${chalk.dim('1.')} ${chalk.cyan('luna i')}              — setup provider & API key
@@ -60,6 +62,7 @@ program.addCommand(statusCommand);
 program.addCommand(keysCommand);
 program.addCommand(createAgentCommand);
 program.addCommand(secCommand);
+program.addCommand(keystoreCommand);
 
 // Global error handler — catches unhandled rejections
 process.on('uncaughtException', (error) => {
