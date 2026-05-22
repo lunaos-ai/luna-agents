@@ -7,7 +7,7 @@
   "scripts": {
     "setup": "node setup.js",
     "start": "node index.js",
-    "test": "echo '✓ MCP server configuration valid' && echo '✓ Dependencies resolved' && exit 0"
+    "test": "node test.js"
   },
   "bin": {
     "luna-nexa-rag-setup": "./setup.js"
