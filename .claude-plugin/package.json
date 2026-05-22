@@ -1,6 +1,6 @@
 {
   "name": "luna-agents-plugin",
-  "version": "2.5.0",
+  "version": "3.5.0",
   "description": "🌙 Complete AI-powered development lifecycle management - From requirements to post-launch monitoring",
   "main": "index.js",
   "keywords": [
@@ -59,7 +59,7 @@
   "devDependencies": {},
   "peerDependencies": {},
   "scripts": {
-    "test": "echo '✓ Plugin structure validation passed' && echo '✓ All required files present' && echo '✓ Package configuration valid' && exit 0",
+    "test": "node test.js",
     "lint": "echo '✓ JSON validation passed' && exit 0",
     "validate": "node scripts/validate-plugin.js"
   },
