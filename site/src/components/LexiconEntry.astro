@@ -1,0 +1,95 @@
+---
+interface Props {
+  /** the headword, e.g. "persona", "ghost", "pipe" */
+  word: string;
+  /** part of speech in the language, verb, operator, aux, primitive */
+  pos: "verb" | "operator" | "aux" | "primitive";
+  /** pronunciation/glyph guide, mono, e.g. "/per·so·na/", "/>>/" */
+  glyph?: string;
+  /** one-line definition */
+  gloss: string;
+  /** primary call signature, mono, e.g. /persona generate */
+  call?: string;
+  /** etymology, when added, by whom or what category */
+  etym?: string;
+  /** see-also list of other headwords */
+  related?: string[];
+}
+const { word, pos, glyph, gloss, call, etym, related = [] } = Astro.props;
+const slug = word.replace(/\s+/g, "-");
+---
+
+<article class="entry" id={`w-${slug}`}>
+  <header class="head">
+    <h4 class="word">
+      <a href={`#w-${slug}`} aria-label={`Permalink to ${word}`}>{word}</a>
+    </h4>
+    {glyph && <span class="glyph">{glyph}</span>}
+    <span class="pos">{pos}</span>
+  </header>
+  <p class="gloss">{gloss}</p>
+  {call && (
+    <p class="call">
+      <span class="call-label" aria-hidden="true">call</span>
+      <code>{call}</code>
+    </p>
+  )}
+  {related.length > 0 && (
+    <p class="see">
+      <span class="see-label" aria-hidden="true">see also</span>
+      {related.map((r, i) => (
+        <>
+          <a href={`#w-${r}`}>{r}</a>{i < related.length - 1 ? ", " : ""}
+        </>
+      ))}
+    </p>
+  )}
+  {etym && <p class="etym"><small>{etym}</small></p>}
+</article>
+
+<style>
+  .entry {
+    padding: var(--t-3) 0;
+    border-bottom: 1px solid var(--rule);
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--t-1);
+  }
+  .head {
+    display: flex;
+    align-items: baseline;
+    gap: 1ch;
+    flex-wrap: wrap;
+  }
+  .word {
+    font-family: var(--font-mono);
+    font-size: var(--step-1);
+    font-weight: 500;
+    margin: 0;
+    letter-spacing: -0.01em;
+  }
+  .word a { text-decoration: none; border-bottom: 1px dashed transparent; }
+  .word a:hover { border-bottom-color: var(--ink); }
+  .glyph {
+    font-family: var(--font-mono);
+    color: var(--muted);
+    font-size: var(--step--1);
+  }
+  .pos {
+    font-family: var(--font-display);
+    font-style: italic;
+    color: var(--saffron-deep);
+    font-size: var(--step--1);
+    margin-left: auto;
+  }
+  .gloss { margin: 0; max-width: 56ch; }
+  .call, .see, .etym { margin: 0; font-size: var(--step--1); }
+  .call-label, .see-label {
+    font-family: var(--font-display);
+    font-style: italic;
+    color: var(--muted);
+    margin-right: 0.5ch;
+  }
+  .see a { color: var(--saffron-deep); text-decoration-color: currentColor; }
+  .etym { color: var(--muted); margin-top: var(--t-1); }
+</style>
