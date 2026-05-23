@@ -2,6 +2,7 @@
 import Book from "../layouts/Book.astro";
 import LexiconHeader from "../components/lexicon/LexiconHeader.astro";
 import LexiconCategory from "../components/lexicon/LexiconCategory.astro";
+import LexiconFilter from "../components/lexicon/LexiconFilter.astro";
 import data from "../data/skills.json";
 
 const categories = Object.entries(data.byCategory)
@@ -16,6 +17,7 @@ const shortcutEntries = data.byCategory.shortcut ?? [];
   description={`The ${data.count}-entry standard library of the Luna Pipes language.`}
 >
   <LexiconHeader count={data.count} categories={Object.keys(data.byCategory)} />
+  <LexiconFilter />
 
   <div class="wrap">
     {categories.map(([cat, entries]) => (

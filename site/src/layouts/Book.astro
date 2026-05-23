@@ -10,7 +10,7 @@ interface Props {
 }
 
 const { title, description = "Luna Pipes, a small concatenative language for composing AI agent skills.", chapter } = Astro.props;
-const fullTitle = chapter ? `${chapter} · ${title}` : `${title} · Luna Pipes`;
+const fullTitle = chapter === "frontispiece" ? "Luna Pipes" : `${title} · Luna Pipes`;
 ---
 
 <!doctype html>
@@ -24,6 +24,11 @@ const fullTitle = chapter ? `${chapter} · ${title}` : `${title} · Luna Pipes`;
     <meta property="og:description" content={description} />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="Luna Pipes" />
+    <meta property="og:image" content={new URL("/og.svg", Astro.site).toString()} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:image" content={new URL("/og.svg", Astro.site).toString()} />
     <meta name="theme-color" content="#f7e2c4" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="canonical" href={new URL(Astro.url.pathname, Astro.site).toString()} />
