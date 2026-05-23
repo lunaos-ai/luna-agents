@@ -30,7 +30,7 @@ on:
 env:
   NODE_VERSION: "20"
   SITE_DIR: site
-  CF_PROJECT: agents-lunaos-ai
+  CF_PROJECT: luna-agent
   CF_BRANCH_PROD: main
 
 # Pipelines
