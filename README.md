@@ -6,7 +6,7 @@
 </p>
 
 <p align="center">
-  <strong>28 specialized AI agents · 70+ commands for every stage of your software development lifecycle.</strong>
+  <strong>28 specialized AI agents · 282 slash commands for every stage of your software development lifecycle.</strong>
   <br>
   One CLI. One API. From requirements to production.
 </p>
@@ -29,14 +29,14 @@ npm install -g luna-agents
 luna-setup
 ```
 
-Then in Claude Code, any of **232 slash commands** work:
+Then in Claude Code, any of **282 slash commands** work:
 
 ```
 /luna-agents:plan       # Break a feature into tasks
 /luna-agents:go         # Implement next task
 /luna-agents:test       # Run tests
 /luna-agents:ship       # Deploy
-/luna-agents:cmds       # See all 232 commands
+/luna-agents:cmds       # See all 282 commands
 ```
 
 That's it. The plugin reads your codebase, routes work to specialized AI agents, and streams results back.
@@ -100,9 +100,9 @@ luna agents list
 luna rag search "How does authentication work?"
 ```
 
-### Claude Code Commands (70+)
+### Claude Code Commands (282)
 
-Luna Agents includes 70+ slash commands for Claude Code. Type `/cmds` to see all.
+Luna Agents includes 282 slash commands for Claude Code. Type `/cmds` to see all.
 
 #### Dev Workflow (sequential)
 
@@ -172,6 +172,7 @@ Luna Agents includes 70+ slash commands for Claude Code. Type `/cmds` to see all
 | `/rollback` | `/ll-rollback` | Generate rollback procedures and runbooks |
 | `/dock` | `/ll-dockerize` | Containerize your app |
 | `/cf` | `/ll-cloudflare` | Cloudflare deployment automation |
+| `/cf-allow-bots` | `/ll-cf-allow-bots` | Disable Bot Fight Mode + allow 21 AI/search crawlers on any zone (LLM SEO unblock) |
 | `/sec` | `/ll-365-secure` | OWASP security audit |
 
 #### Tools
