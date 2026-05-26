@@ -5,6 +5,23 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.7.0] - 2026-05-26
+
+### Added
+- `/ll-cf-allow-bots` — configure any Cloudflare zone to allow the
+  bots you actually *want*: verified AI crawlers (GPTBot, ClaudeBot,
+  PerplexityBot, ChatGPT-User, OAI-SearchBot, anthropic-ai,
+  Claude-Web, Google-Extended, CCBot, cohere-ai, DeepSeekBot, YouBot,
+  DuckAssistBot, Kagibot, Diffbot) and search engines (Googlebot,
+  Bingbot, Applebot, Amazonbot, FacebookBot). Disables Bot Fight
+  Mode + creates an idempotent WAF skip-rule covering 21 user-agents.
+  Required for LLM SEO and AI-discovery — Cloudflare's default-on
+  bot blocking silently kills indexing.
+- `/cf-allow-bots` — shortcut alias.
+- Outputs a self-contained parameterized `cf-allow-bots.sh` to
+  `.luna/{project}/cloudflare/` so the action is reproducible and
+  re-runnable per zone.
+
 ## [2.6.0] - 2026-05-26
 
 ### Added
