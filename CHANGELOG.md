@@ -5,6 +5,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.6.0] - 2026-05-26
+
+### Added
+- `/ll-webhook-setup` — copy-paste setup guides for **signed-webhook
+  bridges** (Slack v0 signing, Discord Ed25519 interactions, WhatsApp
+  Cloud `x-hub-signature-256`, Telegram `secret_token` header,
+  Cloudflare Email Routing). Sibling to `/ll-oauth-setup` — handles
+  inbound channel webhooks where the platform signs every POST.
+- `/webhook-setup` — shortcut alias.
+- Per-provider markdown output under `.luna/{project}/webhook-setup/`
+  with console walkthroughs, webhook URLs, secret-store deploy
+  commands (wrangler / vercel / dotenv), verification curls, and a
+  bluff-test forged POST per provider that MUST return 401 when the
+  verifier is wired correctly.
+
 ## [2.0.0] - 2025-10-18
 
 ### Added
