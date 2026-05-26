@@ -172,7 +172,8 @@ Luna Agents includes 282 slash commands for Claude Code. Type `/cmds` to see all
 | `/rollback` | `/ll-rollback` | Generate rollback procedures and runbooks |
 | `/dock` | `/ll-dockerize` | Containerize your app |
 | `/cf` | `/ll-cloudflare` | Cloudflare deployment automation |
-| `/cf-allow-bots` | `/ll-cf-allow-bots` | Disable Bot Fight Mode + allow 21 AI/search crawlers on any zone (LLM SEO unblock) |
+| `/cf-allow-bots` | `/ll-cf-allow-bots` | Disable Bot Fight Mode + allow 21 AI/search crawlers + path-skip for LLM discovery files (LLM SEO unblock) |
+| `/llm-seo` | `/ll-llm-seo` | Generate llms.txt + ai-plugin.json + robots.txt + sitemap + JSON-LD + Cloudflare bot-allow — full AI-discovery bundle |
 | `/sec` | `/ll-365-secure` | OWASP security audit |
 
 #### Tools

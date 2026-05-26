@@ -102,20 +102,35 @@ done
 - This stops Cloudflare's default-on bot-blocking heuristic that
   treats verified bots as hostile
 
-### Step 3 — Create a WAF skip-rule
-- Adds a custom rule in `http_request_firewall_custom` phase
-- Expression covers Cloudflare's own verified-bot check
-  (`cf.client.bot_management.verified_bot`) **plus** 21 explicit
-  user-agent string matches as a belt-and-braces fallback for
-  smaller/newer crawlers Cloudflare doesn't yet recognize
+### Step 3 — Create TWO WAF skip-rules
+- **Rule A (path-based)**: skip ALL security checks for known LLM
+  discovery paths regardless of user-agent — `/llms.txt`,
+  `/llms-full.txt`, `/ai-plugin.json`, `/openapi.json`,
+  `/robots.txt`, `/sitemap.xml`, `/.well-known/ai-plugin.json`.
+  Fixes the case where sandboxes / non-browser clients still get
+  JS-challenged even after Bot Fight Mode is off.
+- **Rule B (UA-based)**: skip checks for Cloudflare's own
+  verified-bot check (`cf.client.bot_management.verified_bot`)
+  **plus** 21 explicit user-agent matches as a belt-and-braces
+  fallback for smaller/newer crawlers Cloudflare doesn't yet
+  recognize.
 
-### Step 4 — Verify
-- Re-reads bot management settings to confirm Fight Mode is off
+### Step 4 — Lower zone Security Level
+- `PATCH /zones/{zone_id}/settings/security_level` →
+  `{"value":"essentially_off"}`
+- Stops Cloudflare's JS challenge from firing on automated clients
+  for the whole zone. App-level rate limiting + auth handles
+  abuse — Cloudflare's blunt challenge page is the wrong tool for
+  API + LLM-discovery traffic.
+
+### Step 5 — Verify
+- Re-reads bot management + security level to confirm both changes
 - Prints SBFM (Super Bot Fight Mode) flags if on a paid plan
 
-### Step 5 — Smoke test
-- Runs `curl -A 'ClaudeBot' https://{domain}/llms.txt` (or `/`)
-- Expects HTTP 2xx, not a Cloudflare challenge page
+### Step 6 — Smoke test
+- Runs `curl -A 'ClaudeBot' https://{domain}/llms.txt`
+- Runs `curl https://{domain}/llms.txt` (no UA — must also succeed)
+- Expects HTTP 2xx on both, not a Cloudflare challenge page
 
 ## Bots allowlisted (21 user-agents)
 
@@ -177,25 +192,39 @@ curl -s -X PUT -H "$AUTH" -H "Content-Type: application/json" \
   -d '{"fight_mode": false}' | \
   python3 -c "import sys,json; r=json.load(sys.stdin); print('   ', 'OK' if r.get('success') else r.get('errors'))"
 
-echo "==> Creating WAF allow-rule for verified AI/search bots..."
+echo "==> Creating WAF rules (path-skip + UA-skip)..."
 PAYLOAD=$(cat <<'JSON'
 {
-  "name": "Allow AI Crawlers",
-  "description": "Skip security checks for verified AI/search bots",
+  "name": "Allow AI Crawlers & LLM Paths",
+  "description": "Skip security for LLM discovery paths and verified bots",
   "kind": "zone",
   "phase": "http_request_firewall_custom",
-  "rules": [{
-    "expression": "(cf.client.bot_management.verified_bot) or (http.user_agent contains \"GPTBot\") or (http.user_agent contains \"ClaudeBot\") or (http.user_agent contains \"Claude-Web\") or (http.user_agent contains \"anthropic-ai\") or (http.user_agent contains \"PerplexityBot\") or (http.user_agent contains \"Googlebot\") or (http.user_agent contains \"Bingbot\") or (http.user_agent contains \"ChatGPT-User\") or (http.user_agent contains \"OAI-SearchBot\") or (http.user_agent contains \"CCBot\") or (http.user_agent contains \"cohere-ai\") or (http.user_agent contains \"DeepSeekBot\") or (http.user_agent contains \"Google-Extended\") or (http.user_agent contains \"Applebot\") or (http.user_agent contains \"Amazonbot\") or (http.user_agent contains \"YouBot\") or (http.user_agent contains \"FacebookBot\") or (http.user_agent contains \"DuckAssistBot\") or (http.user_agent contains \"Kagibot\") or (http.user_agent contains \"Diffbot\")",
-    "action": "skip",
-    "action_parameters": {"ruleset": "current"},
-    "description": "Allow verified AI crawlers and search bots"
-  }]
+  "rules": [
+    {
+      "expression": "(http.request.uri.path eq \"/llms.txt\") or (http.request.uri.path eq \"/llms-full.txt\") or (http.request.uri.path eq \"/ai-plugin.json\") or (http.request.uri.path eq \"/openapi.json\") or (http.request.uri.path eq \"/robots.txt\") or (http.request.uri.path eq \"/sitemap.xml\") or (http.request.uri.path eq \"/.well-known/ai-plugin.json\")",
+      "action": "skip",
+      "action_parameters": {"ruleset": "current"},
+      "description": "Allow all clients on LLM discovery paths"
+    },
+    {
+      "expression": "(cf.client.bot_management.verified_bot) or (http.user_agent contains \"GPTBot\") or (http.user_agent contains \"ClaudeBot\") or (http.user_agent contains \"Claude-Web\") or (http.user_agent contains \"anthropic-ai\") or (http.user_agent contains \"PerplexityBot\") or (http.user_agent contains \"Googlebot\") or (http.user_agent contains \"Bingbot\") or (http.user_agent contains \"ChatGPT-User\") or (http.user_agent contains \"OAI-SearchBot\") or (http.user_agent contains \"CCBot\") or (http.user_agent contains \"cohere-ai\") or (http.user_agent contains \"DeepSeekBot\") or (http.user_agent contains \"Google-Extended\") or (http.user_agent contains \"Applebot\") or (http.user_agent contains \"Amazonbot\") or (http.user_agent contains \"YouBot\") or (http.user_agent contains \"FacebookBot\") or (http.user_agent contains \"DuckAssistBot\") or (http.user_agent contains \"Kagibot\") or (http.user_agent contains \"Diffbot\")",
+      "action": "skip",
+      "action_parameters": {"ruleset": "current"},
+      "description": "Allow verified AI crawlers and search bots on all paths"
+    }
+  ]
 }
 JSON
 )
 curl -s -X PUT -H "$AUTH" -H "Content-Type: application/json" \
   "$API/zones/$ZONE_ID/rulesets/phases/http_request_firewall_custom/entrypoint" \
   -d "$PAYLOAD" | \
+  python3 -c "import sys,json; r=json.load(sys.stdin); print('   ', 'OK' if r.get('success') else r.get('errors'))"
+
+echo "==> Setting zone Security Level to essentially_off..."
+curl -s -X PATCH -H "$AUTH" -H "Content-Type: application/json" \
+  "$API/zones/$ZONE_ID/settings/security_level" \
+  -d '{"value":"essentially_off"}' | \
   python3 -c "import sys,json; r=json.load(sys.stdin); print('   ', 'OK' if r.get('success') else r.get('errors'))"
 
 echo "==> Verifying..."
@@ -210,8 +239,14 @@ if r.get('success'):
         if k in res: print(f\"    {k}: {res[k]}\")
 else: print(r.get('errors'))"
 
+echo "==> Verifying security level..."
+curl -s -H "$AUTH" "$API/zones/$ZONE_ID/settings/security_level" | \
+  python3 -c "import sys,json; r=json.load(sys.stdin); print(f\"    Security level: {r['result']['value']}\") if r.get('success') else print('   ', r.get('errors'))"
+
 echo "==> Smoke test (ClaudeBot UA on /):"
 curl -s -A 'ClaudeBot' -o /dev/null -w '    HTTP %{http_code}\n' "https://$ZONE_NAME/"
+echo "==> Smoke test (no UA on /llms.txt — must also work):"
+curl -s -o /dev/null -w '    HTTP %{http_code}\n' "https://$ZONE_NAME/llms.txt"
 echo "Done."
 ```
 

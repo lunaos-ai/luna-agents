@@ -5,6 +5,39 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.8.0] - 2026-05-27
+
+### Added
+- `/ll-llm-seo` — generate a complete AI-discovery + LLM SEO bundle
+  for any project in one shot. Eight files: `llms.txt`,
+  `llms-full.txt`, `ai-plugin.json`, `robots.txt`, `sitemap.xml`,
+  `_headers` (CSP + cache + correct content-types for discovery
+  files), JSON-LD `<head>` snippet, and a parameterized
+  Cloudflare bot-allow script. Auto-detects product name, tagline,
+  capabilities, and stack from `CLAUDE.md` / `package.json` /
+  `README.md` so the generated content is project-specific, not
+  templates. Sibling to `/ll-cf-allow-bots` — that unblocks the
+  bots at the edge; this gives them the structured content they
+  need to classify and recommend your product.
+- `/llm-seo` — shortcut alias.
+
+## [2.7.1] - 2026-05-27
+
+### Changed
+- `/ll-cf-allow-bots` script upgraded with two new steps:
+  - **Path-based WAF skip rule** for `/llms.txt`, `/llms-full.txt`,
+    `/ai-plugin.json`, `/openapi.json`, `/robots.txt`, `/sitemap.xml`,
+    `/.well-known/ai-plugin.json` — bypasses security on these paths
+    for ANY client (no user-agent required). Fixes sandbox /
+    non-browser clients still getting Cloudflare's JS challenge
+    after Bot Fight Mode was disabled.
+  - **Zone Security Level → `essentially_off`**. App-level rate
+    limiting + auth handles abuse; Cloudflare's blunt JS challenge
+    is the wrong tool for API + LLM-discovery traffic.
+- Verification step now also reads + prints the zone Security Level.
+- Smoke test now runs two curls: one with `ClaudeBot` UA, one with
+  no UA against `/llms.txt` (must both succeed).
+
 ## [2.7.0] - 2026-05-26
 
 ### Added
