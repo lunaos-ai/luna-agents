@@ -1,8 +1,8 @@
 ---
 name: ll-webhook-setup
 displayName: Luna Webhook Bridge Provider Setup Guide
-description: Generate copy-paste content and step-by-step guides for setting up signed-webhook bridges (Slack, Discord, WhatsApp Cloud, Telegram, Email) in each provider's developer console — apps, signing secrets, redirect URLs, scopes, wrangler/env deployment, verification curls, gotchas
-version: 1.0.0
+description: Generate copy-paste content and step-by-step guides for setting up signed-webhook bridges (Slack, Discord, WhatsApp Cloud, Telegram, Email, Jira) in each provider's developer console — apps, signing secrets, API tokens, redirect URLs, scopes, wrangler/env deployment, verification curls, gotchas
+version: 1.1.0
 category: integrations
 agent: luna-auth
 parameters:
@@ -13,7 +13,7 @@ parameters:
     prompt: true
   - name: providers
     type: string
-    description: Comma-separated providers (slack,discord,whatsapp,telegram,email). Default - all.
+    description: Comma-separated providers (slack,discord,whatsapp,telegram,email,jira). Default - all.
     required: false
     prompt: true
   - name: domain
@@ -42,6 +42,7 @@ output:
   - .luna/{current-project}/webhook-setup/3-telegram.md
   - .luna/{current-project}/webhook-setup/4-whatsapp.md
   - .luna/{current-project}/webhook-setup/5-email.md
+  - .luna/{current-project}/webhook-setup/6-jira.md
 ---
 
 # Luna Webhook Bridge Provider Setup Guide
@@ -56,7 +57,8 @@ signs every POST.
 Covers: **Slack** (v0 signing), **Discord** (Ed25519 interactions),
 **WhatsApp Cloud API** (Meta x-hub-signature-256), **Telegram**
 (BotFather secret-token header), **Email** (Cloudflare Email Routing
-inbound).
+inbound), **Jira Cloud** (Atlassian webhook + REST API tokens, no
+Connect/Forge app required).
 
 ## What This Command Does
 
@@ -161,6 +163,12 @@ Each provider file includes:
   permanent access token, NOT the phone number ID)
 - Telegram: secret you choose, passed to `setWebhook?secret_token=`
 - Email: Cloudflare-issued KEK for the destination worker
+- Jira: **API token** at
+  https://id.atlassian.com/manage-profile/security/api-tokens
+  (the `ATATT…` value). The webhook auth is a **shared secret you
+  pick** and paste into the webhook's custom HTTP header
+  (`x-jira-webhook-secret`) — Atlassian doesn't HMAC webhooks by
+  default
 
 ### Section 5: Required Scopes / Intents / Permissions
 - Slack: `app_mentions:read`, `chat:write`, `im:history` — avoid
@@ -170,6 +178,10 @@ Each provider file includes:
 - WhatsApp: `whatsapp_business_messaging` + `whatsapp_business_management`
 - Telegram: no scopes — bot tokens are full-permission
 - Email: destination address + Cloudflare worker binding
+- Jira: API token inherits the account's permissions. For comment
+  writeback the bot account needs **Browse + Add Comment** on the
+  target projects. No marketplace listing or Connect/Forge app
+  needed for this lightweight integration mode
 
 ### Section 6: Deploy Commands
 
@@ -181,6 +193,9 @@ npx wrangler secret put DISCORD_PUBLIC_KEY
 npx wrangler secret put WHATSAPP_APP_SECRET
 npx wrangler secret put WHATSAPP_VERIFY_TOKEN
 npx wrangler secret put TELEGRAM_BOT_TOKEN     # also acts as secret-token
+# Jira: secrets live PER-CONNECTION in channel_connections (not env-wide),
+# because each tenant has its own Atlassian site URL + API token.
+# See the d1 INSERT in 6-jira.md.
 ```
 
 For **vercel**:
@@ -228,6 +243,17 @@ Provider-specific debugging knowledge:
 - **Email**: Cloudflare Email Routing is per-domain (DNS-level), not
   per-app. You need DNS access. Inbound payload format is raw MIME,
   not JSON
+- **Jira**: Atlassian webhooks have no built-in HMAC signing — auth
+  is a custom HTTP header you set in the webhook config. The bridge
+  matches by header value against `channel_connections.webhook_secret`
+  so multi-tenant isolation works. The bot account email + API token
+  are stored on the connection's `access_token` + `config.email`
+  (not env-wide secrets), because every Atlassian site has its own
+  `*.atlassian.net` URL and credentials. `siteUrl` MUST include the
+  protocol (`https://acme.atlassian.net`). REST replies use ADF doc
+  format (not markdown / not plain text) on v3 of the API — the
+  bridge wraps each line in the required `paragraph` → `text` shape
+  automatically
 
 ## Provider Priority (Generated in README)
 
@@ -236,8 +262,9 @@ Provider-specific debugging knowledge:
 | 1 | Telegram | 5 min | Simplest — BotFather + setWebhook |
 | 2 | Slack | 10 min | App + signing secret + Event Subscriptions |
 | 3 | Discord | 10 min | App + Public Key + Interactions URL |
-| 4 | Email | 15 min | Cloudflare Email Routing + DNS + worker binding |
-| 5 | WhatsApp | 25 min | Meta Business + WA Business product + phone verify |
+| 4 | Jira | 10 min | Atlassian API token + webhook custom header + d1 INSERT |
+| 5 | Email | 15 min | Cloudflare Email Routing + DNS + worker binding |
+| 6 | WhatsApp | 25 min | Meta Business + WA Business product + phone verify |
 
 ## Anti-Bluff Verification
 
