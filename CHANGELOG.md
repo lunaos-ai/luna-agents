@@ -5,6 +5,33 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.9.0] - 2026-05-29
+
+### Added
+- `/ll-webhook-setup` extended to cover **Jira Cloud** as the 6th
+  signed-webhook platform alongside Slack, Discord, WhatsApp,
+  Telegram, and Email. Generates a new `6-jira.md` file per
+  project with:
+  - Atlassian API token creation walkthrough
+    (id.atlassian.com/manage-profile/security/api-tokens)
+  - Jira webhook config: URL, custom HTTP header
+    (`x-jira-webhook-secret`), event subscriptions
+  - Per-tenant credentials model (siteUrl + email + API token
+    stored on `channel_connections` row, not env-wide secrets,
+    because each Atlassian site has its own URL)
+  - D1 INSERT for `channel_connections` row with
+    `channel_type='jira'`
+  - Bluff test (forged POST → 401) and live test (real Jira
+    webhook → 200 + comment writeback)
+  - Atlassian-specific gotchas (no built-in HMAC, ADF doc format
+    required on v3 REST, Browse+Add Comment permission requirement)
+- Provider Priority table updated — Jira slots in at #4 (~10 min
+  setup), between Discord and Email.
+
+### Changed
+- `/ll-webhook-setup` minor bump 1.0.0 → 1.1.0 (platform added,
+  no breaking changes to existing 5 platforms).
+
 ## [2.8.0] - 2026-05-27
 
 ### Added
