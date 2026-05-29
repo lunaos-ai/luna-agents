@@ -1,0 +1,342 @@
+---
+import Book from "../layouts/Book.astro";
+
+const wings = [
+  {
+    name: "Frontend",
+    icon: "FE",
+    color: "blue",
+    blurb: "React, Next, React Native, Svelte, SvelteKit, Vue, Solid, Astro.",
+    doctors: [
+      { cmd: "/ll-doctor", desc: "Dispatcher — detects framework, routes to the right doctor." },
+      { cmd: "/ll-react-doctor", desc: "Wraps npx react-doctor@latest (real package, by millionco)." },
+      { cmd: "/ll-svelte-doctor", desc: "Wraps svelte-doctor-cli or svelte-doctor (both real packages)." },
+    ],
+  },
+  {
+    name: "Backend",
+    icon: "BE",
+    color: "saffron",
+    blurb: "Node, Java (Vert.x, Spring), Python (Django, FastAPI), Ruby (Rails), Go, Rust, PHP, .NET, Elixir.",
+    doctors: [
+      { cmd: "/ll-backend-doctor", desc: "Dispatcher — detects backend stack, routes." },
+      { cmd: "/ll-node-doctor", desc: "Wraps node-doctor + npm audit + eslint." },
+      { cmd: "/ll-vertx-doctor", desc: "Vert.x event-loop blocking + codec misuse heuristic." },
+      { cmd: "/ll-spring-doctor", desc: "Spring Boot n+1 + actuator + transactional gaps." },
+      { cmd: "/ll-django-doctor", desc: "Django manage.py check + bandit + heuristic." },
+      { cmd: "/ll-fastapi-doctor", desc: "FastAPI async blocking + DI + response leak checks." },
+      { cmd: "/ll-rails-doctor", desc: "Wraps rails-doctor + brakeman + bundler-audit." },
+      { cmd: "/ll-go-doctor", desc: "golangci-lint + gosec + govulncheck + goroutine-leak heuristic." },
+      { cmd: "/ll-rust-doctor", desc: "Wraps rust-doctor + clippy + cargo audit + cargo deny." },
+      { cmd: "/ll-php-doctor", desc: "PHP / Laravel / Symfony — psalm, phpstan, composer audit." },
+      { cmd: "/ll-dotnet-doctor", desc: "ASP.NET Core — dotnet format/outdated/Roslyn." },
+      { cmd: "/ll-elixir-doctor", desc: "Phoenix / Elixir — credo, sobelow, mix audit, dialyxir." },
+    ],
+  },
+  {
+    name: "Infrastructure",
+    icon: "IF",
+    color: "green",
+    blurb: "Docker, Kubernetes, Terraform / OpenTofu.",
+    doctors: [
+      { cmd: "/ll-docker-doctor", desc: "hadolint + trivy + dockle + dive." },
+      { cmd: "/ll-k8s-doctor", desc: "kube-linter + kubeval + polaris + trivy k8s (incl. node kernel CVE flagging)." },
+      { cmd: "/ll-terraform-doctor", desc: "tflint + tfsec + checkov + drift heuristic." },
+    ],
+  },
+  {
+    name: "Data",
+    icon: "DB",
+    color: "violet",
+    blurb: "Postgres, MongoDB.",
+    doctors: [
+      { cmd: "/ll-postgres-doctor", desc: "sqlfluff + pg_stat_statements + missing-index detector." },
+      { cmd: "/ll-mongo-doctor", desc: "Profile collection analysis + index audit + schema drift." },
+    ],
+  },
+  {
+    name: "Preventive medicine",
+    icon: "Rx",
+    color: "red",
+    blurb: "Defense-only. No exploit generation.",
+    doctors: [
+      { cmd: "/ll-cve-doctor", desc: "Host + lockfiles + k8s nodes cross-referenced against NVD / OSV / GitHub Advisories. Read-only remediation plan." },
+    ],
+  },
+];
+
+const meta = [
+  { cmd: "/ll-hospital",  desc: "Runs every applicable wing in parallel. The full ward round." },
+  { cmd: "/ll-prescribe", desc: "Reads your repo + recent activity, prints which doctors to run, in what order." },
+  { cmd: "/ll-er",        desc: "Emergency room: critical-only triage under 5 minutes. No flags, no options." },
+  { cmd: "/ll-icu",       desc: "Production-down recovery loop. sec + perf + heal + zen until green." },
+];
+---
+
+<Book
+  title="Hospital"
+  chapter="hospital"
+  description="The Luna Hospital — 21 stack-aware doctors covering frontend, backend, infra, data, and CVE. Plus /ll-er, /ll-icu, /ll-hospital meta-commands."
+>
+  <section class="hero wrap">
+    <p class="kicker">Chapter 11 · Hospital</p>
+    <h1 class="title">21 doctors. 5 wings. One ward round.</h1>
+    <p class="lede">
+      Every doctor here either wraps an existing best-in-class tool (so
+      we don't reinvent) or composes several into a single,
+      stack-aware sweep. Pipe any of them through
+      <code>/ll-no-bluf</code> and ship the fix as a verified PR.
+    </p>
+    <div class="cta-row">
+      <a class="cta-primary" href="#meta">Meta commands →</a>
+      <a class="cta-secondary" href="/install">Install in 30s</a>
+      <a class="cta-tertiary" href="/skills">Browse all skills</a>
+    </div>
+  </section>
+
+  <section class="wrap wings">
+    {wings.map((w) => (
+      <article class={`wing wing-${w.color}`}>
+        <header>
+          <span class="icon" aria-hidden="true">{w.icon}</span>
+          <div>
+            <h2>{w.name}</h2>
+            <p class="blurb">{w.blurb}</p>
+          </div>
+        </header>
+        <ul>
+          {w.doctors.map((d) => (
+            <li>
+              <code class="cmd">{d.cmd}</code>
+              <span class="desc">{d.desc}</span>
+            </li>
+          ))}
+        </ul>
+      </article>
+    ))}
+  </section>
+
+  <section class="wrap meta" id="meta">
+    <h2>The meta-commands.</h2>
+    <p class="lede">
+      Don't know where to start? These four route you.
+    </p>
+    <ul class="meta-list">
+      {meta.map((m) => (
+        <li>
+          <code class="cmd">{m.cmd}</code>
+          <span class="desc">{m.desc}</span>
+        </li>
+      ))}
+    </ul>
+
+    <h2>What gets wrapped vs heuristic.</h2>
+    <p>
+      Every doctor page is explicit about which upstream packages it
+      wraps and which checks come from Luna's own heuristic layer. We
+      never invent a wrapped tool that doesn't exist. Three real
+      <code>&lt;stack&gt;-doctor</code> packages exist on npm today
+      (node-doctor, rails-doctor, rust-doctor); the rest of our doctors
+      compose existing best-in-class linters / scanners / analyzers.
+    </p>
+
+    <h2>Defense only.</h2>
+    <p>
+      <code>/ll-cve-doctor</code> inventories your host, dependencies,
+      and (optionally) Kubernetes node kernels, then cross-references
+      against published CVE feeds (NVD, OSV, GitHub Advisories) to
+      produce a remediation plan. It does <strong>not</strong>
+      generate, fetch, or store exploit code. For example, if your
+      <code>uname -r</code> falls in the range affected by a current
+      kernel CVE (e.g. CVE-2026-31431 "Copy Fail"), the doctor emits
+      the upgrade target and the vendor advisory link — and nothing
+      more.
+    </p>
+
+    <p class="cta">
+      Compose with <a href="/lexicon#ll-no-bluf">/ll-no-bluf</a>,
+      <a href="/lexicon#ll-readme-sync">/ll-readme-sync</a>, and
+      <a href="/lexicon#ll-pr">/ll-pr</a> for a fully audited fix-PR
+      flow.
+    </p>
+  </section>
+</Book>
+
+<style>
+  .hero {
+    padding: var(--t-12) clamp(1rem, 5vw, 4rem) var(--t-6);
+  }
+  .kicker {
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 0 0 var(--t-3);
+  }
+  h1.title {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: clamp(2.5rem, 7vw, 5.5rem);
+    line-height: 0.95;
+    letter-spacing: -0.02em;
+    margin: 0 0 var(--t-3);
+    text-wrap: balance;
+  }
+  .lede {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: var(--step-2);
+    color: var(--muted);
+    max-width: 62ch;
+    line-height: 1.3;
+    margin: 0 0 var(--t-4);
+  }
+  .lede code, p code {
+    font-family: var(--font-mono);
+    font-style: normal;
+    color: var(--saffron-deep);
+  }
+  .cta-row { display: flex; gap: var(--t-2); flex-wrap: wrap; }
+  .cta-primary, .cta-secondary, .cta-tertiary {
+    font-family: var(--font-mono);
+    font-size: var(--step-0);
+    padding: var(--t-1) var(--t-3);
+    border-radius: 999px;
+    text-decoration: none;
+    border: 1.5px solid var(--ink);
+    transition: transform 200ms var(--ease);
+  }
+  .cta-primary { background: var(--ink); color: var(--paper); }
+  .cta-secondary { background: var(--saffron); color: var(--saffron-on); border-color: var(--saffron-deep); }
+  .cta-tertiary { background: transparent; color: var(--ink); border-color: var(--rule); }
+  .cta-primary:hover, .cta-secondary:hover, .cta-tertiary:hover { transform: translateY(-2px); }
+
+  .wings {
+    padding-top: var(--t-6);
+    padding-bottom: var(--t-6);
+    display: grid;
+    gap: var(--t-6);
+  }
+  .wing {
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    padding: var(--t-4);
+    background: var(--paper);
+    position: relative;
+  }
+  .wing-blue    { border-top: 4px solid #7ab8ff; }
+  .wing-saffron { border-top: 4px solid var(--saffron-deep); }
+  .wing-green   { border-top: 4px solid #86d28f; }
+  .wing-violet  { border-top: 4px solid #a8a0f0; }
+  .wing-red     { border-top: 4px solid #e07a6b; }
+
+  .wing header {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--t-3);
+    margin-bottom: var(--t-3);
+  }
+  .icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 3rem;
+    height: 3rem;
+    background: var(--ink);
+    color: var(--paper);
+    font-family: var(--font-mono);
+    font-weight: 600;
+    font-size: var(--step-0);
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .wing h2 {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: var(--step-3);
+    line-height: 1;
+    margin: 0 0 var(--t-1);
+    color: var(--ink);
+  }
+  .wing .blurb {
+    margin: 0;
+    color: var(--muted);
+    font-size: var(--step-0);
+  }
+  .wing ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    border-top: 1px solid var(--rule);
+  }
+  .wing li {
+    display: grid;
+    grid-template-columns: minmax(13rem, 16rem) 1fr;
+    gap: var(--t-3);
+    padding: var(--t-2) 0;
+    border-bottom: 1px solid var(--rule);
+    margin: 0;
+    align-items: baseline;
+  }
+  @media (max-width: 720px) {
+    .wing li { grid-template-columns: 1fr; gap: 0.25rem; }
+  }
+  .wing .cmd {
+    color: var(--saffron-deep);
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    background: transparent;
+    border: 0;
+    padding: 0;
+  }
+  .wing .desc {
+    color: var(--ink);
+    font-size: var(--step--1);
+  }
+
+  .meta {
+    padding-top: var(--t-6);
+    padding-bottom: var(--t-12);
+    border-top: 1px solid var(--rule);
+  }
+  .meta h2 {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: clamp(1.8rem, 4vw, 3rem);
+    margin: var(--t-6) 0 var(--t-3);
+    line-height: 1;
+  }
+  .meta-list {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 var(--t-4);
+    border-top: 1px solid var(--rule);
+    max-width: var(--measure-wide);
+  }
+  .meta-list li {
+    display: grid;
+    grid-template-columns: minmax(11rem, 14rem) 1fr;
+    gap: var(--t-3);
+    padding: var(--t-2) 0;
+    border-bottom: 1px solid var(--rule);
+    margin: 0;
+    align-items: baseline;
+  }
+  .meta-list .cmd {
+    color: var(--saffron-deep);
+    font-family: var(--font-mono);
+    font-size: var(--step-0);
+    background: transparent;
+    border: 0;
+    padding: 0;
+  }
+  .meta-list .desc { font-size: var(--step-0); color: var(--ink); }
+  .cta {
+    font-family: var(--font-mono);
+    font-size: var(--step-0);
+    color: var(--muted);
+    margin: var(--t-4) 0 0;
+  }
+  .cta a { text-decoration-color: var(--saffron-deep); }
+</style>

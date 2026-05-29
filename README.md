@@ -6,7 +6,7 @@
 </p>
 
 <p align="center">
-  <strong>45 specialized AI agents · 291 slash commands for every stage of your software development lifecycle.</strong>
+  <strong>45 specialized AI agents · 334 slash commands for every stage of your software development lifecycle.</strong>
   <br>
   One CLI. One API. From requirements to production.
 </p>
@@ -29,14 +29,14 @@ npm install -g luna-agents
 luna-setup
 ```
 
-Then in Claude Code, any of **291 slash commands** work:
+Then in Claude Code, any of **334 slash commands** work:
 
 ```
 /luna-agents:plan       # Break a feature into tasks
 /luna-agents:go         # Implement next task
 /luna-agents:test       # Run tests
 /luna-agents:ship       # Deploy
-/luna-agents:cmds       # See all 291 commands
+/luna-agents:cmds       # See all 334 commands
 ```
 
 That's it. The plugin reads your codebase, routes work to specialized AI agents, and streams results back.
@@ -100,9 +100,9 @@ luna agents list
 luna rag search "How does authentication work?"
 ```
 
-### Claude Code Commands (291)
+### Claude Code Commands (334)
 
-Luna Agents includes 291 slash commands for Claude Code. Type `/cmds` to see all.
+Luna Agents includes 334 slash commands for Claude Code. Type `/cmds` to see all.
 
 #### Dev Workflow (sequential)
 
@@ -391,7 +391,7 @@ MIT © [Shachar Solomon](https://github.com/shacharsol)
 
 <!-- LUNA:COUNTERS-START -->
 <!-- counters: command/agent/skill totals are updated by sync-readme.mjs -->
-- **Commands:** 291
+- **Commands:** 334
 - **Agents:** 45
 - **Skills:** 0
 <!-- LUNA:COUNTERS-END -->
@@ -412,6 +412,7 @@ MIT © [Shachar Solomon](https://github.com/shacharsol)
 | `/luna-agents:audience` | Shortcut: → /ll-audience |
 | `/luna-agents:auth` | Shortcut: Build Auth.js authentication system -> /ll-auth |
 | `/luna-agents:autopilot` | Shortcut: → /ll-autopilot |
+| `/luna-agents:backend-doctor` | Shortcut: Backend-stack dispatcher (Node, Java/Vert.x/Spring, Python, Go, Rust, Ruby, PHP, .NET, Elixir) -> /ll-backend-doctor |
 | `/luna-agents:boost-finsavvy` | Shortcut: Boost FinsavvyAI portfolio project → /ll-boost-finsavvy |
 | `/luna-agents:boost-org` | Shortcut: Scan GitHub org, find synergies, map open-source tools → /ll-boost-org |
 | `/luna-agents:boost-project` | Shortcut: Analyze project + generate open-source integration plan → /ll-boost-project |
@@ -433,15 +434,22 @@ MIT © [Shachar Solomon](https://github.com/shacharsol)
 | `/luna-agents:context-compress` | Shortcut: Deterministic LLM prompt compressor — 30-60% token cut with zero ML -> /ll-context-compress |
 | `/luna-agents:context-pack` | Shortcut: Precision context delivery -> /ll-context-pack |
 | `/luna-agents:curb` | Shortcut: Turn your marketing into Curb Your Enthusiasm-style content -> /ll-curb |
+| `/luna-agents:cve-doctor` | Shortcut: Defensive CVE scanner — host + lockfiles + k8s nodes, cross-referenced against NVD/OSV/GHA -> /ll-cve-doctor |
 | `/luna-agents:des` | Project or feature scope |
 | `/luna-agents:desktop-tauri` | Shortcut: Tauri 2.0 + shadcn desktop scaffold with Apple HIG compliance -> /ll-desktop-tauri |
 | `/luna-agents:devto` | Shortcut: Write & publish Dev.to articles with comedy styles (Curb, Seinfeld, Office, Silicon Valley) -> /ll-devto-publish |
+| `/luna-agents:django-doctor` | Shortcut: Django doctor — manage.py check, bandit, n+1, signal misuse -> /ll-django-doctor |
 | `/luna-agents:dock` | Project or service to dockerize |
+| `/luna-agents:docker-doctor` | Shortcut: Docker doctor — hadolint, trivy, dockle, dive -> /ll-docker-doctor |
 | `/luna-agents:docs` | Project or feature scope |
 | `/luna-agents:doctor` | Shortcut: Framework-aware diagnose + fix; auto-routes to react-doctor / svelte-doctor / zen -> /ll-doctor |
+| `/luna-agents:dotnet-doctor` | Shortcut: .NET / ASP.NET Core doctor — dotnet format, outdated, Roslyn, security-code-scan -> /ll-dotnet-doctor |
 | `/luna-agents:drill` | Shortcut: Adversarial AI/dev bluff drill — score honesty, harden CLAUDE.md, loop -> /ll-drill |
 | `/luna-agents:e2e-flow` | Shortcut: Auto-generate Playwright E2E tests from routes -> /ll-e2e-flow |
+| `/luna-agents:elixir-doctor` | Shortcut: Elixir / Phoenix doctor — credo, sobelow, mix audit, dialyxir -> /ll-elixir-doctor |
 | `/luna-agents:email-routing` | Shortcut: Set up free email forwarding via Cloudflare → /ll-email-routing |
+| `/luna-agents:er` | Shortcut: Critical-severity triage in under 5 minutes — Is anything on fire? -> /ll-er |
+| `/luna-agents:fastapi-doctor` | Shortcut: FastAPI / Starlette doctor — async blocking, DI cycles, response leaks -> /ll-fastapi-doctor |
 | `/luna-agents:feature` | Shortcut: Full feature lifecycle until done -> /ll-feature |
 | `/luna-agents:figma` | Shortcut: → /ll-figma |
 | `/luna-agents:fix` | Shortcut: Systematic bug fix workflow -> /ll-fix |
@@ -450,6 +458,7 @@ MIT © [Shachar Solomon](https://github.com/shacharsol)
 | `/luna-agents:gamify` | Shortcut: → /ll-gamify |
 | `/luna-agents:ghost` | Shortcut: → /ll-ghost |
 | `/luna-agents:git-insights` | Shortcut: Repository analytics and visualization → /ll-git-insights |
+| `/luna-agents:go-doctor` | Shortcut: Go doctor — golangci-lint + gosec + govulncheck + goroutine-leak heuristics -> /ll-go-doctor |
 | `/luna-agents:go-viral` | Shortcut: Complete AI-first product launch — SEO + AI discovery + MCP registry + organic content + awesome lists -> /ll-go-viral |
 | `/luna-agents:go` | Project or feature scope |
 | `/luna-agents:graph-rag` | Shortcut: Knowledge graph RAG search -> /ll-graph-rag |
@@ -457,10 +466,13 @@ MIT © [Shachar Solomon](https://github.com/shacharsol)
 | `/luna-agents:heal` | Shortcut: Test, screenshot, auto-fix in a loop until healthy -> /ll-heal |
 | `/luna-agents:heygen` | Shortcut: Generate AI avatar product videos → /ll-heygen |
 | `/luna-agents:hig` | Component or page to audit |
+| `/luna-agents:hospital` | Shortcut: Run every applicable doctor in parallel — full-stack health sweep -> /ll-hospital |
+| `/luna-agents:icu` | Shortcut: Production-down recovery loop — sec + perf + heal + zen until green -> /ll-icu |
 | `/luna-agents:ide` | Shortcut: Scaffold IDE plugins — Cursor, Windsurf, VSCode, JetBrains, Zed, Xcode, Neovim, Emacs, Sublime, Fleet -> /ll-ide-plugins |
 | `/luna-agents:idea` | Shortcut: → /ll-idea |
 | `/luna-agents:imagine` | Shortcut: → /ll-imagine |
 | `/luna-agents:inbox` | Shortcut: AI email management → /ll-inbox |
+| `/luna-agents:k8s-doctor` | Shortcut: Kubernetes doctor — kube-linter, kubeval, polaris, trivy k8s -> /ll-k8s-doctor |
 | `/luna-agents:lam` | Shortcut: Goal-driven autonomous actions -> /ll-lam |
 | `/luna-agents:landing` | Shortcut: Generate HeyGen-quality marketing landing page → /ll-landing |
 | `/luna-agents:launch` | Shortcut: → /ll-launch |
@@ -481,6 +493,7 @@ MIT © [Shachar Solomon](https://github.com/shacharsol)
 | `/luna-agents:ll-audience` | Data source: codebase (from code), api (live data), mock (simulated), csv (import file) |
 | `/luna-agents:ll-auth` | Comma-separated OAuth providers (google,github,microsoft,linkedin,apple,discord,twitter) |
 | `/luna-agents:ll-autopilot` | Auto-deploy when done? (default: false — stops for approval) |
+| `/luna-agents:ll-backend-doctor` | If "true", open a pull request with the staged fixes. Default - false. |
 | `/luna-agents:ll-boost-finsavvy` | analyze (assess + plan), connect (register on gateway), sync (apply shared libs) |
 | `/luna-agents:ll-boost-org` | What to optimize: synergies, open-source, shared-libs, all |
 | `/luna-agents:ll-boost-project` | quick, full, deep |
@@ -504,21 +517,28 @@ MIT © [Shachar Solomon](https://github.com/shacharsol)
 | `/luna-agents:ll-context-compress` | audit \| apply \| benchmark |
 | `/luna-agents:ll-context-pack` | Maximum token budget for the context package |
 | `/luna-agents:ll-curb` | Intensity: mild (witty), medium (sarcastic), hot (Larry David at his worst) |
+| `/luna-agents:ll-cve-doctor` | If "true", open a PR with `SECURITY.md` entries + upgrade plans. |
 | `/luna-agents:ll-debug` | Project or feature scope |
 | `/luna-agents:ll-deploy` | Project or feature scope for deployment |
 | `/luna-agents:ll-deps` | Project or feature scope |
 | `/luna-agents:ll-design` | Project or feature scope for design |
 | `/luna-agents:ll-desktop-tauri` | hig \| fluent \| gnome \| minimal |
 | `/luna-agents:ll-devto-publish` | Auto-publish to Dev.to (requires DEV_TO_API_KEY in .env) |
+| `/luna-agents:ll-django-doctor` | Diagnose Django projects via `python manage.py check --deploy`, bandit (security), pylint-django, django-extensions, plus Luna heuristic layer for n+1 queries, signal misuse, async-view correctness, and template XSS. Composes existing tools — no upstream `django-doctor` Python package. |
+| `/luna-agents:ll-docker-doctor` | Diagnose Dockerfiles and built images via hadolint (Dockerfile lint), dive (image layer analysis), trivy (image CVEs), dockle (CIS Docker benchmark), plus Luna heuristic layer for build-cache layout, multi-stage opportunity, and secret leakage. |
 | `/luna-agents:ll-dockerize` | The `luna-dockerize` command provides comprehensive Docker containerization for your project with optimized multi-stage builds, Docker Co... |
 | `/luna-agents:ll-docs` | Project or feature scope for documentation |
 | `/luna-agents:ll-doctor` | If "true", open a pull request with the staged fixes. Default - false. |
+| `/luna-agents:ll-dotnet-doctor` | Diagnose .NET / ASP.NET Core projects via dotnet format, dotnet-outdated, Roslyn analyzers, security-code-scan, plus Luna heuristic layer for DI scope, EF Core n+1, and middleware ordering. |
 | `/luna-agents:ll-drill` | history \| synthetic \| both |
 | `/luna-agents:ll-e2e-flow` | Scope (all, auth, dashboard, billing, settings, or specific route) |
 | `/luna-agents:ll-e2e-test` | Where to save the test plan (default: scripts/e2e-test-plan.md) |
+| `/luna-agents:ll-elixir-doctor` | Diagnose Elixir / Phoenix apps via credo, sobelow (security), mix audit, mix dialyzer / dialyxir, plus Luna heuristic layer for GenServer state, supervision tree, and LiveView assigns leakage. |
 | `/luna-agents:ll-email-routing` | Email addresses to create (comma-separated, or 'catchall') |
 | `/luna-agents:ll-env` | Project or feature scope |
+| `/luna-agents:ll-er` | Fast triage. Runs every doctor in `severity_min=critical` + `parallel=true` mode. Skips style, formatting, and medium findings. For "is anything on fire right now?" checks, under 5 minutes on most repos. |
 | `/luna-agents:ll-execute` | Project or feature scope for execution |
+| `/luna-agents:ll-fastapi-doctor` | Diagnose FastAPI / Starlette apps via ruff (lint), bandit (security), mypy (types), openapi-spec-validator (contract), plus Luna heuristic layer for async-route blocking, dependency injection cycles, response model leaks. No upstream `fastapi-doctor` package — composes existing Python tooling. |
 | `/luna-agents:ll-feature` | Project or feature scope |
 | `/luna-agents:ll-figma` | Target: react (default), vue, svelte, react-native, swift-ui |
 | `/luna-agents:ll-fix` | Project or feature scope |
@@ -529,6 +549,7 @@ MIT © [Shachar Solomon](https://github.com/shacharsol)
 | `/luna-agents:ll-gemma4` | Set up Google Gemma 4 for free, local AI inference via Ollama. Zero cost, 256K context, multimodal (text+image+audio). |
 | `/luna-agents:ll-ghost` | Topic or context for the content |
 | `/luna-agents:ll-git-insights` | Output format: report, json, csv, html (default: report) |
+| `/luna-agents:ll-go-doctor` | Diagnose Go services via golangci-lint, staticcheck, gosec, govulncheck, ineffassign, errcheck, plus a Luna heuristic layer for goroutine leaks, context.Background misuse, and missing deadlines. No upstream `go-doctor` (the existing project of that name is a refactoring tool, different scope). |
 | `/luna-agents:ll-go-viral` | One-line install command |
 | `/luna-agents:ll-graph-rag` | Graph traversal depth: 1 (direct), 2 (neighbors), 3 (extended network) |
 | `/luna-agents:ll-guard` | Mode: full (all checks), quick (critical only), watch (continuous), audit (formal report) |
@@ -536,11 +557,14 @@ MIT © [Shachar Solomon](https://github.com/shacharsol)
 | `/luna-agents:ll-heygen` | HeyGen avatar ID for video (or 'default') |
 | `/luna-agents:ll-hig` | The `luna-hig` command provides comprehensive Apple Human Interface Guidelines (HIG) compliance analysis and implementation guidance for ... |
 | `/luna-agents:ll-hld` | Project or service scope for HLD generation |
+| `/luna-agents:ll-hospital` | If "true" (default), run wings in parallel. If "false", sequential. |
 | `/luna-agents:ll-i18n` | Project or feature scope |
+| `/luna-agents:ll-icu` | If "true", open a PR with the recovery diff once green. |
 | `/luna-agents:ll-ide-plugins` | Comma-separated features - chat, inline-completion, command-palette, status-bar, settings-ui, auth, telemetry |
 | `/luna-agents:ll-idea` | Target: web, mobile, desktop, api, fullstack (default: fullstack) |
 | `/luna-agents:ll-imagine` | Style: photorealistic, illustration, 3d, minimal, abstract, branded |
 | `/luna-agents:ll-inbox` | Email account (Gmail, Outlook) |
+| `/luna-agents:ll-k8s-doctor` | kubectl context to scan live (optional). Read-only. |
 | `/luna-agents:ll-lam` | Project or feature scope |
 | `/luna-agents:ll-landing` | Brand accent color hex (e.g., #00C8FF) |
 | `/luna-agents:ll-launch` | Strategy: instant, canary (5%→25%→100%), blue-green, rolling |
@@ -554,6 +578,7 @@ MIT © [Shachar Solomon](https://github.com/shacharsol)
 | `/luna-agents:ll-migrate` | Project or feature scope |
 | `/luna-agents:ll-mock` | Project or feature scope |
 | `/luna-agents:ll-money` | Plan structure: freemium (default), trial, paid-only, usage-based, per-seat |
+| `/luna-agents:ll-mongo-doctor` | MongoDB URI. Read-only operations. |
 | `/luna-agents:ll-monitor` | Project or feature scope for monitoring |
 | `/luna-agents:ll-morph` | Target platform/framework/pattern |
 | `/luna-agents:ll-motion` | react \| vue \| svelte \| astro |
@@ -562,6 +587,7 @@ MIT © [Shachar Solomon](https://github.com/shacharsol)
 | `/luna-agents:ll-native` | Framework: react-native (default), expo, flutter, swift-ui, kotlin-compose, electron, tauri |
 | `/luna-agents:ll-nexa` | File path, directory, or question |
 | `/luna-agents:ll-no-bluf` | Max cycles before stopping |
+| `/luna-agents:ll-node-doctor` | If "true", open a pull request with staged fixes. Default - false. |
 | `/luna-agents:ll-onboard-adaptive` | Number of personas to derive (3-6 recommended) |
 | `/luna-agents:ll-onboarding` | Project or audience scope for onboarding guide |
 | `/luna-agents:ll-openhands` | Execution mode (autonomous, supervised, plan-only) |
@@ -571,11 +597,14 @@ MIT © [Shachar Solomon](https://github.com/shacharsol)
 | `/luna-agents:ll-perf-trace` | Metrics to capture: all, lcp, fid, cls, layout, paint, scripting (default: all) |
 | `/luna-agents:ll-perf` | Project or feature scope |
 | `/luna-agents:ll-persona` | Source: auto (from codebase), data (from analytics), manual (you describe), url (analyze competitor users) |
+| `/luna-agents:ll-php-doctor` | Diagnose PHP projects via psalm, phpstan, composer audit, php-cs-fixer, plus Luna heuristic layer for Laravel n+1, Symfony service-container leaks, and SQL builder injection. |
 | `/luna-agents:ll-pipe` | Pipeline expression or saved workflow name |
 | `/luna-agents:ll-plan-v2` | Sync plan with backend platform |
 | `/luna-agents:ll-plan` | Project or feature scope for planning |
+| `/luna-agents:ll-postgres-doctor` | Repo path with migrations / sql files. Default - cwd. |
 | `/luna-agents:ll-postlaunch` | Project or feature scope for post-launch review |
 | `/luna-agents:ll-pr` | Project or feature scope |
+| `/luna-agents:ll-prescribe` | Optional bias - "security", "performance", "release-readiness", "incident-response". |
 | `/luna-agents:ll-present` | Style: minimal, corporate, creative, dark, apple-keynote |
 | `/luna-agents:ll-product-map` | Scope to map: full project, specific module path, or feature name |
 | `/luna-agents:ll-promote` | Product name for AI discovery files |
@@ -584,6 +613,7 @@ MIT © [Shachar Solomon](https://github.com/shacharsol)
 | `/luna-agents:ll-rag-guided` | **One command, one guided experience. No need to remember multiple commands.** |
 | `/luna-agents:ll-rag-upgrade` | **Usage:** ```bash /luna-rag upgrade ``` |
 | `/luna-agents:ll-rag` | **One command, complete guidance.** Luna RAG provides intelligent semantic code search with a single conversational interface. No complex... |
+| `/luna-agents:ll-rails-doctor` | Run `npx rails-doctor@latest` (real package) plus brakeman (security), bundler-audit (CVEs), rubocop (lint), and a Luna heuristic layer for n+1, fat-controller, missing strong params, and CSRF gaps. |
 | `/luna-agents:ll-react-doctor` | If "true", open a pull request with the staged fixes. Default - false. |
 | `/luna-agents:ll-readme-sync` | If "true", also rebuild site/src/data/skills.json + site/src/data/skill-status.json from commands/. Default - true. |
 | `/luna-agents:ll-record` | Voice: ai (ElevenLabs), clone (your voice clone), none (music only) |
@@ -593,6 +623,7 @@ MIT © [Shachar Solomon](https://github.com/shacharsol)
 | `/luna-agents:ll-rollback` | Project or feature scope |
 | `/luna-agents:ll-routemap` | Project or app scope for route mapping |
 | `/luna-agents:ll-rules` | Apply strict coding session rules — 100-line file cap, full test coverage, Playwright e2e for every feature |
+| `/luna-agents:ll-rust-doctor` | Run `npx rust-doctor@latest` (real package) plus cargo clippy, cargo audit, cargo deny, cargo udeps. Luna heuristic layer for async runtime mixing, panic-in-async, and unsafe scope. |
 | `/luna-agents:ll-sec-build` | Built image, binary, or directory to seal |
 | `/luna-agents:ll-sec-container` | Image ref (registry/name:tag) OR Dockerfile path OR tarball |
 | `/luna-agents:ll-sec-dast` | Live URL to scan (staging only — never prod without explicit consent) |
@@ -618,13 +649,16 @@ MIT © [Shachar Solomon](https://github.com/shacharsol)
 | `/luna-agents:ll-skill-radar` | Only include items pushed within N days |
 | `/luna-agents:ll-smart-route` | Routing strategy: fast (lowest latency), cheap (lowest cost), best (highest quality) |
 | `/luna-agents:ll-smart-search` | Natural language question or search query |
+| `/luna-agents:ll-spring-doctor` | maven" or "gradle". Auto-detect by default. |
 | `/luna-agents:ll-storybook` | Project or feature scope |
 | `/luna-agents:ll-svelte-doctor` | If "true", open a pull request with the staged fixes. Default - false. |
 | `/luna-agents:ll-swarm` | Number of agents to spawn (default: 5) |
+| `/luna-agents:ll-terraform-doctor` | Diagnose Terraform / OpenTofu via tflint, tfsec, checkov, terrascan, plus Luna heuristic layer for state drift, over-permissive IAM, and missing tags. |
 | `/luna-agents:ll-test` | Project or feature scope for testing |
 | `/luna-agents:ll-time-machine` | Commit hash, date, tag, branch, or description like 'before the auth refactor' |
 | `/luna-agents:ll-tokens` | css \| tw \| figma \| ios \| android \| all |
 | `/luna-agents:ll-ui-convert` | The `luna-ui-convert` command transforms your UI to follow Apple Human Interface Guidelines with modern Decart-inspired design aesthetics... |
+| `/luna-agents:ll-vertx-doctor` | If "true", open a pull request. |
 | `/luna-agents:ll-video` | Duration: 15s, 30s, 60s, 3min, 5min |
 | `/luna-agents:ll-vision-pipeline` | Max auto-fix retry rounds (default: 3) |
 | `/luna-agents:ll-vision` | Screenshot path, URL, or component path |
@@ -642,6 +676,7 @@ MIT © [Shachar Solomon](https://github.com/shacharsol)
 | `/luna-agents:mcp-publish` | Shortcut: Publish MCP server to Official Registry, Smithery, Glama -> /ll-mcp-publish |
 | `/luna-agents:migrate` | Shortcut: Generate database migrations -> /ll-migrate |
 | `/luna-agents:money` | Shortcut: → /ll-money |
+| `/luna-agents:mongo-doctor` | Shortcut: MongoDB doctor — profile analysis, missing indexes, schema drift -> /ll-mongo-doctor |
 | `/luna-agents:morph` | Shortcut: → /ll-morph |
 | `/luna-agents:motion` | Shortcut: Production motion design system — Framer + GSAP + Lottie + Rive, typed, reduced-motion safe -> /ll-motion |
 | `/luna-agents:multi-agent` | Shortcut: Run parallel AI agents on isolated branches → /ll-multi-agent |
@@ -649,21 +684,26 @@ MIT © [Shachar Solomon](https://github.com/shacharsol)
 | `/luna-agents:native` | Shortcut: → /ll-native |
 | `/luna-agents:nexa` | Shortcut: Nexa-powered semantic code analysis -> /ll-nexa |
 | `/luna-agents:no-bluf` | Shortcut: Detect AI bluffing in commits and docs, fix in closed loop -> /ll-no-bluf |
+| `/luna-agents:node-doctor` | Shortcut: Wraps node-doctor + npm audit + eslint for Node backends -> /ll-node-doctor |
 | `/luna-agents:oh` | Shortcut: Delegate to OpenHands autonomous agent -> /ll-openhands |
 | `/luna-agents:onboard-adaptive` | Shortcut: → /ll-onboard-adaptive |
 | `/luna-agents:organic-promote` | Shortcut: Write articles, submit to awesome lists, Product Hunt, HN, Reddit — make AI agents find you -> /ll-organic-promote |
 | `/luna-agents:perf-trace` | Shortcut: Chrome performance tracing with Perfetto → /ll-perf-trace |
 | `/luna-agents:perf` | Shortcut: Performance profiling -> /ll-perf |
 | `/luna-agents:persona` | Shortcut: → /ll-persona |
+| `/luna-agents:php-doctor` | Shortcut: PHP / Laravel / Symfony doctor — psalm, phpstan, composer audit -> /ll-php-doctor |
 | `/luna-agents:pipe` | Shortcut: Luna's AI programming language — compose commands with operators -> /ll-pipe |
 | `/luna-agents:plan` | Project or feature scope |
+| `/luna-agents:postgres-doctor` | Shortcut: Postgres doctor — sqlfluff, pg_stat_statements, missing-index detector -> /ll-postgres-doctor |
 | `/luna-agents:pr` | Shortcut: Generate pull request -> /ll-pr |
+| `/luna-agents:prescribe` | Shortcut: Recommend which doctors to run, in what order, based on repo signals -> /ll-prescribe |
 | `/luna-agents:present` | Shortcut: → /ll-present |
 | `/luna-agents:product-map` | Shortcut: Visual product planning -> /ll-product-map |
 | `/luna-agents:promote` | Shortcut: Full AI agent promotion — llms.txt, MCP registries, SEO, GPT Actions -> /ll-promote |
 | `/luna-agents:publish` | Shortcut: → /ll-publish |
 | `/luna-agents:pulse` | Shortcut: → /ll-pulse |
 | `/luna-agents:q` | Natural language search query |
+| `/luna-agents:rails-doctor` | Shortcut: Wraps rails-doctor + brakeman + bundler-audit + rubocop -> /ll-rails-doctor |
 | `/luna-agents:react-doctor` | Shortcut: Wraps `npx react-doctor@latest` — security, perf, correctness, a11y, bundle-size, architecture -> /ll-react-doctor |
 | `/luna-agents:readme-sync` | Shortcut: Regenerate README.md + website skills data from commands/, agents/, skills/ -> /ll-readme-sync |
 | `/luna-agents:record` | Shortcut: → /ll-record |
@@ -679,12 +719,15 @@ MIT © [Shachar Solomon](https://github.com/shacharsol)
 | `/luna-agents:site-audit` | Shortcut: Brutal full-stack website audit → /ll-site-audit |
 | `/luna-agents:skill-radar` | Shortcut: Scan awesome-claude-code lists, surface high-value new skills -> /ll-skill-radar |
 | `/luna-agents:smart-route` | Shortcut: Self-learning agent routing -> /ll-smart-route |
+| `/luna-agents:spring-doctor` | Shortcut: Spring Boot doctor — n+1, actuator exposure, transactional gaps -> /ll-spring-doctor |
 | `/luna-agents:svelte-doctor` | Shortcut: Wraps `npx svelte-doctor-cli@latest` (or `svelte-doctor`) — state, perf, sec, a11y, dead-code -> /ll-svelte-doctor |
 | `/luna-agents:swarm` | Shortcut: → /ll-swarm |
+| `/luna-agents:terraform-doctor` | Shortcut: Terraform / IaC doctor — tflint, tfsec, checkov -> /ll-terraform-doctor |
 | `/luna-agents:test` | Project or feature scope |
 | `/luna-agents:time-machine` | Shortcut: → /ll-time-machine |
 | `/luna-agents:tokens` | Shortcut: Multi-brand design token engine — Style Dictionary, CSS vars, Tailwind, Figma, iOS, Android -> /ll-tokens |
 | `/luna-agents:ui` | Component or page to convert |
+| `/luna-agents:vertx-doctor` | Shortcut: Vert.x (Java/Kotlin) doctor — event-loop blocking, codec misuse, cluster config -> /ll-vertx-doctor |
 | `/luna-agents:video` | Shortcut: → /ll-video |
 | `/luna-agents:vision` | Shortcut: Screenshot-to-code and UI analysis -> /ll-vision |
 | `/luna-agents:voice` | Shortcut: Local voice synthesis with Voicebox → /ll-voice |
