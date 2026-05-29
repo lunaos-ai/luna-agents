@@ -24,7 +24,9 @@
     "site:dev": "cd site && npm run dev",
     "site:build": "cd site && npm run build",
     "site:preview": "cd site && npm run preview",
-    "site:deploy": "cd site && npm run build && npx wrangler pages deploy dist --project-name agents-lunaos-ai"
+    "site:deploy": "cd site && npm run build && npx wrangler pages deploy dist --project-name luna-agent",
+    "readme:sync": "node scripts/sync-readme.mjs",
+    "readme:check": "node scripts/sync-readme.mjs --check"
   },
   "keywords": [
     "claude",
@@ -64,15 +66,15 @@
     "concurrently": "^8.2.2"
   },
   "files": [
-    ".claude-plugin/index.js",
-    ".claude-plugin/lib/",
-    ".claude-plugin/claude-plugin.json",
-    ".claude-plugin/package.json",
+    ".claude-plugin/",
     "commands/",
     "agents/",
+    "skills/",
+    "scripts/",
     "setup.sh",
     "README.md",
-    "LICENSE"
+    "LICENSE",
+    "CHANGELOG.md"
   ],
   "bin": {
     "luna-setup": "./setup.sh"

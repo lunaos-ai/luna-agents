@@ -7,6 +7,8 @@ interface Entry {
   gloss: string;
   category: string;
   shortcutFor: string | null;
+  status?: "stable" | "beta" | "planned" | "stub" | "aux" | "unknown";
+  caps?: { reads: string[]; writes: string[]; network: boolean; secrets: string[] };
   call: string;
 }
 
@@ -50,6 +52,8 @@ function relatedFor(e: Entry, all: Entry[]): string[] {
         call={e.call}
         etym={etymFor(e)}
         related={relatedFor(e, entries)}
+        status={e.status}
+        caps={e.caps}
       />
     ))}
   </div>

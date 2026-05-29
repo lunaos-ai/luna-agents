@@ -10,9 +10,13 @@ const { skillCount, categoryCount } = Astro.props;
     <p class="edition">First Edition · {new Date().getFullYear()}</p>
     <h1 class="title"><span>Luna</span><span class="amp"> </span><em>Pipes</em></h1>
     <p class="subtitle">
-      A small concatenative language for composing AI agent skills. The pipe
-      operator <code>&gt;&gt;</code> is the grammar. Skills are the lexicon.
-      You compose; the runtime executes.
+      A programmable shell for AI work. Compose engineering, security,
+      content, and deployment workflows the way Unix composed software, one
+      skill, one pipe at a time.
+    </p>
+    <p class="strapline">
+      The pipe operator <code>&gt;&gt;</code> is the grammar. Skills are the
+      lexicon. You compose; the runtime executes.
     </p>
     <dl class="masthead-meta">
       <div><dt>Lexicon</dt><dd>{skillCount} entries</dd></div>
@@ -64,6 +68,16 @@ const { skillCount, categoryCount } = Astro.props;
     color: var(--saffron-deep);
     font-size: 0.85em;
     padding: 0 0.2ch;
+  }
+  .strapline {
+    margin: 0 0 var(--t-4);
+    max-width: var(--measure-wide);
+    color: var(--muted);
+    font-size: var(--step-0);
+  }
+  .strapline code {
+    font-family: var(--font-mono);
+    color: var(--saffron-deep);
   }
   .masthead-meta {
     display: grid;

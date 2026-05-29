@@ -1,0 +1,197 @@
+---
+import Book from "../layouts/Book.astro";
+import ChapterOpener from "../components/ChapterOpener.astro";
+---
+
+<Book
+  title="Feedback"
+  chapter="feedback"
+  description="Send feedback on Luna Agents, request a skill, or report a bluff."
+>
+  <ChapterOpener
+    num="08"
+    word="Feedback"
+    subtitle="Say what works. Say what doesn't. Request a skill. Report a bluff. All of it lands in the same inbox."
+  />
+
+  <section class="wrap">
+    <h2>The fast paths.</h2>
+    <ul class="paths">
+      <li>
+        <strong>Email.</strong>
+        <a href="mailto:support@lunaos.ai?subject=Luna%20Agents%20Feedback">support@lunaos.ai</a>
+        — humans, not a bot.
+      </li>
+      <li>
+        <strong>GitHub Issues.</strong>
+        <a href="https://github.com/lunaos-ai/luna-agents/issues">lunaos-ai/luna-agents</a>
+        — bugs, feature requests, missing skills.
+      </li>
+      <li>
+        <strong>Discord.</strong>
+        <a href="https://discord.gg/lunaos">discord.gg/lunaos</a>
+        — live conversation, weekly office hours.
+      </li>
+    </ul>
+
+    <h2>The form.</h2>
+    <p>
+      Browser will open your mail client. No tracking, no third-party
+      form service.
+    </p>
+
+    <form class="fb" id="fb-form" novalidate>
+      <fieldset>
+        <legend>What's this about?</legend>
+        <label><input type="radio" name="kind" value="Bug" required /> Bug</label>
+        <label><input type="radio" name="kind" value="Feature request" /> Feature request</label>
+        <label><input type="radio" name="kind" value="Missing skill" /> Missing skill</label>
+        <label><input type="radio" name="kind" value="Bluff report" /> Bluff report</label>
+        <label><input type="radio" name="kind" value="Comment" /> Just a comment</label>
+      </fieldset>
+
+      <label class="field">
+        <span>Subject</span>
+        <input type="text" id="subject" name="subject" placeholder="One line." required />
+      </label>
+
+      <label class="field">
+        <span>Details</span>
+        <textarea id="body" name="body" rows="8" placeholder="What happened? What did you expect? Paste commands, outputs, screenshots. The more concrete, the faster the fix." required></textarea>
+      </label>
+
+      <label class="field">
+        <span>Your email <em>(optional, for reply)</em></span>
+        <input type="email" id="from" name="from" placeholder="you@example.com" />
+      </label>
+
+      <div class="actions">
+        <button type="submit">Send via email</button>
+        <a class="alt" href="https://github.com/lunaos-ai/luna-agents/issues/new">…or open a GitHub issue</a>
+      </div>
+    </form>
+
+    <h2>What we read.</h2>
+    <p>
+      Every email and every issue. We read everything; we reply when we
+      can. The slow part is shipping, not reading.
+    </p>
+
+    <h2>Privacy.</h2>
+    <p>
+      No analytics on this site. No cookies. The form is a
+      <code>mailto:</code> link — it opens your local mail client and
+      sends nothing through us until you hit send in your own client.
+    </p>
+  </section>
+</Book>
+
+<script>
+  const form = document.getElementById("fb-form") as HTMLFormElement | null;
+  form?.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const fd = new FormData(form);
+    const kind = String(fd.get("kind") || "Feedback");
+    const subject = String(fd.get("subject") || "").trim();
+    const body = String(fd.get("body") || "").trim();
+    const from = String(fd.get("from") || "").trim();
+    if (!subject || !body) {
+      alert("Subject and details are required.");
+      return;
+    }
+    const subj = `[${kind}] ${subject}`;
+    const lines = [body];
+    if (from) lines.push("", `Reply to: ${from}`);
+    lines.push("", "—", "Sent from agents.lunaos.ai/feedback");
+    const href =
+      "mailto:support@lunaos.ai" +
+      "?subject=" +
+      encodeURIComponent(subj) +
+      "&body=" +
+      encodeURIComponent(lines.join("\n"));
+    window.location.href = href;
+  });
+</script>
+
+<style>
+  section { padding: var(--t-6) 0 var(--t-12); }
+  .paths { list-style: none; padding: 0; max-width: var(--measure-wide); }
+  .paths li {
+    padding: var(--t-2) 0;
+    border-bottom: 1px solid var(--rule);
+    font-size: var(--step-0);
+  }
+  .fb {
+    display: grid;
+    gap: var(--t-3);
+    max-width: var(--measure-wide);
+    margin: var(--t-3) 0 var(--t-6);
+  }
+  fieldset {
+    border: 1px solid var(--rule);
+    padding: var(--t-2) var(--t-3);
+  }
+  legend {
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+    padding: 0 var(--t-1);
+  }
+  fieldset label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5ch;
+    margin-right: var(--t-3);
+    margin-top: var(--t-1);
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+  }
+  .field {
+    display: grid;
+    gap: var(--t-1);
+  }
+  .field > span {
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+  .field em { text-transform: none; letter-spacing: 0; font-style: italic; }
+  input[type="text"], input[type="email"], textarea {
+    font: inherit;
+    font-family: var(--font-mono);
+    padding: var(--t-1) var(--t-2);
+    border: 1px solid var(--rule);
+    background: var(--paper);
+    color: var(--ink);
+    border-radius: 2px;
+    width: 100%;
+  }
+  textarea { resize: vertical; min-height: 8em; }
+  input:focus, textarea:focus { outline: 2px solid var(--saffron-deep); outline-offset: 2px; }
+  .actions {
+    display: flex;
+    align-items: baseline;
+    gap: var(--t-3);
+    flex-wrap: wrap;
+  }
+  button {
+    font: inherit;
+    font-family: var(--font-mono);
+    background: var(--ink);
+    color: var(--paper);
+    border: 0;
+    padding: var(--t-1) var(--t-3);
+    cursor: pointer;
+    border-radius: 2px;
+  }
+  button:hover { background: var(--saffron-deep); }
+  .alt {
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    color: var(--muted);
+  }
+</style>

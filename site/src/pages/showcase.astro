@@ -1,0 +1,516 @@
+---
+import Book from "../layouts/Book.astro";
+
+const heroes = [
+  {
+    id: "ll-swarm",
+    label: "swarm",
+    title: "Spawn the army.",
+    tagline: "Seven agents. One mission. Zero context-switching.",
+    blurb:
+      "ll-swarm spawns a coordinated multi-agent fleet — coder, reviewer, tester, security, perf, design, deployer — in parallel git worktrees. They race; you keep the best. No sequential bottleneck. No single point of bluff.",
+    metric: "7×",
+    metricLabel: "concurrent agents",
+    stream: [
+      { t: 80, text: "spawn: 7 worktrees" },
+      { t: 200, text: "[coder]    drafting implementation…" },
+      { t: 240, text: "[reviewer] reading diff…" },
+      { t: 290, text: "[tester]   generating cases…" },
+      { t: 340, text: "[security] scanning OWASP top 10…" },
+      { t: 380, text: "[perf]     profiling hot paths…" },
+      { t: 430, text: "[design]   HIG audit running…" },
+      { t: 470, text: "[deploy]   building edge bundle…" },
+      { t: 620, text: "consensus: 5/7 agree on PR-A" },
+      { t: 700, text: "merged: PR-A → main" },
+      { t: 740, text: "ok. 11m32s, 7 agents, 1 commit." },
+    ],
+    color: "saffron",
+  },
+  {
+    id: "ll-hig",
+    label: "hig",
+    title: "Apple polish, on every screen.",
+    tagline: "Audit, fix, ship. Like Cupertino, but in your terminal.",
+    blurb:
+      "ll-hig reads your UI through Apple's Human Interface Guidelines — clarity, deference, depth, contrast, motion, accessibility — flags every violation, and writes the fix. SwiftUI-grade polish from a single command.",
+    metric: "WCAG 2.2 AA",
+    metricLabel: "audit standard",
+    stream: [
+      { t: 80, text: "scanning: 34 components, 7 routes" },
+      { t: 200, text: "contrast:    11 fails (WCAG AA)" },
+      { t: 260, text: "typography:  3 hierarchy breaks" },
+      { t: 320, text: "spacing:     8 off-grid items (8px tick)" },
+      { t: 380, text: "motion:      2 violations of reduced-motion" },
+      { t: 440, text: "focus ring:  5 missing :focus-visible" },
+      { t: 520, text: "writing fix → src/components/* (24 files)" },
+      { t: 620, text: "re-scan: 0 fails, 127/127 pass" },
+      { t: 700, text: "ok. interface now ships like Apple." },
+    ],
+    color: "blue",
+  },
+  {
+    id: "ll-heal",
+    label: "heal",
+    title: "The app that fixes itself.",
+    tagline: "Test, screenshot, detect, fix. On loop. Until healthy.",
+    blurb:
+      "ll-heal runs your suite, screenshots every route, detects regressions, writes the patch, and re-runs — until the app is green. Walk away. Come back to a healthy build.",
+    metric: "∞",
+    metricLabel: "iterations until green",
+    stream: [
+      { t: 80, text: "iter 01: tests fail (3), screenshots diff (2)" },
+      { t: 180, text: "  → fix: tighten /api/users response schema" },
+      { t: 280, text: "iter 02: tests fail (1), screenshots diff (1)" },
+      { t: 380, text: "  → fix: bump Tailwind class to match HIG audit" },
+      { t: 480, text: "iter 03: tests pass, screenshots match" },
+      { t: 580, text: "  → re-run for stability…" },
+      { t: 680, text: "iter 04: pass" },
+      { t: 760, text: "ok. healed in 12m04s, 4 loops, 0 humans." },
+    ],
+    color: "green",
+  },
+  {
+    id: "ll-zen",
+    label: "zen",
+    title: "One command. Everything fixed.",
+    tagline: "Code. Tests. Security. A11y. Perf. Deploy. Done.",
+    blurb:
+      "ll-zen is the panic button. It runs the full restoration suite — readme-sync, no-bluf, hig, heal, security, perf, a11y, deploy — in dependency order, and stops only when every gate is green.",
+    metric: "8 → 0",
+    metricLabel: "failing gates",
+    stream: [
+      { t: 80, text: "phase 1/8 readme-sync   → 0 drift" },
+      { t: 200, text: "phase 2/8 no-bluf       → 6 bluffs fixed" },
+      { t: 320, text: "phase 3/8 hig audit     → 127 pass" },
+      { t: 440, text: "phase 4/8 heal          → 4 loops, green" },
+      { t: 560, text: "phase 5/8 security      → 0 high, 0 critical" },
+      { t: 680, text: "phase 6/8 perf trace    → p95 below budget" },
+      { t: 800, text: "phase 7/8 a11y scan     → AAA on 9/12 routes" },
+      { t: 920, text: "phase 8/8 deploy        → cloudflare, edge live" },
+      { t: 1000, text: "ok. zen achieved. ship anything." },
+    ],
+    color: "violet",
+  },
+];
+---
+
+<Book
+  title="Showcase"
+  chapter="showcase"
+  description="Four hero commands that ship a production app while you make coffee: ll-swarm, ll-hig, ll-heal, ll-zen."
+>
+  <section class="hero">
+    <div class="hero-grid">
+      <p class="kicker">Showcase · The Big Four</p>
+      <h1 class="display-mega">
+        Four commands.<br />
+        <em>One launch-ready app.</em>
+      </h1>
+      <p class="lede">
+        These are the verbs the rest of the lexicon points to. Each one
+        replaces a week of human glue work. Composed with the pipe
+        operator, they ship a feature from "idea" to "edge-deployed"
+        without you switching contexts once.
+      </p>
+      <div class="quick-nav" aria-label="Jump to hero">
+        {heroes.map((h) => (
+          <a href={`#${h.id}`} class={`pill pill-${h.color}`}>
+            <span class="slash">/</span>{h.label}
+          </a>
+        ))}
+      </div>
+      <p class="disclaimer">
+        Sample terminal output below is illustrative. Real output varies
+        per project and codebase.
+      </p>
+    </div>
+  </section>
+
+  {heroes.map((h, i) => (
+    <article class={`hero-card hero-${h.color}`} id={h.id}>
+      <div class="card-grid">
+        <header>
+          <p class="num" aria-hidden="true">{String(i + 1).padStart(2, "0")} / 04</p>
+          <h2 class="cmd"><span class="slash">/</span><span class="word">{h.label}</span></h2>
+          <p class="title">{h.title}</p>
+          <p class="tagline">{h.tagline}</p>
+          <p class="blurb">{h.blurb}</p>
+          <dl class="metric">
+            <dt>{h.metricLabel}</dt>
+            <dd>{h.metric}</dd>
+          </dl>
+          <p class="install"><a href="/install">npm install -g luna-agents</a> · then <code>/luna-agents:{h.id}</code> in Claude Code.</p>
+        </header>
+
+        <div class="terminal" data-stream-id={h.id}>
+          <div class="term-chrome" aria-hidden="true">
+            <span class="dot dot-red"></span>
+            <span class="dot dot-yellow"></span>
+            <span class="dot dot-green"></span>
+            <span class="term-title">/luna-agents:{h.id}</span>
+          </div>
+          <div class="term-body">
+            <div class="term-prompt"><span class="prompt">$</span> /luna-agents:{h.id}</div>
+            <div class="term-stream" data-stream={JSON.stringify(h.stream)} role="log" aria-live="polite"></div>
+          </div>
+        </div>
+      </div>
+    </article>
+  ))}
+
+  <section class="cta wrap">
+    <h2 class="display">Ready to ship like this?</h2>
+    <p class="cta-lede">
+      Star <a href="https://github.com/lunaos-ai/luna-agents">lunaos-ai/luna-agents</a> on GitHub. Install in 30 seconds. Compose your first
+      pipe in 2 minutes. Watch the swarm do a week of work in an
+      afternoon.
+    </p>
+    <div class="cta-actions">
+      <a class="btn-primary" href="https://github.com/lunaos-ai/luna-agents">⭐ Star on GitHub</a>
+      <a class="btn-secondary" href="/install">Install →</a>
+      <a class="btn-tertiary" href="/skills">Browse all skills</a>
+    </div>
+  </section>
+</Book>
+
+<script>
+  // Animated terminal stream — types each line on intersection.
+  const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const terms = document.querySelectorAll<HTMLElement>(".term-stream");
+
+  function render(el: HTMLElement, lines: { t: number; text: string }[]) {
+    el.innerHTML = "";
+    if (reduced) {
+      for (const ln of lines) {
+        const d = document.createElement("div");
+        d.className = "stream-line visible";
+        d.textContent = ln.text;
+        el.appendChild(d);
+      }
+      return;
+    }
+    const start = performance.now();
+    const elems: HTMLDivElement[] = [];
+    for (const ln of lines) {
+      const d = document.createElement("div");
+      d.className = "stream-line";
+      d.textContent = ln.text;
+      el.appendChild(d);
+      elems.push(d);
+    }
+    function tick(now: number) {
+      const dt = now - start;
+      let allDone = true;
+      for (let i = 0; i < lines.length; i++) {
+        if (dt >= lines[i].t * 6) {
+          elems[i].classList.add("visible");
+        } else {
+          allDone = false;
+        }
+      }
+      if (!allDone) requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+  }
+
+  const io = new IntersectionObserver((entries) => {
+    for (const e of entries) {
+      if (!e.isIntersecting) continue;
+      const el = e.target as HTMLElement;
+      const raw = el.dataset.stream;
+      if (!raw) continue;
+      try {
+        const lines = JSON.parse(raw);
+        render(el, lines);
+        io.unobserve(el);
+      } catch {}
+    }
+  }, { threshold: 0.35 });
+
+  for (const t of terms) io.observe(t);
+</script>
+
+<style>
+  .hero {
+    padding: var(--t-12) clamp(1rem, 5vw, 4rem) var(--t-8);
+    background:
+      radial-gradient(900px 500px at 80% -10%, rgba(247,226,196,0.6), transparent 60%),
+      radial-gradient(800px 600px at -10% 110%, rgba(168,85,247,0.10), transparent 60%);
+    border-bottom: 1px solid var(--rule);
+  }
+  .hero-grid { max-width: 1200px; margin: 0 auto; }
+  .kicker {
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 0 0 var(--t-3);
+  }
+  .display-mega {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-weight: 400;
+    font-size: clamp(3rem, 9vw, 7.5rem);
+    line-height: 0.92;
+    letter-spacing: -0.03em;
+    margin: 0 0 var(--t-4);
+    color: var(--ink);
+  }
+  .display-mega em { color: var(--saffron-deep); }
+  .lede {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: var(--step-2);
+    max-width: 60ch;
+    color: var(--muted);
+    margin: 0 0 var(--t-4);
+    line-height: 1.3;
+  }
+  .quick-nav {
+    display: flex;
+    gap: var(--t-2);
+    flex-wrap: wrap;
+    margin-top: var(--t-3);
+  }
+  .pill {
+    font-family: var(--font-mono);
+    font-size: var(--step-0);
+    padding: var(--t-1) var(--t-3);
+    border: 1.5px solid var(--ink);
+    border-radius: 999px;
+    text-decoration: none;
+    color: var(--ink);
+    background: var(--paper);
+    transition: transform 200ms var(--ease), background 200ms var(--ease), color 200ms var(--ease);
+  }
+  .pill .slash { color: var(--saffron-deep); }
+  .pill:hover { transform: translateY(-2px); background: var(--ink); color: var(--paper); }
+  .pill:hover .slash { color: var(--saffron); }
+  .disclaimer {
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    color: var(--muted);
+    max-width: 60ch;
+    margin: var(--t-3) 0 0;
+  }
+
+  .hero-card {
+    padding: clamp(3rem, 8vw, 7rem) clamp(1rem, 5vw, 4rem);
+    border-bottom: 1px solid var(--rule);
+    position: relative;
+    overflow: hidden;
+  }
+  .hero-card::before {
+    content: "";
+    position: absolute;
+    inset: -10% -20% auto auto;
+    width: 60vw;
+    height: 60vw;
+    background: radial-gradient(closest-side, rgba(247,226,196,0.45), transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+  .hero-blue::before { background: radial-gradient(closest-side, rgba(99,168,255,0.30), transparent 70%); }
+  .hero-green::before { background: radial-gradient(closest-side, rgba(134,210,143,0.30), transparent 70%); }
+  .hero-violet::before { background: radial-gradient(closest-side, rgba(168,85,247,0.25), transparent 70%); }
+
+  .card-grid {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--t-6);
+    position: relative;
+    z-index: 1;
+  }
+  @media (min-width: 960px) {
+    .card-grid { grid-template-columns: 1fr 1.1fr; align-items: start; }
+  }
+  header .num {
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    color: var(--muted);
+    margin: 0;
+    letter-spacing: 0.18em;
+  }
+  .cmd {
+    font-family: var(--font-mono);
+    font-size: clamp(2.2rem, 5vw, 3.6rem);
+    margin: var(--t-1) 0 var(--t-3);
+    line-height: 1;
+  }
+  .cmd .slash { color: var(--saffron-deep); font-weight: 600; }
+  .cmd .word { color: var(--ink); font-weight: 500; }
+  header .title {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: var(--step-3);
+    line-height: 1.1;
+    margin: 0 0 var(--t-2);
+    color: var(--ink);
+    max-width: 22ch;
+  }
+  .tagline {
+    font-family: var(--font-display);
+    font-style: italic;
+    color: var(--saffron-deep);
+    font-size: var(--step-1);
+    margin: 0 0 var(--t-3);
+  }
+  .blurb {
+    color: var(--ink);
+    font-size: var(--step-0);
+    line-height: 1.55;
+    max-width: 52ch;
+    margin: 0 0 var(--t-3);
+  }
+  .metric {
+    display: inline-grid;
+    grid-template-columns: auto auto;
+    column-gap: var(--t-2);
+    align-items: baseline;
+    border: 1px solid var(--rule);
+    padding: var(--t-1) var(--t-3);
+    margin: var(--t-1) 0 var(--t-3);
+    border-radius: 2px;
+  }
+  .metric dt {
+    grid-column: 2;
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+  .metric dd {
+    grid-column: 1;
+    grid-row: 1 / span 2;
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: var(--step-4);
+    line-height: 1;
+    color: var(--saffron-deep);
+    margin: 0;
+  }
+  .install {
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    color: var(--muted);
+    margin: var(--t-1) 0 0;
+  }
+  .install a { color: var(--ink); text-decoration-color: var(--saffron-deep); }
+  .install code { color: var(--saffron-deep); }
+
+  .terminal {
+    background: #1a1612;
+    background: var(--term-bg, #1a1612);
+    color: #f0ece4;
+    color: var(--term-fg, #f0ece4);
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid #2a241c;
+    border: 1px solid var(--term-rule, #2a241c);
+    box-shadow: 0 30px 80px -20px rgba(20,15,10,0.35), 0 8px 24px -8px rgba(20,15,10,0.20);
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    line-height: 1.55;
+  }
+  .term-chrome {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.6rem 0.9rem;
+    background: #221d18;
+    background: color-mix(in oklab, var(--term-bg, #1a1612) 90%, white);
+    border-bottom: 1px solid #2a241c;
+    border-bottom: 1px solid var(--term-rule, #2a241c);
+  }
+  .dot { width: 0.7rem; height: 0.7rem; border-radius: 50%; display: inline-block; }
+  .dot-red { background: #ff5f57; }
+  .dot-yellow { background: #febc2e; }
+  .dot-green { background: #28c840; }
+  .term-title {
+    margin-left: auto;
+    color: #b8b0a4;
+    color: var(--term-dim, #b8b0a4);
+    font-size: 0.85em;
+    letter-spacing: 0.05em;
+  }
+  .term-body { padding: var(--t-3); min-height: 22rem; }
+  .term-prompt { color: var(--saffron); margin-bottom: var(--t-2); }
+  .term-prompt .prompt { color: var(--saffron-deep); font-weight: 600; margin-right: 0.5ch; }
+  .term-stream { display: grid; gap: 0.2rem; }
+  .stream-line {
+    opacity: 0;
+    transform: translateY(4px);
+    transition: opacity 200ms var(--ease), transform 200ms var(--ease);
+    white-space: pre-wrap;
+  }
+  .stream-line.visible { opacity: 1; transform: none; }
+  .stream-line:last-child.visible::after {
+    content: "▍";
+    margin-left: 0.4ch;
+    color: var(--saffron);
+    animation: blink 1s steps(1, end) infinite;
+  }
+  @keyframes blink { 50% { opacity: 0; } }
+
+  .cta {
+    padding: clamp(4rem, 10vw, 8rem) clamp(1rem, 5vw, 4rem);
+    text-align: center;
+  }
+  .cta .display {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: clamp(2.5rem, 7vw, 5rem);
+    line-height: 1;
+    margin: 0 0 var(--t-4);
+  }
+  .cta-lede {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: var(--step-2);
+    color: var(--muted);
+    max-width: 60ch;
+    margin: 0 auto var(--t-4);
+  }
+  .cta-actions {
+    display: inline-flex;
+    gap: var(--t-2);
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .btn-primary, .btn-secondary, .btn-tertiary {
+    font-family: var(--font-mono);
+    font-size: var(--step-0);
+    padding: var(--t-2) var(--t-4);
+    border-radius: 999px;
+    text-decoration: none;
+    transition: transform 200ms var(--ease), background 200ms var(--ease);
+  }
+  .btn-primary {
+    background: var(--ink);
+    color: var(--paper);
+    border: 1.5px solid var(--ink);
+  }
+  .btn-primary:hover { transform: translateY(-2px); background: var(--saffron-deep); border-color: var(--saffron-deep); }
+  .btn-secondary {
+    background: var(--saffron);
+    color: var(--saffron-on);
+    border: 1.5px solid var(--saffron-deep);
+  }
+  .btn-secondary:hover { transform: translateY(-2px); }
+  .btn-tertiary {
+    background: transparent;
+    color: var(--ink);
+    border: 1.5px solid var(--rule);
+  }
+  .btn-tertiary:hover { transform: translateY(-2px); border-color: var(--ink); }
+
+  @media (prefers-reduced-motion: reduce) {
+    .pill, .btn-primary, .btn-secondary, .btn-tertiary { transition: none; }
+    .stream-line { opacity: 1; transform: none; transition: none; }
+    .stream-line:last-child::after { animation: none; }
+  }
+</style>

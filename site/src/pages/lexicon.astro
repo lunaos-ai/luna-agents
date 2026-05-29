@@ -9,6 +9,12 @@ const categories = Object.entries(data.byCategory)
   .filter(([cat]) => cat !== "shortcut")
   .sort((a, b) => a[0].localeCompare(b[0]));
 const shortcutEntries = data.byCategory.shortcut ?? [];
+
+const statusCounts: Record<string, number> = {};
+for (const e of data.entries) {
+  const s = (e as any).status ?? "unknown";
+  statusCounts[s] = (statusCounts[s] ?? 0) + 1;
+}
 ---
 
 <Book
@@ -16,7 +22,7 @@ const shortcutEntries = data.byCategory.shortcut ?? [];
   chapter="lexicon"
   description={`The ${data.count}-entry standard library of the Luna Pipes language.`}
 >
-  <LexiconHeader count={data.count} categories={Object.keys(data.byCategory)} />
+  <LexiconHeader count={data.count} categories={Object.keys(data.byCategory)} statusCounts={statusCounts} />
   <LexiconFilter />
 
   <div class="wrap">

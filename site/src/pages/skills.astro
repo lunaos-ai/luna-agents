@@ -1,0 +1,238 @@
+---
+import Book from "../layouts/Book.astro";
+import ChapterOpener from "../components/ChapterOpener.astro";
+import PipeBlock from "../components/PipeBlock.astro";
+import data from "../data/skills.json";
+
+const flat = Object.entries(data.byCategory).flatMap(([cat, list]) =>
+  (list as any[]).map((s) => ({ ...s, category: cat }))
+);
+
+const featured = [
+  "ll-no-bluf",
+  "ll-readme-sync",
+  "ll-cf-allow-bots",
+  "ll-pipe",
+  "ll-365-secure",
+  "ll-mythos",
+  "ll-zen",
+  "ll-drill",
+  "ll-go-viral",
+];
+
+const featuredEntries = featured
+  .map((w) => flat.find((s) => s.word === w))
+  .filter(Boolean) as any[];
+
+const realCount = flat.filter((s) => s.category !== "shortcut").length;
+const shortcutCount = (data.byCategory.shortcut as any[] | undefined)?.length ?? 0;
+
+const cats = Object.entries(data.byCategory)
+  .filter(([c]) => c !== "shortcut")
+  .sort(([, a], [, b]) => (b as any[]).length - (a as any[]).length);
+---
+
+<Book
+  title="Skills"
+  chapter="skills"
+  description="Every Luna skill in one page. Featured: no-bluf, readme-sync, cf-allow-bots, mythos, 365-secure."
+>
+  <ChapterOpener
+    num="07"
+    word="Skills"
+    subtitle={`${realCount} canonical skills. ${shortcutCount} shortcuts. One pipe operator. Composed in your terminal, your editor, your CI.`}
+  />
+
+  <section class="wrap">
+    <h2>What a skill is.</h2>
+    <p>
+      A skill is one verb in the Luna lexicon. It has a name, a signature, a
+      category, and a single job. Skills compose with the pipe operator
+      <code>&gt;&gt;</code>. Shortcuts are aliases that route to a canonical
+      <code>ll-*</code> skill so muscle memory keeps working.
+    </p>
+    <PipeBlock
+      code={'/ll-no-bluf >> ll-readme-sync >> ll-pr "docs: keep claims honest"'}
+      output={[
+        'composed: 3 stages',
+        '  [01] /ll-no-bluf       → audit commits + docs for fake claims',
+        '  [02] /ll-readme-sync   → regenerate README counters + index',
+        '  [03] /ll-pr "..."      → open PR with the diff',
+        'ok.',
+      ]}
+    />
+
+    <h2 id="featured">Featured.</h2>
+    <p>
+      Nine skills that make the rest worth installing. Start here, then
+      browse the full <a href="/lexicon">Lexicon</a> for the long tail.
+    </p>
+
+    <div class="featured">
+      {featuredEntries.map((s) => (
+        <article class="card" id={`skill-${s.word}`}>
+          <header>
+            <h3><code>/{s.word}</code></h3>
+            <span class="cat">{s.category}</span>
+          </header>
+          <p>{s.gloss}</p>
+          {s.shortcutFor && (
+            <p class="alias">
+              Shortcut → <a href={`/lexicon#${s.shortcutFor}`}><code>/{s.shortcutFor}</code></a>
+            </p>
+          )}
+          <a class="more" href={`/lexicon#${s.word}`}>Full entry →</a>
+        </article>
+      ))}
+    </div>
+
+    <h2 id="no-bluf">Deep dive: <code>/ll-no-bluf</code>.</h2>
+    <p>
+      AI assistants bluff. They claim work is done that isn't, cite files
+      that don't exist, and write commit messages for code they never wrote.
+      <strong>no-bluf</strong> is a closed-loop audit that detects the
+      bluffing, surfaces it, and fixes or removes the fake claims until
+      every assertion in your commits and docs verifies real.
+    </p>
+    <p>The loop:</p>
+    <ol>
+      <li><strong>Scan</strong> recent commits, README, CHANGELOG, ADRs, and any <code>docs/</code> file for claims of the form <em>"X is implemented / tested / shipped"</em>.</li>
+      <li><strong>Verify</strong> each claim against the actual code — does the function exist, does the test pass, is the endpoint wired?</li>
+      <li><strong>Triage</strong> mismatches into three buckets: bluff (claim is false), drift (claim was true and broke), or missing (work was done but undocumented).</li>
+      <li><strong>Fix or delete</strong> — the AI either implements what was claimed, removes the false claim, or rewrites the doc to match reality. No silent acceptance.</li>
+      <li><strong>Re-run</strong> until the audit returns zero mismatches.</li>
+    </ol>
+
+    <PipeBlock
+      caption="Audit, fix, ship."
+      code={'/ll-no-bluf >> ll-readme-sync >> ll-test >> ll-pr "audit: remove bluffed claims"'}
+      output={[
+        'scanned: 23 commits, 14 docs',
+        'found:   6 bluff, 2 drift, 1 missing',
+        'fixed:   8 in-loop, 1 deleted (no plan to ship)',
+        'README:  counters + index regenerated',
+        'tests:   pass (412/412)',
+        'PR:      #142 opened',
+        'ok.',
+      ]}
+    />
+
+    <p class="callout">
+      Pair <code>/ll-no-bluf</code> with <a href="#skill-ll-readme-sync"><code>/ll-readme-sync</code></a>.
+      One catches the lie, the other rebuilds the honest version from the
+      filesystem. Together, your README is a function of your code, not a
+      parallel document that quietly drifts.
+    </p>
+
+    <h2 id="all">All categories.</h2>
+    <p>
+      {realCount} skills across {cats.length} categories. Click a category
+      to jump into the <a href="/lexicon">Lexicon</a>.
+    </p>
+    <ul class="cat-list">
+      {cats.map(([cat, list]) => (
+        <li>
+          <a href={`/lexicon#cat-${cat}`}>
+            <span class="cat-name">{cat}</span>
+            <span class="cat-count">{(list as any[]).length}</span>
+          </a>
+        </li>
+      ))}
+    </ul>
+
+    <h2 id="install">How to get them.</h2>
+    <p>
+      Skills ship with the <code>luna-agents</code> npm package. After
+      <code>npm install -g luna-agents &amp;&amp; luna-setup</code>, every
+      skill on this page is available as a Claude Code slash command
+      under the <code>/luna-agents:</code> namespace.
+    </p>
+    <p>
+      Already installed but don't see them all? See
+      <a href="/install#troubleshooting">Install · Troubleshooting</a> or
+      run <code>luna-setup</code> again — it's idempotent.
+    </p>
+
+    <h2 id="feedback">Feedback.</h2>
+    <p>
+      Missing a skill? Found a bluff the auditor missed? Email
+      <a href="mailto:support@lunaos.ai?subject=Luna%20Agents%20skill%20feedback">support@lunaos.ai</a>
+      or open an <a href="https://github.com/lunaos-ai/luna-agents/issues">issue</a>.
+      The <a href="/feedback">feedback page</a> has the form.
+    </p>
+  </section>
+</Book>
+
+<style>
+  section { padding: var(--t-6) 0 var(--t-12); }
+  .featured {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: var(--t-3);
+    margin: var(--t-3) 0 var(--t-6);
+  }
+  .card {
+    border: 1px solid var(--rule);
+    padding: var(--t-3);
+    background: var(--paper-deep);
+    border-radius: 2px;
+  }
+  .card header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: var(--t-2);
+    margin-bottom: var(--t-1);
+  }
+  .card h3 {
+    margin: 0;
+    font-family: var(--font-mono);
+    font-size: var(--step-0);
+    font-weight: 500;
+  }
+  .card h3 code { color: var(--saffron-deep); }
+  .card .cat {
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .card p { margin: var(--t-1) 0; }
+  .card .alias { font-size: var(--step--1); color: var(--muted); }
+  .card .more {
+    display: inline-block;
+    margin-top: var(--t-1);
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    text-decoration-color: var(--saffron-deep);
+  }
+  .callout {
+    border-left: 3px solid var(--saffron-deep);
+    padding: var(--t-1) var(--t-3);
+    margin: var(--t-3) 0;
+    background: var(--paper-deep);
+    max-width: var(--measure-wide);
+  }
+  .cat-list {
+    list-style: none;
+    padding: 0;
+    margin: var(--t-3) 0 var(--t-6);
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: var(--t-1);
+  }
+  .cat-list a {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding: var(--t-1) var(--t-2);
+    border: 1px solid var(--rule);
+    text-decoration: none;
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+  }
+  .cat-list a:hover { border-color: var(--saffron-deep); }
+  .cat-name { color: var(--ink); }
+  .cat-count { color: var(--muted); }
+</style>
