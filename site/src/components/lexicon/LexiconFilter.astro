@@ -74,8 +74,11 @@
     .lf-count { text-align: left; }
   }
 
-  /* Filter visibility: managed by JS via [data-hidden] on entries + cats */
-  [data-lf-hidden="1"] { display: none !important; }
+  /* Filter visibility: managed by JS via [data-lf-hidden] on entries + cats.
+     `:global()` is required because the entries + categories are rendered by
+     other components (different astro CIDs), so a scoped selector would never
+     match them. */
+  :global([data-lf-hidden="1"]) { display: none !important; }
 </style>
 
 <script>

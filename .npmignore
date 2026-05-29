@@ -1,0 +1,40 @@
+# Keep npm bundle lean. Whitelist what gets shipped via package.json "files".
+# This file is the safety net for accidental inclusion.
+
+node_modules/
+.git/
+.github/
+.vscode/
+.DS_Store
+
+# Local dev artifacts
+*.log
+.env
+.env.*
+.cache/
+dist/
+build/
+coverage/
+.nyc_output/
+
+# Site (deployed separately to Cloudflare Pages)
+site/
+
+# MCP server workspaces (shipped via their own npm packages)
+mcp-servers/
+
+# Internal docs / planning
+docs/
+.luna/
+.planning/
+.kiro/
+.memory/
+
+# Tests
+tests/
+test/
+**/*.test.js
+**/*.test.ts
+**/*.spec.js
+**/*.spec.ts
+test.js

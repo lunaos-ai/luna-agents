@@ -1,8 +1,12 @@
 ---
 import ChapterOpener from "../ChapterOpener.astro";
 
-interface Props { count: number; categories: string[]; }
-const { count, categories } = Astro.props;
+interface Props {
+  count: number;
+  categories: string[];
+  statusCounts?: Record<string, number>;
+}
+const { count, categories, statusCounts = {} } = Astro.props;
 const sortedCats = [...categories].filter((c) => c !== "shortcut").sort();
 ---
 
@@ -32,6 +36,18 @@ const sortedCats = [...categories].filter((c) => c !== "shortcut").sort();
     <div><dt><em>primitive</em></dt><dd>built into the runtime; not user-defined</dd></div>
   </dl>
 </section>
+
+{Object.keys(statusCounts).length > 0 && (
+  <section class="legend wrap">
+    <h3 class="legend-title">Implementation status.</h3>
+    <dl class="legend-list">
+      <div><dt><span class="badge bg-stable">stable</span></dt><dd>agent wired, body fleshed out, runnable today, {statusCounts.stable ?? 0} verbs</dd></div>
+      <div><dt><span class="badge bg-beta">beta</span></dt><dd>agent wired, body still thin, expect rough edges, {statusCounts.beta ?? 0} verbs</dd></div>
+      <div><dt><span class="badge bg-aux">alias</span></dt><dd>shortcut for a canonical verb in another category, {statusCounts.aux ?? 0} aliases</dd></div>
+      <div><dt><span class="badge bg-planned">planned</span></dt><dd>spec exists, agent does not, not yet runnable, {(statusCounts.planned ?? 0) + (statusCounts.stub ?? 0) + (statusCounts.unknown ?? 0)} verbs</dd></div>
+    </dl>
+  </section>
+)}
 
 <style>
   .cat-rail { padding-bottom: var(--t-6); }
@@ -84,4 +100,18 @@ const sortedCats = [...categories].filter((c) => c !== "shortcut").sort();
     margin-bottom: var(--t-1);
   }
   .legend-list dd { margin: 0; font-size: var(--step--1); color: var(--muted); }
+
+  .badge {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    padding: 0.1rem 0.45rem;
+    border: 1px solid currentColor;
+    border-radius: 2px;
+  }
+  .bg-stable  { color: #0a7a3b; }
+  .bg-beta    { color: #8a5a00; }
+  .bg-aux     { color: var(--muted); }
+  .bg-planned { color: #888; border-style: dashed; }
 </style>

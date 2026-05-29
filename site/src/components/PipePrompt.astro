@@ -120,6 +120,8 @@
 </style>
 
 <script>
+  import { simulate } from "../lib/pipe-sim";
+
   const toggle = document.getElementById("pp-toggle") as HTMLButtonElement;
   const pp = document.getElementById("pp") as HTMLElement;
   const close = document.getElementById("pp-close") as HTMLButtonElement;
@@ -139,36 +141,33 @@
     if (e.key === "Escape" && !pp.hidden) { e.preventDefault(); shut(); }
   });
 
+  const reduced = () => window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
+
+  async function append(line: string) {
+    trace.textContent = (trace.textContent ?? "") + line + "\n";
+    if (!reduced()) await sleep(40);
+  }
+
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
     const expr = input.value.trim();
     if (!expr) return;
     trace.hidden = false;
     trace.textContent = "";
-    const lines = simulate(expr);
-    for (const line of lines) {
-      await type(trace, line + "\n");
+    for (const ev of simulate(expr)) {
+      if (ev.kind === "parsed") {
+        await append(`parsed: ${ev.stageCount} stage${ev.stageCount === 1 ? "" : "s"}`);
+      } else if (ev.kind === "stage-start") {
+        const tag = `[${String(ev.index + 1).padStart(2, "0")}]`;
+        await append(`${tag} ${ev.stage.verb}${ev.stage.args.length ? " " + ev.stage.args.map((a) => `"${a}"`).join(" ") : ""}`);
+      } else if (ev.kind === "stage-line") {
+        await append(`     ${ev.text}`);
+      } else if (ev.kind === "stage-end") {
+        await append(`     ok (${ev.ms}ms)`);
+      } else if (ev.kind === "done") {
+        await append(`done in ${ev.totalMs}ms. simulated; install luna-agents to run for real.`);
+      }
     }
   });
-
-  function simulate(expr: string): string[] {
-    const parts = expr.split(/\s*>>\s*/);
-    const out: string[] = [];
-    out.push(`parsed: ${parts.length} stage${parts.length === 1 ? "" : "s"}`);
-    for (let i = 0; i < parts.length; i++) {
-      out.push(`  [${String(i + 1).padStart(2, "0")}]  ${parts[i]}`);
-    }
-    out.push(`ok. simulated. install luna-agents to run for real:`);
-    out.push(`  npm i -g luna-agents`);
-    return out;
-  }
-
-  async function type(el: HTMLElement, text: string) {
-    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (reduced) { el.textContent = (el.textContent ?? "") + text; return; }
-    for (const ch of text) {
-      el.textContent = (el.textContent ?? "") + ch;
-      await new Promise((r) => setTimeout(r, 8));
-    }
-  }
 </script>

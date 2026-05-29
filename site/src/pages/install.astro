@@ -2,57 +2,84 @@
 import Book from "../layouts/Book.astro";
 import ChapterOpener from "../components/ChapterOpener.astro";
 import PipeBlock from "../components/PipeBlock.astro";
+import data from "../data/skills.json";
+
+const realCount = Object.entries(data.byCategory)
+  .filter(([c]) => c !== "shortcut")
+  .reduce((acc, [, list]) => acc + (list as any[]).length, 0);
+const shortcutCount = (data.byCategory.shortcut as any[] | undefined)?.length ?? 0;
+const total = realCount + shortcutCount;
 ---
 
-<Book title="Install" chapter="install" description="Install Luna Agents, npm, Claude Code plugin, source.">
+<Book
+  title="Install"
+  chapter="install"
+  description="Install Luna Agents — npm, Claude Code plugin, source. Includes troubleshooting for missing skills."
+>
   <ChapterOpener
     num="04"
     word="Install"
-    subtitle="Three ways to get the binary. Pick the one that matches your runtime."
+    subtitle={`Three ways to get the binary. After install you have ${total} slash commands (${realCount} canonical, ${shortcutCount} shortcuts).`}
   />
 
   <section class="wrap">
-    <h2>From npm.</h2>
+    <h2>1. From npm.</h2>
     <p>The fastest path. Requires Node ≥ 18.</p>
     <PipeBlock
-      code={'npm install -g luna-agents'}
-      output={['installed: luna-agents@1.0.0', '+ luna binary at /usr/local/bin/luna', 'next: luna --help']}
-    />
-
-    <h2>As a Claude Code plugin.</h2>
-    <p>
-      Luna Agents ships as a plugin that registers all 277 verbs as slash
-      commands inside Claude Code. The plugin is detected automatically once
-      the package is installed.
-    </p>
-    <PipeBlock
-      code={'luna setup --plugin'}
+      code={'npm install -g luna-agents && luna-setup'}
       output={[
+        'installed: luna-agents@latest',
         'detected: claude code at ~/.claude',
-        'registered: 277 slash commands',
-        'try:     /persona generate',
-        'or:      /pipe "persona generate >> ghost \\"post\\""',
+        `registered: ${total} slash commands`,
+        'next: open Claude Code, try /luna-agents:cmds',
       ]}
     />
 
-    <h2>From source.</h2>
+    <h2>2. As a Claude Code plugin.</h2>
+    <p>
+      After the npm install, the plugin is registered automatically. If
+      you skipped <code>luna-setup</code>, or you want to install just
+      the plugin without the CLI, do it inside Claude Code:
+    </p>
+    <PipeBlock
+      caption="Inside Claude Code."
+      code={'/plugin marketplace add lunaos-ai/luna-agents'}
+      output={['marketplace added: luna-agents-marketplace (1 plugin)']}
+    />
+    <PipeBlock
+      code={'/plugin install luna-agents@luna-agents-marketplace'}
+      output={[
+        'installing: luna-agents',
+        `commands: ${total} (incl. shortcuts)`,
+        `agents:   45`,
+        'mcp:      luna-nexa-rag, luna-glm-vision, luna-vision-rag-client',
+        'ok. run /reload-plugins to activate.',
+      ]}
+    />
+    <p>
+      Already installed something? Re-run <code>luna-setup</code> — it's
+      idempotent.
+    </p>
+
+    <h2>3. From source.</h2>
     <p>For contributors and folks who want the head of main.</p>
     <PipeBlock
-      code={'git clone https://github.com/lunaos/luna-agents && cd luna-agents && npm install && npm run build && npm link'}
-      output={['cloned, built, linked. luna binary now points at your working copy.']}
+      code={'git clone https://github.com/lunaos-ai/luna-agents && cd luna-agents && npm install && ./setup.sh'}
+      output={['cloned, installed, linked. luna binary now points at your working copy.']}
     />
 
     <h2>Verify.</h2>
     <PipeBlock
       code={'luna --version && luna pipe "persona generate >> ghost \\"hello\\""'}
       output={[
-        'luna 1.0.0',
+        'luna 2.0.1',
         'composed: 2 stages',
         '  [01] /persona generate',
         '  [02] /ghost "hello"',
         'ok.',
       ]}
     />
+    <p>In Claude Code, type <code>/luna-agents:cmds</code> — you should see {total} commands.</p>
 
     <h2>Configure.</h2>
     <p>
@@ -65,12 +92,53 @@ import PipeBlock from "../components/PipeBlock.astro";
       output={['stored in OS keychain. never written to disk in plaintext.']}
     />
 
-    <h2>Where to read next.</h2>
+    <h2 id="troubleshooting">Troubleshooting.</h2>
+
+    <h3>I don't see all the skills / shortcuts after <code>npm install</code>.</h3>
+    <p>
+      Two causes, both fixable in 10 seconds:
+    </p>
+    <ol>
+      <li>
+        <strong>You're on an old version.</strong> The full skill set
+        ships from <code>luna-agents@2.0.1</code> onward. Run{" "}
+        <code>npm install -g luna-agents@latest</code> and then{" "}
+        <code>luna-setup</code> again — it's idempotent.
+      </li>
+      <li>
+        <strong>The plugin wasn't registered with Claude Code.</strong>
+        Run <code>luna-setup</code>, or do it manually inside Claude Code
+        with the two <code>/plugin</code> commands above. Then restart
+        Claude Code (it loads plugin manifests at startup).
+      </li>
+    </ol>
+    <PipeBlock
+      caption="Force a clean reinstall."
+      code={'npm uninstall -g luna-agents && npm install -g luna-agents@latest && luna-setup --force'}
+      output={[
+        'removed: 1 package',
+        `installed: luna-agents@2.0.1 (${total} commands, 45 agents)`,
+        'registered: claude code plugin (forced)',
+        'next: restart claude code',
+      ]}
+    />
+
+    <h3>The plugin is registered but commands don't autocomplete.</h3>
+    <p>
+      Claude Code caches the slash-command index per session. Restart
+      it. If still empty, check{" "}
+      <code>~/.claude/plugins/luna-agents/claude-plugin.json</code>
+      exists and points to <code>commands/</code> — that's where the
+      registrar reads from.
+    </p>
+
+    <h3>Where to read next.</h3>
     <ul class="next-list">
+      <li><a href="/skills">Chapter 07 · Skills</a>, featured skills incl. <code>/ll-no-bluf</code>.</li>
       <li><a href="/lexicon">Chapter 01 · Lexicon</a>, every verb, with call signatures.</li>
       <li><a href="/grammar">Chapter 02 · Grammar</a>, the five operators in full.</li>
-      <li><a href="/etymology">Chapter 03 · Etymology</a>, where the language came from.</li>
-      <li><a href="https://github.com/lunaos/luna-agents">Source</a>, the parser, runtime, and verb registry.</li>
+      <li><a href="/feedback">Chapter 08 · Feedback</a>, missing a skill? Tell us.</li>
+      <li><a href="https://github.com/lunaos-ai/luna-agents">Source</a>, the parser, runtime, and verb registry.</li>
     </ul>
   </section>
 </Book>

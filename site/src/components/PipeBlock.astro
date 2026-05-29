@@ -51,9 +51,12 @@ const id = `pb-${Math.random().toString(36).slice(2, 9)}`;
 <style>
   .pb {
     margin: var(--t-4) 0;
-    border: 1px solid var(--term-rule);
-    background: var(--term-bg);
-    color: var(--term-fg);
+    border: 1px solid #2a241c;
+    border: 1px solid var(--term-rule, #2a241c);
+    background: #1a1612;
+    background: var(--term-bg, #1a1612);
+    color: #f0ece4;
+    color: var(--term-fg, #f0ece4);
     font-family: var(--font-mono);
     font-size: var(--step--1);
     border-radius: 2px;
@@ -78,12 +81,23 @@ const id = `pb-${Math.random().toString(36).slice(2, 9)}`;
     user-select: none;
     font-weight: 500;
   }
-  .line { color: var(--term-fg); white-space: pre; line-height: 1.6; }
+  .line {
+    color: #f0ece4;
+    color: var(--term-fg, #f0ece4);
+    white-space: pre;
+    line-height: 1.6;
+    background: transparent !important;
+    border: 0 !important;
+    padding: 0 !important;
+    border-radius: 0;
+  }
+  code.line { background: transparent; border: 0; padding: 0; }
+  .pb code { background: transparent; border: 0; padding: 0; }
   .tok-cmd { color: oklch(0.92 0.06 220); }
   .tok-str { color: oklch(0.88 0.12 90); }
   .tok-op { color: var(--term-pipe); font-weight: 600; letter-spacing: -0.05em; padding: 0 0.1ch; }
   .tok-flag { color: var(--term-dim); }
-  .tok-id { color: var(--term-fg); }
+  .tok-id { color: #f0ece4; color: var(--term-fg, #f0ece4); }
   .tok-ws { white-space: pre; }
   .out {
     border-top: 1px dashed var(--term-rule);
