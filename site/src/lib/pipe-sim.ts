@@ -10,11 +10,28 @@ export type Stage = {
 };
 
 export type Trace =
-  | { kind: "parsed"; stageCount: number }
-  | { kind: "stage-start"; index: number; stage: Stage }
+  | { kind: "parsed"; stageCount: number; knownCount: number; unknownCount: number }
+  | { kind: "stage-start"; index: number; stage: Stage; known: boolean }
   | { kind: "stage-line"; index: number; text: string }
+  | { kind: "stage-warn"; index: number; text: string }
   | { kind: "stage-end"; index: number; ms: number }
-  | { kind: "done"; totalMs: number };
+  | { kind: "done"; totalMs: number; knownCount: number; unknownCount: number };
+
+// The real lexicon. Resolved lazily from `site/src/data/skills.json` at
+// first parse, then cached. Lets the playground tag each stage as a
+// genuine verb (`known: true`) or a typo / future verb (`known: false`).
+let LEXICON: Set<string> | null = null;
+export function setLexicon(words: string[]): void {
+  LEXICON = new Set(words.flatMap((w) => [w.toLowerCase(), w.toLowerCase().replace(/^ll-/, "")]));
+}
+function isKnown(verb: string): boolean {
+  if (!LEXICON) return true; // unknown lexicon state — don't false-positive flag
+  const v = verb.trim().toLowerCase().replace(/^\/+/, "");
+  if (LEXICON.has(v)) return true;
+  // accept the first word too: "ghost \"post\"" → check "ghost"
+  const head = v.split(/\s+/)[0];
+  return LEXICON.has(head);
+}
 
 const VERBS: Record<string, (args: string[]) => string[]> = {
   "persona generate":   () => ["drafted 3 personas: SRE-lead, indie-hacker, security-architect"],
@@ -77,11 +94,22 @@ export function parse(expr: string): Stage[] {
 
 export function* simulate(expr: string): Generator<Trace> {
   const stages = parse(expr);
-  yield { kind: "parsed", stageCount: stages.length };
+  let known = 0;
+  let unknown = 0;
+  for (const s of stages) (isKnown(s.verb) ? known++ : unknown++);
+  yield { kind: "parsed", stageCount: stages.length, knownCount: known, unknownCount: unknown };
   let total = 0;
   for (let i = 0; i < stages.length; i++) {
     const s = stages[i];
-    yield { kind: "stage-start", index: i, stage: s };
+    const stageKnown = isKnown(s.verb);
+    yield { kind: "stage-start", index: i, stage: s, known: stageKnown };
+    if (!stageKnown) {
+      yield {
+        kind: "stage-warn",
+        index: i,
+        text: `verb "/${s.verb}" not in current lexicon (285+ entries). Typo? Or extend luna-agents with a new command.`,
+      };
+    }
     const handler = VERBS[s.verb];
     const lines = handler ? handler(s.args) : FALLBACK(s.verb);
     for (const ln of lines) yield { kind: "stage-line", index: i, text: ln };
@@ -98,7 +126,16 @@ export function* simulate(expr: string): Generator<Trace> {
     total += ms;
     yield { kind: "stage-end", index: i, ms };
   }
-  yield { kind: "done", totalMs: total };
+  yield { kind: "done", totalMs: total, knownCount: known, unknownCount: unknown };
+}
+
+// Build the exact shell command that would run this pipe for real after
+// `npm install -g luna-agents`. Quoted to be paste-safe.
+export function shellCommand(expr: string): string {
+  const cleaned = expr.replace(/^\/+/, "").trim();
+  // Escape any double quotes for shell safety.
+  const safe = cleaned.replace(/"/g, '\\"');
+  return `luna pipe "${safe}"`;
 }
 
 // Render a parsed pipe as an ASCII tree. Linear stages chain top to bottom;

@@ -1,5 +1,6 @@
 ---
 import PipeBlock from "../PipeBlock.astro";
+import LiveStars from "./LiveStars.astro";
 
 interface Props { skillCount: number; categoryCount: number; }
 const { skillCount, categoryCount } = Astro.props;
@@ -24,6 +25,7 @@ const { skillCount, categoryCount } = Astro.props;
       <div><dt>Runtime</dt><dd>Node ≥ 18, Claude Code</dd></div>
       <div><dt>License</dt><dd>MIT</dd></div>
     </dl>
+    <LiveStars />
   </div>
 
   <PipeBlock

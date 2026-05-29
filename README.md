@@ -6,7 +6,7 @@
 </p>
 
 <p align="center">
-  <strong>45 specialized AI agents · 334 slash commands for every stage of your software development lifecycle.</strong>
+  <strong>45 specialized AI agents · 336 slash commands for every stage of your software development lifecycle.</strong>
   <br>
   One CLI. One API. From requirements to production.
 </p>
@@ -29,14 +29,14 @@ npm install -g luna-agents
 luna-setup
 ```
 
-Then in Claude Code, any of **334 slash commands** work:
+Then in Claude Code, any of **336 slash commands** work:
 
 ```
 /luna-agents:plan       # Break a feature into tasks
 /luna-agents:go         # Implement next task
 /luna-agents:test       # Run tests
 /luna-agents:ship       # Deploy
-/luna-agents:cmds       # See all 334 commands
+/luna-agents:cmds       # See all 336 commands
 ```
 
 That's it. The plugin reads your codebase, routes work to specialized AI agents, and streams results back.
@@ -100,9 +100,9 @@ luna agents list
 luna rag search "How does authentication work?"
 ```
 
-### Claude Code Commands (334)
+### Claude Code Commands (336)
 
-Luna Agents includes 334 slash commands for Claude Code. Type `/cmds` to see all.
+Luna Agents includes 336 slash commands for Claude Code. Type `/cmds` to see all.
 
 #### Dev Workflow (sequential)
 
@@ -391,7 +391,7 @@ MIT © [Shachar Solomon](https://github.com/shacharsol)
 
 <!-- LUNA:COUNTERS-START -->
 <!-- counters: command/agent/skill totals are updated by sync-readme.mjs -->
-- **Commands:** 334
+- **Commands:** 336
 - **Agents:** 45
 - **Skills:** 0
 <!-- LUNA:COUNTERS-END -->
@@ -435,6 +435,7 @@ MIT © [Shachar Solomon](https://github.com/shacharsol)
 | `/luna-agents:context-pack` | Shortcut: Precision context delivery -> /ll-context-pack |
 | `/luna-agents:curb` | Shortcut: Turn your marketing into Curb Your Enthusiasm-style content -> /ll-curb |
 | `/luna-agents:cve-doctor` | Shortcut: Defensive CVE scanner — host + lockfiles + k8s nodes, cross-referenced against NVD/OSV/GHA -> /ll-cve-doctor |
+| `/luna-agents:cve-triage` | Shortcut: Defense-only disclosure-triage. Advisory in, upgrade tickets + PRs out across repo / monorepo / GitHub org -> /ll-cve-triage |
 | `/luna-agents:des` | Project or feature scope |
 | `/luna-agents:desktop-tauri` | Shortcut: Tauri 2.0 + shadcn desktop scaffold with Apple HIG compliance -> /ll-desktop-tauri |
 | `/luna-agents:devto` | Shortcut: Write & publish Dev.to articles with comedy styles (Curb, Seinfeld, Office, Silicon Valley) -> /ll-devto-publish |
@@ -518,6 +519,7 @@ MIT © [Shachar Solomon](https://github.com/shacharsol)
 | `/luna-agents:ll-context-pack` | Maximum token budget for the context package |
 | `/luna-agents:ll-curb` | Intensity: mild (witty), medium (sarcastic), hot (Larry David at his worst) |
 | `/luna-agents:ll-cve-doctor` | If "true", open a PR with `SECURITY.md` entries + upgrade plans. |
+| `/luna-agents:ll-cve-triage` | Skip if advisory severity is below this. critical \| high \| medium. Default - high. |
 | `/luna-agents:ll-debug` | Project or feature scope |
 | `/luna-agents:ll-deploy` | Project or feature scope for deployment |
 | `/luna-agents:ll-deps` | Project or feature scope |

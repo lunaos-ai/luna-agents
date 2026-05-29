@@ -1,6 +1,16 @@
 ---
 import Book from "../layouts/Book.astro";
 import ChapterOpener from "../components/ChapterOpener.astro";
+import skillsData from "../data/skills.json";
+
+// Real lexicon — every verb shipped in the npm package. The playground
+// uses this to flag typos and warn before "execution".
+const lexicon = Object.values(skillsData.byCategory)
+  .flat()
+  .map((s: any) => String(s.word).toLowerCase())
+  .filter(Boolean);
+const lexiconJson = JSON.stringify(lexicon);
+const lexiconSize = lexicon.length;
 
 const samples: { title: string; expr: string; note: string }[] = [
   { title: "Launch post fan-out",
@@ -29,7 +39,7 @@ const samples: { title: string; expr: string; note: string }[] = [
   <ChapterOpener
     num="05"
     word="Playground"
-    subtitle={`Type a pipe; watch each stage. v1 is simulated, deterministic outputs for ${"~"}10 popular verbs. No LLM calls, no keys, no rate limits. Real execution arrives behind a toggle once a provider is wired.`}
+    subtitle={`Type a pipe; watch each stage. Validated live against the real ${lexiconSize}-verb lexicon — typos are flagged before execution. Execution itself is simulated; install luna-agents to run for real.`}
   />
 
   <section class="wrap">
@@ -50,6 +60,18 @@ const samples: { title: string; expr: string; note: string }[] = [
       <output id="pg-tree" class="pg-tree" data-label="Execution tree" aria-label="Parsed execution tree"></output>
       <output id="pg-trace" class="pg-trace" data-label="Stage trace" role="log" aria-live="polite"></output>
     </div>
+    <div class="pg-shell" id="pg-shell" hidden>
+      <p class="pg-shell-label">Run this for real:</p>
+      <div class="pg-shell-row">
+        <code id="pg-shell-cmd"></code>
+        <button type="button" id="pg-shell-copy" class="pg-shell-copy">copy</button>
+      </div>
+      <p class="pg-shell-hint">
+        Requires <a href="/install"><code>npm install -g luna-agents</code></a>.
+        The playground simulates the trace; the binary runs the verbs.
+      </p>
+    </div>
+    <script type="application/json" id="pg-lexicon" set:html={lexiconJson}></script>
   </section>
 
   <section class="wrap samples">
@@ -135,6 +157,56 @@ const samples: { title: string; expr: string; note: string }[] = [
     font-size: var(--step--1);
   }
   .pg-trace { white-space: pre-wrap; }
+  .pg-trace .warn { color: #b8541a; }
+  .pg-shell {
+    margin-top: var(--t-3);
+    padding: var(--t-2) var(--t-3);
+    background: var(--paper-deep);
+    border: 1px solid var(--rule);
+    border-radius: 2px;
+  }
+  .pg-shell-label {
+    margin: 0 0 0.4rem;
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+  .pg-shell-row {
+    display: flex;
+    align-items: center;
+    gap: var(--t-2);
+    flex-wrap: wrap;
+  }
+  #pg-shell-cmd {
+    font-family: var(--font-mono);
+    font-size: var(--step-0);
+    color: var(--ink);
+    background: transparent;
+    border: 0;
+    padding: 0;
+    overflow-x: auto;
+    flex: 1;
+    min-width: 0;
+    white-space: pre;
+  }
+  .pg-shell-copy {
+    background: var(--ink);
+    color: var(--paper);
+    border: 0;
+    padding: 0.3rem 0.8rem;
+    border-radius: 2px;
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    cursor: pointer;
+  }
+  .pg-shell-copy.copied { background: var(--saffron-deep); }
+  .pg-shell-hint {
+    margin: var(--t-1) 0 0;
+    font-size: var(--step--1);
+    color: var(--muted);
+  }
   .samples { padding-top: var(--t-6); padding-bottom: var(--t-8); }
   .samples-title {
     font-family: var(--font-display);
@@ -179,37 +251,63 @@ const samples: { title: string; expr: string; note: string }[] = [
 </style>
 
 <script>
-  import { simulate, renderTree } from "../lib/pipe-sim";
+  import { simulate, renderTree, shellCommand, setLexicon } from "../lib/pipe-sim";
+
+  const lexEl = document.getElementById("pg-lexicon");
+  if (lexEl?.textContent) {
+    try { setLexicon(JSON.parse(lexEl.textContent)); } catch {}
+  }
 
   const form = document.getElementById("pg-form") as HTMLFormElement;
   const input = document.getElementById("pg-input") as HTMLInputElement;
   const trace = document.getElementById("pg-trace") as HTMLElement;
   const tree = document.getElementById("pg-tree") as HTMLElement;
+  const shellBox = document.getElementById("pg-shell") as HTMLElement;
+  const shellCmd = document.getElementById("pg-shell-cmd") as HTMLElement;
+  const shellCopy = document.getElementById("pg-shell-copy") as HTMLButtonElement;
 
   const reduced = () => window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
-  async function append(line: string) {
-    trace.textContent = (trace.textContent ?? "") + line + "\n";
+  function appendNode(line: string, klass?: string) {
+    const div = document.createElement("div");
+    if (klass) div.className = klass;
+    div.textContent = line;
+    trace.appendChild(div);
+  }
+
+  async function append(line: string, klass?: string) {
+    appendNode(line, klass);
     if (!reduced()) await sleep(40);
   }
 
   async function run(expr: string) {
     trace.textContent = "";
     tree.textContent = renderTree(expr);
+    shellCmd.textContent = shellCommand(expr);
+    shellBox.hidden = false;
     for (const ev of simulate(expr)) {
       if (ev.kind === "parsed") {
-        await append(`parsed: ${ev.stageCount} stage${ev.stageCount === 1 ? "" : "s"}`);
+        const k = ev.knownCount, u = ev.unknownCount;
+        const note = u > 0 ? `, ${k} known + ${u} unknown verb${u === 1 ? "" : "s"}` : "";
+        await append(`parsed: ${ev.stageCount} stage${ev.stageCount === 1 ? "" : "s"}${note}`);
       } else if (ev.kind === "stage-start") {
         const tag = `[${String(ev.index + 1).padStart(2, "0")}]`;
         const argTxt = ev.stage.args.length ? " " + ev.stage.args.map((a) => `"${a}"`).join(" ") : "";
-        await append(`${tag} ${ev.stage.verb}${argTxt}`);
+        const marker = ev.known ? "" : " ⚠";
+        await append(`${tag} ${ev.stage.verb}${argTxt}${marker}`);
+      } else if (ev.kind === "stage-warn") {
+        await append(`     ⚠ ${ev.text}`, "warn");
       } else if (ev.kind === "stage-line") {
         await append(`     ${ev.text}`);
       } else if (ev.kind === "stage-end") {
         await append(`     ok (${ev.ms}ms)`);
       } else if (ev.kind === "done") {
-        await append(`done in ${ev.totalMs}ms. simulated; install luna-agents to run for real.`);
+        const u = ev.unknownCount;
+        const tail = u > 0
+          ? ` (${u} unknown verb${u === 1 ? "" : "s"} would error at runtime)`
+          : "";
+        await append(`done in ${ev.totalMs}ms. simulated${tail}. install luna-agents to run for real.`);
       }
     }
   }
@@ -218,6 +316,20 @@ const samples: { title: string; expr: string; note: string }[] = [
     e.preventDefault();
     const expr = input.value.trim();
     if (expr) run(expr);
+  });
+
+  shellCopy.addEventListener("click", async () => {
+    try {
+      await navigator.clipboard.writeText(shellCmd.textContent ?? "");
+      shellCopy.classList.add("copied");
+      shellCopy.textContent = "copied";
+      setTimeout(() => {
+        shellCopy.classList.remove("copied");
+        shellCopy.textContent = "copy";
+      }, 1500);
+    } catch {
+      // clipboard denied — silent
+    }
   });
 
   for (const btn of document.querySelectorAll<HTMLButtonElement>(".sample")) {

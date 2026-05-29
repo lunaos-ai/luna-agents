@@ -1,0 +1,100 @@
+---
+// Live GitHub star count. Client-side fetch (cached 10 min in sessionStorage)
+// with graceful degradation when the API rate-limits or fails.
+const repo = "lunaos-ai/luna-agents";
+---
+
+<aside class="stars" data-repo={repo} aria-label="GitHub stars">
+  <a href={`https://github.com/${repo}`} class="stars-link" target="_blank" rel="noopener">
+    <span class="ghost" aria-hidden="true">★</span>
+    <span class="count" id="ghstars-count">—</span>
+    <span class="label">stars on GitHub</span>
+  </a>
+  <a href={`https://github.com/${repo}`} class="cta" target="_blank" rel="noopener">
+    Star the repo →
+  </a>
+</aside>
+
+<script>
+  (async () => {
+    const el = document.querySelector<HTMLElement>(".stars");
+    const out = document.getElementById("ghstars-count");
+    if (!el || !out) return;
+    const repo = el.dataset.repo;
+    if (!repo) return;
+
+    const CACHE_KEY = `ghstars:${repo}`;
+    const CACHE_TTL_MS = 10 * 60 * 1000;
+
+    const cached = (() => {
+      try {
+        const raw = sessionStorage.getItem(CACHE_KEY);
+        if (!raw) return null;
+        const { v, t } = JSON.parse(raw);
+        if (Date.now() - t > CACHE_TTL_MS) return null;
+        return v as number;
+      } catch { return null; }
+    })();
+
+    if (cached !== null) {
+      out.textContent = cached.toLocaleString();
+      return;
+    }
+
+    try {
+      const res = await fetch(`https://api.github.com/repos/${repo}`, {
+        headers: { Accept: "application/vnd.github+json" },
+      });
+      if (!res.ok) throw new Error(`status ${res.status}`);
+      const data = await res.json();
+      const n = typeof data.stargazers_count === "number" ? data.stargazers_count : null;
+      if (n === null) throw new Error("no stargazers_count");
+      out.textContent = n.toLocaleString();
+      try { sessionStorage.setItem(CACHE_KEY, JSON.stringify({ v: n, t: Date.now() })); } catch {}
+    } catch (err) {
+      out.textContent = "—";
+      out.setAttribute("title", "GitHub rate-limited; click through to see the live count.");
+    }
+  })();
+</script>
+
+<style>
+  .stars {
+    display: flex;
+    align-items: center;
+    gap: var(--t-3);
+    flex-wrap: wrap;
+    padding: var(--t-2) var(--t-3);
+    border: 1px solid var(--rule);
+    border-radius: 999px;
+    background: var(--paper);
+    width: fit-content;
+    margin: var(--t-3) 0 0;
+  }
+  .stars-link {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.5ch;
+    text-decoration: none;
+    color: var(--ink);
+    font-family: var(--font-mono);
+  }
+  .ghost { color: var(--saffron-deep); font-size: var(--step-1); }
+  .count {
+    font-family: var(--font-mono);
+    font-size: var(--step-1);
+    color: var(--ink);
+    font-weight: 500;
+    font-variant-numeric: tabular-nums;
+  }
+  .label { font-size: var(--step--1); color: var(--muted); }
+  .cta {
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    color: var(--saffron-deep);
+    text-decoration: none;
+    border-left: 1px solid var(--rule);
+    padding-left: var(--t-3);
+  }
+  .cta:hover { color: var(--ink); }
+</style>
