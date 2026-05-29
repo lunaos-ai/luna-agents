@@ -1,0 +1,224 @@
+---
+import Book from "../layouts/Book.astro";
+
+const rows = [
+  {
+    product: "Cursor",
+    model: "AI pair programmer",
+    surface: "IDE",
+    composition: "implicit (chat)",
+    open: "no",
+    use: "Write code, fast.",
+  },
+  {
+    product: "Claude Code",
+    model: "AI terminal operator",
+    surface: "CLI + IDE",
+    composition: "slash commands",
+    open: "no (CLI)",
+    use: "Edit a repo conversationally.",
+  },
+  {
+    product: "LangGraph",
+    model: "Agent workflow engine",
+    surface: "Python lib",
+    composition: "graph DSL",
+    open: "yes",
+    use: "Build a custom agent app.",
+  },
+  {
+    product: "CrewAI",
+    model: "Multi-agent orchestration",
+    surface: "Python lib",
+    composition: "role/task config",
+    open: "yes",
+    use: "Coordinate roles + tasks.",
+  },
+  {
+    product: "n8n / Zapier",
+    model: "Visual automation",
+    surface: "Web UI",
+    composition: "drag-drop graph",
+    open: "n8n yes, Zapier no",
+    use: "Connect SaaS apps, no code.",
+  },
+  {
+    product: "Luna Pipes",
+    model: "AI shell language",
+    surface: "CLI + Claude Code + CI",
+    composition: "pipe operator (>>)",
+    open: "yes (MIT)",
+    use: "Run engineering workflows, one line at a time.",
+    self: true,
+  },
+];
+---
+
+<Book
+  title="vs."
+  chapter="vs"
+  description="How Luna Pipes differs from Cursor, Claude Code, LangGraph, CrewAI, n8n. Different problem, different shape."
+>
+  <section class="wrap">
+    <p class="kicker">Chapter 10 · vs.</p>
+    <h1>Cursor helps you write code.<br/><em>Luna helps you run engineering workflows.</em></h1>
+    <p class="lede">
+      Different problem. Different shape. Luna doesn't compete with the
+      editor; it composes with it. Compare on substance, not adjectives.
+    </p>
+
+    <h2>The category map.</h2>
+    <p>
+      Most tools fit cleanly into one of five categories. Luna sits in
+      a sixth: <strong>AI shell language</strong>. Adjacent to all of
+      them, replacement for none.
+    </p>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Product</th>
+            <th>Mental model</th>
+            <th>Surface</th>
+            <th>Composition</th>
+            <th>Open source</th>
+            <th>Use it for</th>
+          </tr>
+        </thead>
+        <tbody>
+          {rows.map((r) => (
+            <tr class={r.self ? "self" : ""}>
+              <td><strong>{r.product}</strong></td>
+              <td>{r.model}</td>
+              <td>{r.surface}</td>
+              <td>{r.composition}</td>
+              <td>{r.open}</td>
+              <td>{r.use}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Specific comparisons.</h2>
+
+    <h3>vs. Cursor</h3>
+    <p>
+      Cursor is a code editor with AI inside it. Luna is a shell for
+      composing AI workflows. They share zero overlap by design. Use
+      Cursor to <em>write</em>; pipe through Luna to <em>review, test,
+      audit, ship</em>. You can keep both.
+    </p>
+
+    <h3>vs. Claude Code</h3>
+    <p>
+      Luna ships <em>as a Claude Code plugin</em>. We don't compete; we
+      extend. Claude Code is the runtime; Luna is the verb set. The
+      pipe operator is what's new.
+    </p>
+
+    <h3>vs. LangGraph / CrewAI</h3>
+    <p>
+      Frameworks ask you to write Python that constructs a graph. Luna
+      asks you to write one line in your shell. If you're building a
+      bespoke agent product, use LangGraph. If you're trying to ship
+      <em>your own</em> features faster, use Luna.
+    </p>
+
+    <h3>vs. n8n / Zapier</h3>
+    <p>
+      Visual graphs are great for non-coders gluing SaaS. Luna is for
+      engineers who already live in the shell. The pipe expression is
+      version-controllable, diffable, greppable — the graph is not.
+    </p>
+
+    <h2>When Luna is the wrong choice.</h2>
+    <ul>
+      <li>You're a non-coder. Use n8n or Zapier.</li>
+      <li>You're building a customer-facing agent product. Use LangGraph or the Anthropic SDK directly.</li>
+      <li>You don't use Claude Code or a Unix-style terminal. The pipe metaphor is the value; without it you're paying tax for no benefit.</li>
+    </ul>
+
+    <h2>Where to start.</h2>
+    <ul class="next">
+      <li><a href="/">Frontispiece</a> — the recipes, the starter ten.</li>
+      <li><a href="/showcase">Showcase</a> — the four hero commands.</li>
+      <li><a href="/install">Install</a> — 30 seconds, idempotent.</li>
+      <li><a href="/play">Playground</a> — try a pipe in your browser, no install.</li>
+    </ul>
+  </section>
+</Book>
+
+<style>
+  section { padding: var(--t-6) 0 var(--t-12); }
+  .kicker {
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 0 0 var(--t-3);
+  }
+  h1 {
+    font-size: clamp(2.5rem, 7vw, 5rem);
+    line-height: 1;
+    margin: 0 0 var(--t-3);
+  }
+  h1 em { color: var(--saffron-deep); }
+  .lede {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: var(--step-2);
+    color: var(--muted);
+    max-width: 60ch;
+    line-height: 1.3;
+    margin: 0 0 var(--t-4);
+  }
+  .table-wrap {
+    overflow-x: auto;
+    margin: var(--t-3) 0 var(--t-6);
+    border: 1px solid var(--rule);
+    border-radius: 2px;
+  }
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    background: var(--paper);
+  }
+  th, td {
+    text-align: left;
+    padding: var(--t-2);
+    border-bottom: 1px solid var(--rule);
+    vertical-align: top;
+  }
+  thead th {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-weight: 400;
+    font-size: var(--step-0);
+    color: var(--muted);
+    background: var(--paper-deep);
+  }
+  tbody tr.self {
+    background: oklch(0.96 0.02 78);
+    border-left: 3px solid var(--saffron-deep);
+  }
+  tbody tr.self td:first-child strong { color: var(--saffron-deep); }
+  .next {
+    list-style: none;
+    padding: 0;
+    border-top: 1px solid var(--rule);
+    max-width: var(--measure-wide);
+  }
+  .next li {
+    padding: var(--t-2) 0;
+    border-bottom: 1px solid var(--rule);
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    margin: 0;
+  }
+  .next a { text-decoration-color: var(--saffron-deep); }
+</style>

@@ -1,0 +1,241 @@
+---
+const recipes = [
+  {
+    title: "Security audit",
+    outcome: "Vulnerabilities surfaced, fixes drafted, PR opened.",
+    pipe: `luna pipe "sec >> ll-no-bluf >> pr 'security: harden auth'"`,
+    output: [
+      "scan:   12 findings (4 critical, 3 high, 5 medium)",
+      "fixes:  drafted for 9, manual review needed for 3",
+      "audit:  all claims verified against code",
+      "PR:     #128 opened",
+    ],
+    tag: "5 min",
+  },
+  {
+    title: "Code review",
+    outcome: "Every changed file reviewed, comments inline, no LGTM bluffs.",
+    pipe: `luna pipe "rev >> ll-no-bluf --mode report-only"`,
+    output: [
+      "reviewed: 34 files, 1,204 lines",
+      "comments: 17 actionable, 0 nit-picks suppressed",
+      "bluffs:   0 (every recommendation cites a file:line)",
+    ],
+    tag: "3 min",
+  },
+  {
+    title: "Deploy to Cloudflare",
+    outcome: "Built, tested, gated, shipped to the edge.",
+    pipe: `luna pipe "test >> zen >> ship cloudflare --project luna-agent"`,
+    output: [
+      "test:   412/412 pass",
+      "zen:    8/8 gates green (a11y, perf, sec, hig…)",
+      "ship:   deployed to luna-agent.pages.dev, custom domain live",
+    ],
+    tag: "8 min",
+  },
+  {
+    title: "Generate documentation",
+    outcome: "Real docs from real code. Synced to README + Notion.",
+    pipe: `luna pipe "docs >> ll-readme-sync >> publish notion"`,
+    output: [
+      "docs:   72 functions, 12 modules documented",
+      "README: counters + command index regenerated",
+      "notion: page created at /docs/v2",
+    ],
+    tag: "4 min",
+  },
+  {
+    title: "Fix failing tests",
+    outcome: "Tests run, failures diagnosed, fixes applied, re-run until green.",
+    pipe: `luna pipe "heal --target tests"`,
+    output: [
+      "iter 1: 7 failures",
+      "iter 2: 2 failures (5 fixed)",
+      "iter 3: 0 failures (green)",
+      "elapsed: 11m04s",
+    ],
+    tag: "11 min",
+  },
+  {
+    title: "Release notes",
+    outcome: "Notes from git history, audited, published to GitHub + Notion.",
+    pipe: `luna pipe "ghost 'release notes' >> ll-no-bluf --mode auto-fix >> pr release"`,
+    output: [
+      "draft:    900-word notes from 23 commits",
+      "audit:    4 bluffs auto-rewritten with source",
+      "release:  v2.1.0 published",
+    ],
+    tag: "6 min",
+  },
+];
+---
+
+<section class="recipes wrap">
+  <p class="kicker">Recipes · One line, one outcome.</p>
+  <h2>What can I actually ship in 5 minutes?</h2>
+  <p class="lede">
+    Forget the lexicon. Here are six pipes that solve real engineering
+    problems. Copy, paste, ship. The grammar comes later.
+  </p>
+
+  <div class="grid">
+    {recipes.map((r) => (
+      <article class="recipe">
+        <header>
+          <h3>{r.title}</h3>
+          <span class="tag">{r.tag}</span>
+        </header>
+        <p class="outcome">{r.outcome}</p>
+        <pre class="code"><code>{r.pipe}</code></pre>
+        <details>
+          <summary>Sample output</summary>
+          <pre class="out">{r.output.join("\n")}</pre>
+        </details>
+      </article>
+    ))}
+  </div>
+
+  <p class="disclaimer">
+    Sample output is illustrative; real output varies by codebase. The
+    pipe expressions are real and runnable today after
+    <a href="/install">install</a>.
+  </p>
+
+  <p class="cta">
+    More recipes in the <a href="/lexicon">lexicon</a>. Try one now in
+    the <a href="/play">in-browser playground</a> — no install needed.
+  </p>
+</section>
+
+<style>
+  .recipes {
+    padding-top: var(--t-8);
+    padding-bottom: var(--t-12);
+    border-top: 1px solid var(--rule);
+  }
+  .kicker {
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 0 0 var(--t-3);
+  }
+  h2 {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: clamp(2.2rem, 5vw, 3.8rem);
+    line-height: 1;
+    letter-spacing: -0.015em;
+    margin: 0 0 var(--t-3);
+    text-wrap: balance;
+  }
+  .lede {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: var(--step-2);
+    color: var(--muted);
+    line-height: 1.3;
+    max-width: 60ch;
+    margin: 0 0 var(--t-4);
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: var(--t-3);
+    margin: var(--t-3) 0 var(--t-4);
+  }
+  .recipe {
+    border: 1px solid var(--rule);
+    padding: var(--t-3);
+    background: var(--paper);
+    display: grid;
+    gap: var(--t-2);
+    border-radius: 2px;
+  }
+  .recipe header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--t-2);
+  }
+  .recipe h3 {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: var(--step-2);
+    margin: 0;
+    line-height: 1.15;
+    color: var(--ink);
+  }
+  .tag {
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    color: var(--saffron-deep);
+    background: var(--paper-deep);
+    border: 1px solid var(--rule);
+    padding: 0.1rem 0.5rem;
+    border-radius: 999px;
+    white-space: nowrap;
+  }
+  .outcome {
+    margin: 0;
+    color: var(--ink);
+    font-size: var(--step-0);
+    line-height: 1.45;
+  }
+  .code {
+    margin: 0;
+    background: #1a1612;
+    color: #f0ece4;
+    border-radius: 3px;
+    padding: 0.75rem 1rem;
+    overflow-x: auto;
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    line-height: 1.5;
+  }
+  .code code {
+    background: transparent !important;
+    border: 0 !important;
+    padding: 0 !important;
+    color: inherit;
+    font-family: inherit;
+  }
+  details summary {
+    cursor: pointer;
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    user-select: none;
+  }
+  details summary:hover { color: var(--saffron-deep); }
+  pre.out {
+    margin: var(--t-1) 0 0;
+    background: var(--paper-deep);
+    border: 1px solid var(--rule);
+    padding: 0.6rem 0.9rem;
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    color: var(--muted);
+    line-height: 1.55;
+    overflow-x: auto;
+    border-radius: 2px;
+  }
+  .disclaimer {
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    color: var(--muted);
+    max-width: var(--measure-wide);
+    margin: var(--t-3) 0;
+  }
+  .cta {
+    font-family: var(--font-mono);
+    font-size: var(--step-0);
+    color: var(--muted);
+    margin: var(--t-3) 0 0;
+  }
+  .cta a { text-decoration-color: var(--saffron-deep); }
+</style>
