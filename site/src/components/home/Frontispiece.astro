@@ -38,6 +38,11 @@ const { skillCount, categoryCount } = Astro.props;
       'ok. composed in 14ms.',
     ]}
   />
+  <div class="cta-row">
+    <a class="cta-primary" href="/play">Try a pipe in your browser →</a>
+    <a class="cta-secondary" href="/install">Install in 30s</a>
+    <a class="cta-tertiary" href="/vs">vs. Cursor / LangGraph / n8n</a>
+  </div>
 </section>
 
 <style>
@@ -97,4 +102,37 @@ const { skillCount, categoryCount } = Astro.props;
     margin-bottom: var(--t-1);
   }
   .masthead-meta dd { margin: 0; font-family: var(--font-mono); font-size: var(--step-0); }
+  .cta-row {
+    display: flex;
+    gap: var(--t-2);
+    flex-wrap: wrap;
+    align-items: baseline;
+    margin-top: var(--t-4);
+  }
+  .cta-primary, .cta-secondary, .cta-tertiary {
+    font-family: var(--font-mono);
+    font-size: var(--step-0);
+    padding: var(--t-1) var(--t-3);
+    border-radius: 999px;
+    text-decoration: none;
+    border: 1.5px solid var(--ink);
+    transition: transform 200ms var(--ease), background 200ms var(--ease), color 200ms var(--ease);
+  }
+  .cta-primary {
+    background: var(--ink);
+    color: var(--paper);
+  }
+  .cta-primary:hover { transform: translateY(-2px); background: var(--saffron-deep); border-color: var(--saffron-deep); }
+  .cta-secondary {
+    background: var(--saffron);
+    color: var(--saffron-on);
+    border-color: var(--saffron-deep);
+  }
+  .cta-secondary:hover { transform: translateY(-2px); }
+  .cta-tertiary {
+    background: transparent;
+    color: var(--ink);
+    border-color: var(--rule);
+  }
+  .cta-tertiary:hover { transform: translateY(-2px); border-color: var(--ink); }
 </style>

@@ -1,6 +1,9 @@
 ---
 import Book from "../layouts/Book.astro";
 import Frontispiece from "../components/home/Frontispiece.astro";
+import Recipes from "../components/home/Recipes.astro";
+import StarterTen from "../components/home/StarterTen.astro";
+import PipeInShell from "../components/home/PipeInShell.astro";
 import Motivation from "../components/home/Motivation.astro";
 import WhyNotYAML from "../components/home/WhyNotYAML.astro";
 import IntegrationsRow from "../components/home/IntegrationsRow.astro";
@@ -15,6 +18,9 @@ const categoryCount = Object.keys(data.byCategory).filter((c) => c !== "shortcut
 
 <Book title="Frontispiece" chapter="frontispiece">
   <Frontispiece skillCount={skillCount} categoryCount={categoryCount} />
+  <Recipes />
+  <StarterTen />
+  <PipeInShell />
   <Motivation />
   <WhyNotYAML />
   <IntegrationsRow />

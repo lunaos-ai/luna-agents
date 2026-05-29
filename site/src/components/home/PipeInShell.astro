@@ -1,0 +1,253 @@
+---
+import PipeBlock from "../PipeBlock.astro";
+
+const examples = [
+  {
+    label: "Ship a feature, end-to-end.",
+    why:
+      "One line does the whole sprint: read the codebase, propose tasks, implement them, audit your own claims, open the PR. No context switching.",
+    code: `luna pipe "req >> plan >> go >> ll-no-bluf >> pr 'feat: auth'"`,
+    output: [
+      "composed: 5 stages",
+      "  [01] req       → 12 requirements extracted from src/auth/*",
+      "  [02] plan      → 8 ordered tasks (deps resolved)",
+      "  [03] go        → 6 files written, 2 modified",
+      "  [04] ll-no-bluf → 0 unverified claims in commits",
+      "  [05] pr        → PR #142 opened: feat: auth",
+      "ok. 14m21s wall clock. 1 PR, 1 human.",
+    ],
+  },
+  {
+    label: "Write content, audit it, publish it.",
+    why:
+      "Content lies more than code. The pipe forces every claim through a verifier before it ships. Marketing without the bluffing.",
+    code: `luna pipe "ghost 'launch post' >> ll-no-bluf --mode auto-fix >> publish notion"`,
+    output: [
+      "composed: 3 stages",
+      "  [01] ghost    → 1200-word draft",
+      "  [02] ll-no-bluf → 4 bluffs auto-fixed, 1 metric rewritten with source",
+      "  [03] publish  → notion page created, slug: /launch/v2",
+      "ok.",
+    ],
+  },
+  {
+    label: "Self-healing build.",
+    why:
+      "Hand the build to the agents. They test, screenshot, detect, fix — on loop — until everything's green. You come back to a passing CI.",
+    code: `luna pipe "swarm >> heal >> zen >> ship cloudflare"`,
+    output: [
+      "composed: 4 stages",
+      "  [01] swarm    → 7 worktrees racing on bugfix-42",
+      "  [02] heal     → 4 loops, tests pass, screenshots match",
+      "  [03] zen      → 8/8 gates green (a11y, perf, sec, …)",
+      "  [04] ship     → cloudflare pages deploy → live",
+      "ok. shipped in 23m. 0 humans on the keyboard after :00.",
+    ],
+  },
+];
+---
+
+<section class="pipe-shell wrap">
+  <p class="kicker">In the shell · Or in Claude Code · Same grammar.</p>
+  <h2>One pipe. One line. A week of glue.</h2>
+  <p class="lede">
+    The pipe operator <code>&gt;&gt;</code> composes verbs the way Unix
+    pipes composed software. Each verb is one job; the runtime threads
+    output to input. Type it in your terminal, paste it into Claude
+    Code, run it from CI — same grammar everywhere.
+  </p>
+
+  <div class="grid">
+    {examples.map((ex, i) => (
+      <article class="ex">
+        <header>
+          <span class="num">{String(i + 1).padStart(2, "0")}</span>
+          <h3>{ex.label}</h3>
+        </header>
+        <PipeBlock code={ex.code} output={ex.output} />
+        <p class="why">{ex.why}</p>
+      </article>
+    ))}
+  </div>
+
+  <h2 class="sub">Two surfaces, one language.</h2>
+  <div class="surfaces">
+    <article class="surface">
+      <h3>In your terminal</h3>
+      <PipeBlock
+        caption="Bash / zsh / fish."
+        code={`luna pipe "ll-no-bluf >> ll-readme-sync >> pr 'docs: honest'"`}
+        output={[
+          "ok. composed 3 stages, ran in 4m12s, 1 PR.",
+        ]}
+      />
+      <p>
+        The <code>luna</code> binary is on your PATH after
+        <code>npm install -g luna-agents &amp;&amp; luna-setup</code>.
+        Quote the pipe; the parser is whitespace-tolerant.
+      </p>
+    </article>
+
+    <article class="surface">
+      <h3>In Claude Code</h3>
+      <PipeBlock
+        caption="Inside any session."
+        code={`/luna-agents:pipe ll-no-bluf >> ll-readme-sync >> pr "docs: honest"`}
+        output={[
+          "same parser. same runtime. results stream into the chat.",
+        ]}
+      />
+      <p>
+        The <code>/luna-agents:pipe</code> command takes the same pipe
+        expression. Quoting rules match POSIX shell. Stages stream their
+        output back as the run progresses.
+      </p>
+    </article>
+  </div>
+
+  <h2 class="sub">The power, in three lines.</h2>
+  <ul class="power">
+    <li>
+      <strong>Composable.</strong> Every verb is the same shape: takes a
+      thing, returns a thing. So any two verbs compose. {285} verbs ×
+      {285} verbs = {285 * 285} two-stage pipelines you didn't have to
+      design.
+    </li>
+    <li>
+      <strong>Honest.</strong> Pipe in <code>/ll-no-bluf</code> and
+      every claim downstream is verified against the code. The runtime
+      refuses to ship lies.
+    </li>
+    <li>
+      <strong>Portable.</strong> Same pipe runs in your shell, in
+      Claude Code, in CI. No re-syntax, no glue script. The pipe IS
+      the glue.
+    </li>
+  </ul>
+
+  <p class="cta">
+    Read the <a href="/grammar">grammar</a>, browse the
+    <a href="/lexicon">lexicon</a>, or jump straight to the
+    <a href="/install">install</a>.
+  </p>
+</section>
+
+<style>
+  .pipe-shell {
+    padding-top: var(--t-8);
+    padding-bottom: var(--t-12);
+    border-top: 1px solid var(--rule);
+  }
+  .kicker {
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 0 0 var(--t-3);
+  }
+  h2 {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: clamp(2.2rem, 5vw, 3.6rem);
+    line-height: 1;
+    letter-spacing: -0.015em;
+    margin: 0 0 var(--t-3);
+    text-wrap: balance;
+  }
+  h2.sub { margin-top: var(--t-8); font-size: clamp(1.8rem, 3.5vw, 2.6rem); }
+  .lede {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: var(--step-2);
+    color: var(--muted);
+    line-height: 1.3;
+    max-width: 60ch;
+    margin: 0 0 var(--t-4);
+  }
+  .lede code {
+    font-family: var(--font-mono);
+    font-style: normal;
+    color: var(--saffron-deep);
+  }
+
+  .grid {
+    display: grid;
+    gap: var(--t-6);
+    margin-top: var(--t-4);
+  }
+  @media (min-width: 920px) {
+    .grid { grid-template-columns: 1fr; }
+  }
+
+  .ex header {
+    display: flex;
+    align-items: baseline;
+    gap: var(--t-2);
+    margin-bottom: var(--t-1);
+  }
+  .ex .num {
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    color: var(--muted);
+    letter-spacing: 0.1em;
+  }
+  .ex h3 {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: var(--step-2);
+    margin: 0;
+    color: var(--ink);
+    line-height: 1.15;
+  }
+  .ex .why {
+    margin: var(--t-1) 0 0;
+    max-width: var(--measure-wide);
+    color: var(--ink);
+  }
+
+  .surfaces {
+    display: grid;
+    gap: var(--t-4);
+    margin-bottom: var(--t-6);
+  }
+  @media (min-width: 920px) {
+    .surfaces { grid-template-columns: 1fr 1fr; gap: var(--t-6); }
+  }
+  .surface h3 {
+    font-family: var(--font-mono);
+    font-size: var(--step-1);
+    margin: 0 0 var(--t-2);
+    color: var(--saffron-deep);
+    font-weight: 500;
+  }
+  .surface p { margin: var(--t-1) 0 0; max-width: var(--measure); }
+
+  .power {
+    list-style: none;
+    padding: 0;
+    margin: var(--t-3) 0 var(--t-6);
+    display: grid;
+    gap: var(--t-2);
+    max-width: var(--measure-wide);
+  }
+  .power li {
+    padding: var(--t-2) var(--t-3);
+    border-left: 3px solid var(--saffron-deep);
+    background: var(--paper-deep);
+    margin: 0;
+  }
+  .power strong { color: var(--saffron-deep); }
+  .power code {
+    font-family: var(--font-mono);
+    color: var(--saffron-deep);
+  }
+
+  .cta {
+    margin-top: var(--t-6);
+    font-family: var(--font-mono);
+    font-size: var(--step-0);
+    color: var(--muted);
+  }
+  .cta a { text-decoration-color: var(--saffron-deep); }
+</style>
