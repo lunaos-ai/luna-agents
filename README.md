@@ -6,7 +6,7 @@
 </p>
 
 <p align="center">
-  <strong>45 specialized AI agents · 344 slash commands for every stage of your software development lifecycle.</strong>
+  <strong>45 specialized AI agents · 348 slash commands for every stage of your software development lifecycle.</strong>
   <br>
   One CLI. One API. From requirements to production.
 </p>
@@ -29,14 +29,14 @@ npm install -g luna-agents
 luna-setup
 ```
 
-Then in Claude Code, any of **344 slash commands** work:
+Then in Claude Code, any of **348 slash commands** work:
 
 ```
 /luna-agents:plan       # Break a feature into tasks
 /luna-agents:go         # Implement next task
 /luna-agents:test       # Run tests
 /luna-agents:ship       # Deploy
-/luna-agents:cmds       # See all 344 commands
+/luna-agents:cmds       # See all 348 commands
 ```
 
 That's it. The plugin reads your codebase, routes work to specialized AI agents, and streams results back.
@@ -100,9 +100,9 @@ luna agents list
 luna rag search "How does authentication work?"
 ```
 
-### Claude Code Commands (344)
+### Claude Code Commands (348)
 
-Luna Agents includes 344 slash commands for Claude Code. Type `/cmds` to see all.
+Luna Agents includes 348 slash commands for Claude Code. Type `/cmds` to see all.
 
 #### Dev Workflow (sequential)
 
@@ -391,7 +391,7 @@ MIT © [Shachar Solomon](https://github.com/shacharsol)
 
 <!-- LUNA:COUNTERS-START -->
 <!-- counters: command/agent/skill totals are updated by sync-readme.mjs -->
-- **Commands:** 344
+- **Commands:** 348
 - **Agents:** 45
 - **Skills:** 0
 <!-- LUNA:COUNTERS-END -->
@@ -407,8 +407,10 @@ MIT © [Shachar Solomon](https://github.com/shacharsol)
 | `/luna-agents:3d` | Shortcut: → /ll-3d |
 | `/luna-agents:agent-boost` | Shortcut: WASM-based simple task executor -> /ll-agent-boost |
 | `/luna-agents:agent-build` | Shortcut: Scaffold a full production AI agent (planner + RAG + MCP + verifier + guardrails + approvals + OTel + eval harness) -> /ll-agent-build |
+| `/luna-agents:agent-call` | Shortcut: Invoke a built agent as a Luna Pipes verb. Pipe input in, structured trace + result out -> /ll-agent-call |
 | `/luna-agents:agent-deploy` | Shortcut: Deploy a scaffolded agent to CF Workers, AWS Lambda, Cloud Run, k8s, Docker Compose, or Fly. Refuses to ship if eval hasn't passed -> /ll-agent-deploy |
 | `/luna-agents:agent-eval` | Shortcut: Golden tests + regression for an AI agent. Scores completion, tool-call efficiency, cost, latency, hallucination rate -> /ll-agent-eval |
+| `/luna-agents:agent-swarm` | Shortcut: Race N agent variants in parallel git worktrees, pick the best by consensus / verifier / cheapest -> /ll-agent-swarm |
 | `/luna-agents:agent` | Shortcut: One verb to drive the agent toolchain — build / eval / deploy. Auto-routes by what's on disk -> /ll-agent |
 | `/luna-agents:ai-index` | Shortcut: Generate llms.txt, ai-plugin.json, MCP discovery files for AI agents -> /ll-ai-index |
 | `/luna-agents:api` | Shortcut: Generate a complete API → /ll-api |
@@ -491,9 +493,11 @@ MIT © [Shachar Solomon](https://github.com/shacharsol)
 | `/luna-agents:ll-a11y` | Project or feature scope |
 | `/luna-agents:ll-agent-boost` | Path to the file to transform |
 | `/luna-agents:ll-agent-build` | Where to scaffold. Default - ./agents/<name>/ |
+| `/luna-agents:ll-agent-call` | Output shape - "json" (default), "text", "markdown". |
 | `/luna-agents:ll-agent-chain` | Project or feature scope |
 | `/luna-agents:ll-agent-deploy` | Skip the pre-deploy eval gate. Default - false. Strongly discouraged for prod. |
 | `/luna-agents:ll-agent-eval` | Required pass rate (0-1). Default - 0.9. |
+| `/luna-agents:ll-agent-swarm` | If "true", keep all worktrees + traces for inspection. Default - false (cleanup non-winners). |
 | `/luna-agents:ll-agent` | Path to an existing scaffold (for eval / deploy) or where to scaffold (for build). |
 | `/luna-agents:ll-ai-index` | Comma-separated competitor names to compare against |
 | `/luna-agents:ll-api-client` | Project or feature scope |

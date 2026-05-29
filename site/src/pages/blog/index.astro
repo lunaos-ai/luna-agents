@@ -1,0 +1,171 @@
+---
+import Book from "../../layouts/Book.astro";
+
+const posts = [
+  {
+    slug: "tutorial-build-payment-agent-with-pipes-and-swarm",
+    title: "Build, swarm, and ship a payment-investigation agent — tutorial, in pipes",
+    date: "2026-05-30",
+    description: "Step-by-step: scaffold an agent with /ll-agent-build, expose it as a Luna verb with /ll-agent-call, race five variants with /ll-agent-swarm, audit with /ll-no-bluf, and ship to Cloudflare. ~15 minutes end-to-end.",
+    tags: ["tutorial", "agents", "swarm", "pipes"],
+    href: "https://github.com/lunaos-ai/luna-agents/blob/main/blog/tutorial-build-payment-agent-with-pipes-and-swarm.md",
+  },
+  {
+    slug: "agent-builder",
+    title: "The agent is not the AI. Here's the one-line command that builds one anyway.",
+    date: "2026-05-30",
+    description: "Production AI agents need eight components and most teams ship two of them. /ll-agent-build scaffolds all eight — planner, RAG, MCP tools, verifier, guardrails, approvals, audit, eval — in one command.",
+    tags: ["agents", "architecture", "philosophy"],
+    href: "https://github.com/lunaos-ai/luna-agents/blob/main/blog/agent-builder.md",
+  },
+  {
+    slug: "ai-agent",
+    title: "AI Agents vs APIs, MCP Servers, Workflows, and Decision Trees",
+    date: "2026-05-29",
+    description: "The mental model. When to use an agent. When not to. Autonomy levels. Trigger patterns. The architecture that /ll-agent-build implements.",
+    tags: ["agents", "architecture", "essay"],
+    href: "https://github.com/lunaos-ai/luna-agents/blob/main/blog/ai-agent.md",
+  },
+];
+---
+
+<Book
+  title="Blog"
+  chapter="blog"
+  description="Tutorials and essays on Luna Pipes, AI agents, and the eight components production agents actually need."
+>
+  <section class="hero wrap">
+    <p class="kicker">Chapter 12 · Blog</p>
+    <h1 class="title">Read the long form.</h1>
+    <p class="lede">
+      Tutorials walk you from <code>npm install</code> to a deployed
+      pipeline. Essays cover the mental model — autonomy ladders,
+      trigger patterns, why most "AI agents" don't survive their
+      first month in production.
+    </p>
+  </section>
+
+  <section class="wrap posts">
+    <ol class="post-list">
+      {posts.map((p, i) => (
+        <li>
+          <article>
+            <header>
+              <span class="num">{String(posts.length - i).padStart(2, "0")}</span>
+              <time datetime={p.date}>{p.date}</time>
+            </header>
+            <h2><a href={p.href} target="_blank" rel="noopener">{p.title}</a></h2>
+            <p class="desc">{p.description}</p>
+            <ul class="tags">
+              {p.tags.map((t) => (<li>#{t}</li>))}
+            </ul>
+          </article>
+        </li>
+      ))}
+    </ol>
+    <p class="note">
+      Posts are kept as Markdown in <code>blog/</code> on
+      <a href="https://github.com/lunaos-ai/luna-agents/tree/main/blog">GitHub</a>
+      so they ship with the npm package and stay grep-able from
+      <code>/ll-rag</code>.
+    </p>
+  </section>
+</Book>
+
+<style>
+  .hero { padding: var(--t-12) clamp(1rem, 5vw, 4rem) var(--t-6); }
+  .kicker {
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 0 0 var(--t-3);
+  }
+  .title {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: clamp(2.5rem, 7vw, 5.5rem);
+    line-height: 0.95;
+    letter-spacing: -0.02em;
+    margin: 0 0 var(--t-3);
+    text-wrap: balance;
+  }
+  .lede {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: var(--step-2);
+    color: var(--muted);
+    max-width: 60ch;
+    line-height: 1.3;
+    margin: 0 0 var(--t-4);
+  }
+  .lede code, p code {
+    font-family: var(--font-mono);
+    font-style: normal;
+    color: var(--saffron-deep);
+  }
+  .posts {
+    padding-top: var(--t-6);
+    padding-bottom: var(--t-12);
+    border-top: 1px solid var(--rule);
+  }
+  .post-list { list-style: none; padding: 0; margin: 0; }
+  .post-list li {
+    border-bottom: 1px solid var(--rule);
+    padding: var(--t-4) 0;
+    margin: 0;
+  }
+  .post-list article header {
+    display: flex;
+    gap: var(--t-3);
+    align-items: baseline;
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    color: var(--muted);
+    letter-spacing: 0.1em;
+  }
+  .post-list .num { font-weight: 500; }
+  .post-list h2 {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: clamp(1.5rem, 3.2vw, 2.4rem);
+    line-height: 1.15;
+    margin: var(--t-1) 0 var(--t-2);
+  }
+  .post-list h2 a {
+    text-decoration: none;
+    color: var(--ink);
+    background-image: linear-gradient(var(--saffron-deep), var(--saffron-deep));
+    background-size: 0% 1px;
+    background-repeat: no-repeat;
+    background-position: 0 100%;
+    transition: background-size 240ms var(--ease);
+  }
+  .post-list h2 a:hover { background-size: 100% 1px; }
+  .post-list .desc {
+    color: var(--ink);
+    max-width: var(--measure-wide);
+    margin: 0 0 var(--t-2);
+  }
+  .tags {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    gap: var(--t-2);
+    flex-wrap: wrap;
+  }
+  .tags li {
+    margin: 0;
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    color: var(--saffron-deep);
+  }
+  .note {
+    margin-top: var(--t-6);
+    color: var(--muted);
+    font-size: var(--step--1);
+    max-width: var(--measure-wide);
+  }
+</style>
