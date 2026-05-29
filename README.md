@@ -6,7 +6,7 @@
 </p>
 
 <p align="center">
-  <strong>45 specialized AI agents · 285 slash commands for every stage of your software development lifecycle.</strong>
+  <strong>45 specialized AI agents · 291 slash commands for every stage of your software development lifecycle.</strong>
   <br>
   One CLI. One API. From requirements to production.
 </p>
@@ -29,14 +29,14 @@ npm install -g luna-agents
 luna-setup
 ```
 
-Then in Claude Code, any of **285 slash commands** work:
+Then in Claude Code, any of **291 slash commands** work:
 
 ```
 /luna-agents:plan       # Break a feature into tasks
 /luna-agents:go         # Implement next task
 /luna-agents:test       # Run tests
 /luna-agents:ship       # Deploy
-/luna-agents:cmds       # See all 285 commands
+/luna-agents:cmds       # See all 291 commands
 ```
 
 That's it. The plugin reads your codebase, routes work to specialized AI agents, and streams results back.
@@ -100,9 +100,9 @@ luna agents list
 luna rag search "How does authentication work?"
 ```
 
-### Claude Code Commands (285)
+### Claude Code Commands (291)
 
-Luna Agents includes 285 slash commands for Claude Code. Type `/cmds` to see all.
+Luna Agents includes 291 slash commands for Claude Code. Type `/cmds` to see all.
 
 #### Dev Workflow (sequential)
 
@@ -391,7 +391,7 @@ MIT © [Shachar Solomon](https://github.com/shacharsol)
 
 <!-- LUNA:COUNTERS-START -->
 <!-- counters: command/agent/skill totals are updated by sync-readme.mjs -->
-- **Commands:** 285
+- **Commands:** 291
 - **Agents:** 45
 - **Skills:** 0
 <!-- LUNA:COUNTERS-END -->
@@ -438,6 +438,7 @@ MIT © [Shachar Solomon](https://github.com/shacharsol)
 | `/luna-agents:devto` | Shortcut: Write & publish Dev.to articles with comedy styles (Curb, Seinfeld, Office, Silicon Valley) -> /ll-devto-publish |
 | `/luna-agents:dock` | Project or service to dockerize |
 | `/luna-agents:docs` | Project or feature scope |
+| `/luna-agents:doctor` | Shortcut: Framework-aware diagnose + fix; auto-routes to react-doctor / svelte-doctor / zen -> /ll-doctor |
 | `/luna-agents:drill` | Shortcut: Adversarial AI/dev bluff drill — score honesty, harden CLAUDE.md, loop -> /ll-drill |
 | `/luna-agents:e2e-flow` | Shortcut: Auto-generate Playwright E2E tests from routes -> /ll-e2e-flow |
 | `/luna-agents:email-routing` | Shortcut: Set up free email forwarding via Cloudflare → /ll-email-routing |
@@ -511,6 +512,7 @@ MIT © [Shachar Solomon](https://github.com/shacharsol)
 | `/luna-agents:ll-devto-publish` | Auto-publish to Dev.to (requires DEV_TO_API_KEY in .env) |
 | `/luna-agents:ll-dockerize` | The `luna-dockerize` command provides comprehensive Docker containerization for your project with optimized multi-stage builds, Docker Co... |
 | `/luna-agents:ll-docs` | Project or feature scope for documentation |
+| `/luna-agents:ll-doctor` | If "true", open a pull request with the staged fixes. Default - false. |
 | `/luna-agents:ll-drill` | history \| synthetic \| both |
 | `/luna-agents:ll-e2e-flow` | Scope (all, auth, dashboard, billing, settings, or specific route) |
 | `/luna-agents:ll-e2e-test` | Where to save the test plan (default: scripts/e2e-test-plan.md) |
@@ -582,6 +584,7 @@ MIT © [Shachar Solomon](https://github.com/shacharsol)
 | `/luna-agents:ll-rag-guided` | **One command, one guided experience. No need to remember multiple commands.** |
 | `/luna-agents:ll-rag-upgrade` | **Usage:** ```bash /luna-rag upgrade ``` |
 | `/luna-agents:ll-rag` | **One command, complete guidance.** Luna RAG provides intelligent semantic code search with a single conversational interface. No complex... |
+| `/luna-agents:ll-react-doctor` | If "true", open a pull request with the staged fixes. Default - false. |
 | `/luna-agents:ll-readme-sync` | If "true", also rebuild site/src/data/skills.json + site/src/data/skill-status.json from commands/. Default - true. |
 | `/luna-agents:ll-record` | Voice: ai (ElevenLabs), clone (your voice clone), none (music only) |
 | `/luna-agents:ll-refactor` | Project or feature scope |
@@ -616,6 +619,7 @@ MIT © [Shachar Solomon](https://github.com/shacharsol)
 | `/luna-agents:ll-smart-route` | Routing strategy: fast (lowest latency), cheap (lowest cost), best (highest quality) |
 | `/luna-agents:ll-smart-search` | Natural language question or search query |
 | `/luna-agents:ll-storybook` | Project or feature scope |
+| `/luna-agents:ll-svelte-doctor` | If "true", open a pull request with the staged fixes. Default - false. |
 | `/luna-agents:ll-swarm` | Number of agents to spawn (default: 5) |
 | `/luna-agents:ll-test` | Project or feature scope for testing |
 | `/luna-agents:ll-time-machine` | Commit hash, date, tag, branch, or description like 'before the auth refactor' |
@@ -660,6 +664,7 @@ MIT © [Shachar Solomon](https://github.com/shacharsol)
 | `/luna-agents:publish` | Shortcut: → /ll-publish |
 | `/luna-agents:pulse` | Shortcut: → /ll-pulse |
 | `/luna-agents:q` | Natural language search query |
+| `/luna-agents:react-doctor` | Shortcut: Wraps `npx react-doctor@latest` — security, perf, correctness, a11y, bundle-size, architecture -> /ll-react-doctor |
 | `/luna-agents:readme-sync` | Shortcut: Regenerate README.md + website skills data from commands/, agents/, skills/ -> /ll-readme-sync |
 | `/luna-agents:record` | Shortcut: → /ll-record |
 | `/luna-agents:refactor` | Shortcut: Smart refactoring with file splitting -> /ll-refactor |
@@ -674,6 +679,7 @@ MIT © [Shachar Solomon](https://github.com/shacharsol)
 | `/luna-agents:site-audit` | Shortcut: Brutal full-stack website audit → /ll-site-audit |
 | `/luna-agents:skill-radar` | Shortcut: Scan awesome-claude-code lists, surface high-value new skills -> /ll-skill-radar |
 | `/luna-agents:smart-route` | Shortcut: Self-learning agent routing -> /ll-smart-route |
+| `/luna-agents:svelte-doctor` | Shortcut: Wraps `npx svelte-doctor-cli@latest` (or `svelte-doctor`) — state, perf, sec, a11y, dead-code -> /ll-svelte-doctor |
 | `/luna-agents:swarm` | Shortcut: → /ll-swarm |
 | `/luna-agents:test` | Project or feature scope |
 | `/luna-agents:time-machine` | Shortcut: → /ll-time-machine |
