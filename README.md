@@ -6,7 +6,7 @@
 </p>
 
 <p align="center">
-  <strong>45 specialized AI agents · 348 slash commands for every stage of your software development lifecycle.</strong>
+  <strong>45 specialized AI agents · 354 slash commands for every stage of your software development lifecycle.</strong>
   <br>
   One CLI. One API. From requirements to production.
 </p>
@@ -29,14 +29,14 @@ npm install -g luna-agents
 luna-setup
 ```
 
-Then in Claude Code, any of **348 slash commands** work:
+Then in Claude Code, any of **354 slash commands** work:
 
 ```
 /luna-agents:plan       # Break a feature into tasks
 /luna-agents:go         # Implement next task
 /luna-agents:test       # Run tests
 /luna-agents:ship       # Deploy
-/luna-agents:cmds       # See all 348 commands
+/luna-agents:cmds       # See all 354 commands
 ```
 
 That's it. The plugin reads your codebase, routes work to specialized AI agents, and streams results back.
@@ -100,9 +100,9 @@ luna agents list
 luna rag search "How does authentication work?"
 ```
 
-### Claude Code Commands (348)
+### Claude Code Commands (354)
 
-Luna Agents includes 348 slash commands for Claude Code. Type `/cmds` to see all.
+Luna Agents includes 354 slash commands for Claude Code. Type `/cmds` to see all.
 
 #### Dev Workflow (sequential)
 
@@ -391,7 +391,7 @@ MIT © [Shachar Solomon](https://github.com/shacharsol)
 
 <!-- LUNA:COUNTERS-START -->
 <!-- counters: command/agent/skill totals are updated by sync-readme.mjs -->
-- **Commands:** 348
+- **Commands:** 354
 - **Agents:** 45
 - **Skills:** 0
 <!-- LUNA:COUNTERS-END -->
@@ -666,6 +666,9 @@ MIT © [Shachar Solomon](https://github.com/shacharsol)
 | `/luna-agents:ll-spring-doctor` | maven" or "gradle". Auto-detect by default. |
 | `/luna-agents:ll-storybook` | Project or feature scope |
 | `/luna-agents:ll-svelte-doctor` | If "true", open a pull request with the staged fixes. Default - false. |
+| `/luna-agents:ll-swarm-blackboard` | Default - true. |
+| `/luna-agents:ll-swarm-debate` | Default - node-langgraph. |
+| `/luna-agents:ll-swarm-supervisor` | approval-required" (default) \| "deterministic-api-only". executor agent uses signed action requests + approval_id from approvals inbox. |
 | `/luna-agents:ll-swarm` | Number of agents to spawn (default: 5) |
 | `/luna-agents:ll-terraform-doctor` | Diagnose Terraform / OpenTofu via tflint, tfsec, checkov, terrascan, plus Luna heuristic layer for state drift, over-permissive IAM, and missing tags. |
 | `/luna-agents:ll-test` | Project or feature scope for testing |
@@ -735,6 +738,9 @@ MIT © [Shachar Solomon](https://github.com/shacharsol)
 | `/luna-agents:smart-route` | Shortcut: Self-learning agent routing -> /ll-smart-route |
 | `/luna-agents:spring-doctor` | Shortcut: Spring Boot doctor — n+1, actuator exposure, transactional gaps -> /ll-spring-doctor |
 | `/luna-agents:svelte-doctor` | Shortcut: Wraps `npx svelte-doctor-cli@latest` (or `svelte-doctor`) — state, perf, sec, a11y, dead-code -> /ll-svelte-doctor |
+| `/luna-agents:swarm-blackboard` | Shortcut: Scaffold a blackboard-pattern swarm — typed shared case file in Postgres with row-level perms -> /ll-swarm-blackboard |
+| `/luna-agents:swarm-debate` | Shortcut: Scaffold a primary + critic + verifier debate swarm — recommended for fintech / security / billing -> /ll-swarm-debate |
+| `/luna-agents:swarm-supervisor` | Shortcut: Scaffold a supervisor/manager-pattern multi-agent swarm — safest production pattern -> /ll-swarm-supervisor |
 | `/luna-agents:swarm` | Shortcut: → /ll-swarm |
 | `/luna-agents:terraform-doctor` | Shortcut: Terraform / IaC doctor — tflint, tfsec, checkov -> /ll-terraform-doctor |
 | `/luna-agents:test` | Project or feature scope |
