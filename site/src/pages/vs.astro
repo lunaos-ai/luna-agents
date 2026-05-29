@@ -43,6 +43,14 @@ const rows = [
     use: "Connect SaaS apps, no code.",
   },
   {
+    product: "Willow",
+    model: "AI agent governance / IAM",
+    surface: "Enterprise SaaS",
+    composition: "policy dashboard",
+    open: "no (enterprise SaaS)",
+    use: "Govern + audit any agent your org runs at scale.",
+  },
+  {
     product: "Luna Pipes",
     model: "AI shell language",
     surface: "CLI + Claude Code + CI",
@@ -131,6 +139,32 @@ const rows = [
       Visual graphs are great for non-coders gluing SaaS. Luna is for
       engineers who already live in the shell. The pipe expression is
       version-controllable, diffable, greppable — the graph is not.
+    </p>
+
+    <h3>vs. Willow</h3>
+    <p>
+      <strong>Adjacent, not competitive.</strong> Willow is an
+      enterprise IAM platform for AI agents — identity per agent,
+      1000+ tool connectors, audit forwarded to SIEM, OWASP LLM06
+      framing. It lives <em>above</em> agents that already exist and
+      govern them at org scale.
+    </p>
+    <p>
+      Luna lives <em>below</em>. It scaffolds the agent (typed
+      contract, MCP tool list, OPA policy bundle, six-table audit
+      schema, approval inbox, golden-eval harness) — the artefact
+      Willow then governs. The two compose naturally:
+    </p>
+    <p>
+      <code>/ll-agent-build</code> + <code>/ll-export-governance target=willow</code>
+      emits an agent manifest Willow can ingest, with identity, scoped
+      tool permissions, audit endpoint, and the OPA bundle attached.
+      No double-spec. The same scaffold ships to Cloudflare and to
+      Willow's policy graph from one source of truth.
+    </p>
+    <p>
+      Buying Luna does not displace Willow. Buying Willow does not
+      displace Luna. Different layers of the same stack.
     </p>
 
     <h2>When Luna is the wrong choice.</h2>

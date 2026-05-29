@@ -6,7 +6,7 @@
 </p>
 
 <p align="center">
-  <strong>45 specialized AI agents · 356 slash commands for every stage of your software development lifecycle.</strong>
+  <strong>45 specialized AI agents · 358 slash commands for every stage of your software development lifecycle.</strong>
   <br>
   One CLI. One API. From requirements to production.
 </p>
@@ -29,14 +29,14 @@ npm install -g luna-agents
 luna-setup
 ```
 
-Then in Claude Code, any of **356 slash commands** work:
+Then in Claude Code, any of **358 slash commands** work:
 
 ```
 /luna-agents:plan       # Break a feature into tasks
 /luna-agents:go         # Implement next task
 /luna-agents:test       # Run tests
 /luna-agents:ship       # Deploy
-/luna-agents:cmds       # See all 356 commands
+/luna-agents:cmds       # See all 358 commands
 ```
 
 That's it. The plugin reads your codebase, routes work to specialized AI agents, and streams results back.
@@ -100,9 +100,9 @@ luna agents list
 luna rag search "How does authentication work?"
 ```
 
-### Claude Code Commands (356)
+### Claude Code Commands (358)
 
-Luna Agents includes 356 slash commands for Claude Code. Type `/cmds` to see all.
+Luna Agents includes 358 slash commands for Claude Code. Type `/cmds` to see all.
 
 #### Dev Workflow (sequential)
 
@@ -391,7 +391,7 @@ MIT © [Shachar Solomon](https://github.com/shacharsol)
 
 <!-- LUNA:COUNTERS-START -->
 <!-- counters: command/agent/skill totals are updated by sync-readme.mjs -->
-- **Commands:** 356
+- **Commands:** 358
 - **Agents:** 45
 - **Skills:** 0
 <!-- LUNA:COUNTERS-END -->
@@ -456,6 +456,7 @@ MIT © [Shachar Solomon](https://github.com/shacharsol)
 | `/luna-agents:elixir-doctor` | Shortcut: Elixir / Phoenix doctor — credo, sobelow, mix audit, dialyxir -> /ll-elixir-doctor |
 | `/luna-agents:email-routing` | Shortcut: Set up free email forwarding via Cloudflare → /ll-email-routing |
 | `/luna-agents:er` | Shortcut: Critical-severity triage in under 5 minutes — Is anything on fire? -> /ll-er |
+| `/luna-agents:export-governance` | Shortcut: Emit agent manifests for Willow / Backstage / generic IAM / OPA / OpenAPI from a Luna scaffold -> /ll-export-governance |
 | `/luna-agents:fastapi-doctor` | Shortcut: FastAPI / Starlette doctor — async blocking, DI cycles, response leaks -> /ll-fastapi-doctor |
 | `/luna-agents:feature` | Shortcut: Full feature lifecycle until done -> /ll-feature |
 | `/luna-agents:figma` | Shortcut: → /ll-figma |
@@ -552,6 +553,7 @@ MIT © [Shachar Solomon](https://github.com/shacharsol)
 | `/luna-agents:ll-env` | Project or feature scope |
 | `/luna-agents:ll-er` | Fast triage. Runs every doctor in `severity_min=critical` + `parallel=true` mode. Skips style, formatting, and medium findings. For "is anything on fire right now?" checks, under 5 minutes on most repos. |
 | `/luna-agents:ll-execute` | Project or feature scope for execution |
+| `/luna-agents:ll-export-governance` | service-account" (default) \| "workload-identity" \| "oauth-client". How the manifest declares the agent's identity to the governance platform. |
 | `/luna-agents:ll-fastapi-doctor` | Diagnose FastAPI / Starlette apps via ruff (lint), bandit (security), mypy (types), openapi-spec-validator (contract), plus Luna heuristic layer for async-route blocking, dependency injection cycles, response model leaks. No upstream `fastapi-doctor` package — composes existing Python tooling. |
 | `/luna-agents:ll-feature` | Project or feature scope |
 | `/luna-agents:ll-figma` | Target: react (default), vue, svelte, react-native, swift-ui |
