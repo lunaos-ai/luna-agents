@@ -1,0 +1,21 @@
+{
+  "$schema": "https://raw.githubusercontent.com/modelcontextprotocol/registry/main/docs/server-schema.json",
+  "name": "io.github.lunaos-ai/luna-agents",
+  "description": "MCP servers + Claude Code plugin with 358 slash-command verbs composed via the >> operator. AI honesty auditor, agent scaffolder, 21 stack-aware doctors, swarm patterns including evidence-weighted voting.",
+  "version": "2.0.10",
+  "repository": {
+    "url": "https://github.com/lunaos-ai/luna-agents",
+    "source": "github"
+  },
+  "license": "MIT",
+  "homepage": "https://agents.lunaos.ai",
+  "packages": [
+    {
+      "registryType": "npm",
+      "registryBaseUrl": "https://registry.npmjs.org",
+      "identifier": "luna-agents",
+      "version": "2.0.10",
+      "transport": { "type": "stdio" }
+    }
+  ]
+}

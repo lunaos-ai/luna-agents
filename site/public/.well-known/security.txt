@@ -1,0 +1,9 @@
+# If you find a security issue, please email support@lunaos.ai.
+# We respond as soon as we can; the slow part is shipping, not reading.
+
+Contact: mailto:support@lunaos.ai
+Contact: https://github.com/lunaos-ai/luna-agents/security/advisories/new
+Expires: 2027-05-30T00:00:00.000Z
+Preferred-Languages: en
+Canonical: https://agents.lunaos.ai/.well-known/security.txt
+Policy: https://github.com/lunaos-ai/luna-agents/blob/main/SECURITY.md

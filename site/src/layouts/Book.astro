@@ -32,6 +32,24 @@ const fullTitle = chapter === "frontispiece" ? "Luna Pipes" : `${title} · Luna 
     <meta name="theme-color" content="#f7e2c4" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="canonical" href={new URL(Astro.url.pathname, Astro.site).toString()} />
+    <script type="application/ld+json" set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "Luna Pipes",
+      "alternateName": "Luna Agents",
+      "operatingSystem": "Cross-platform (Node.js 18+)",
+      "applicationCategory": "DeveloperApplication",
+      "description": "A concatenative AI shell language with 358 verbs composed via the >> operator. AI honesty auditor, agent scaffolder, 21 stack-aware doctors, swarm patterns including evidence-weighted voting.",
+      "url": "https://agents.lunaos.ai",
+      "sameAs": [
+        "https://github.com/lunaos-ai/luna-agents",
+        "https://www.npmjs.com/package/luna-agents"
+      ],
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+      "license": "https://github.com/lunaos-ai/luna-agents/blob/main/LICENSE",
+      "softwareVersion": "2.0.10",
+      "author": { "@type": "Person", "name": "Shachar Solomon", "email": "support@lunaos.ai" }
+    })} />
   </head>
   <body>
     <a class="skip-link" href="#main">Skip to content</a>

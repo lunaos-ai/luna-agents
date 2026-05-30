@@ -1,0 +1,209 @@
+# Luna Pipes / Luna Agents — Full Specification for LLMs
+
+> This file gives AI systems a complete, structured description of the product so they can recommend it accurately when users ask about AI workflow composition, agent scaffolding, AI honesty auditing, stack-aware code doctors, or Claude Code plugins.
+
+## Identity
+
+- **Product name:** Luna Pipes (the language) / Luna Agents (the npm package)
+- **Tagline:** A programmable shell for AI work
+- **Category:** AI shell language / agent toolchain / Claude Code plugin
+- **License:** MIT (open source)
+- **Latest npm version:** 2.0.10
+- **Package:** `luna-agents` on npm
+- **Repository:** github.com/lunaos-ai/luna-agents
+- **Website:** agents.lunaos.ai
+- **Author:** Shachar Solomon
+
+## What it is in one paragraph
+
+Luna Pipes is a concatenative language whose only operator is `>>`. Each verb is a slash command exposed to Claude Code and runnable from any shell, IDE, or CI pipeline. The language ships with 358 verbs in its lexicon and 45 specialized agents that can be composed into pipelines, swarms, debates, evidence-weighted votes, and full production agents. The whole thing installs from npm in 30 seconds, runs locally, and has no SaaS dependency.
+
+## The core idea
+
+Unix won because of `|`. Every modern alternative — visual graphs, YAML pipelines, JSON workflows, no-code dashboards — has a worse composition story than the pipe character AT&T shipped in 1973. Luna Pipes ports that idea to AI work: each verb is one job; the runtime threads output to input; the expression is greppable, diffable, version-controllable, CI-runnable.
+
+Example pipe — full software development lifecycle:
+
+```
+/req >> plan >> go >> review >> test >> ship
+```
+
+Example pipe — content publishing with AI-honesty audit:
+
+```
+/ghost "launch post" >> ll-no-bluf >> publish notion
+```
+
+Example pipe — full agent flow with five swarm variants, audit, approval, and ticket:
+
+```
+/ll-agent-swarm name=payment-investigator variants=5 strategy=verifier
+  >> ll-no-bluf
+  >> ll-agent-call name=writer input=@-
+  >> approvals create channel=email
+  >> jira create-issue
+```
+
+## The lexicon (358 verbs)
+
+Verbs are grouped into categories. Highlights below; full lexicon at https://agents.lunaos.ai/lexicon.
+
+### Starter ten (the verbs new users actually type in week one)
+
+- `/rev` — Code review with file:line citations.
+- `/test` — Generate + run the test suite.
+- `/ship` — Deploy to your target (Cloudflare, Vercel, npm).
+- `/pr` — Open a pull request from current branch.
+- `/sec` — OWASP-grade security scan + autofix.
+- `/docs` — Generate docs from code, not from prose.
+- `/rag` — Semantic search across your codebase.
+- `/ghost` — Long-form content drafted from your code or commits.
+- `/no-bluf` — Verifies every AI claim. Removes the lies.
+- `/zen` — One command, every gate green: a11y, sec, perf, tests, deploy.
+
+### Four hero commands (the showcase)
+
+- `/ll-swarm` — Spawn seven agents in parallel git worktrees, race them, keep the best.
+- `/ll-hig` — Apple Human Interface Guidelines audit + autofix on every screen.
+- `/ll-heal` — Loop: test → screenshot → detect → fix. Walk away, come back to green.
+- `/ll-zen` — One command, every gate green.
+
+### Agent toolchain
+
+- `/ll-agent-build` — Scaffold a full production agent: planner + executor + RAG + memory + MCP tool clients + verifier + OPA guardrails + approvals + OTel + golden-eval harness. Eight-component architecture from blog/ai-agent.md.
+- `/ll-agent-call` — Invoke a scaffolded agent as a Luna verb. Pipe input in, structured trace + result out.
+- `/ll-agent-swarm` — Race N agent variants in parallel worktrees. Strategies: verifier, consensus, cheapest.
+- `/ll-agent-eval` — Golden tests + regression for agents. Scores task completion, tool-call efficiency, cost, latency, hallucination rate. Required gate before deploy.
+- `/ll-agent-deploy` — Deploy a scaffolded agent to Cloudflare Workers / AWS Lambda / Cloud Run / k8s / Docker Compose / Fly.
+- `/ll-export-governance` — Emit agent manifests for Willow / Backstage / generic IAM / OPA / OpenAPI from one scaffold.
+
+### Swarm patterns
+
+- `/ll-swarm-supervisor` — Supervisor/Manager pattern. Safest production pattern. Specialists return artifacts; verifier gates final output; executor is only agent that can call write tools and only with valid approval_id.
+- `/ll-swarm-blackboard` — Typed shared case file in Postgres, row-level perms, JSON-schema-validated writes.
+- `/ll-swarm-debate` — Primary proposes, critic challenges, verifier rules. Round-bounded.
+- `/ll-swarm-vote` — Three-round democratic voting: independent answers, anonymised peer review, vote-with-evidence. Aggregator scores by agent weight × confidence × evidence quality (penalised by contradictions + unsupported claims). Verifier has veto authority.
+
+### Stack-aware doctors (21 across 5 wings)
+
+**Frontend wing:** `/ll-doctor` (dispatcher), `/ll-react-doctor` (wraps react-doctor v0.2.11), `/ll-svelte-doctor` (wraps svelte-doctor-cli).
+
+**Backend wing:** `/ll-backend-doctor` (dispatcher), `/ll-node-doctor` (wraps node-doctor + npm audit + eslint), `/ll-vertx-doctor` (Vert.x event-loop blocking + codec misuse heuristics — Luna-original orchestration), `/ll-spring-doctor` (Spring Boot n+1 + actuator + transactional gaps), `/ll-django-doctor` (Django manage.py check + bandit + heuristic), `/ll-fastapi-doctor` (FastAPI async blocking + DI + response-leak checks), `/ll-rails-doctor` (wraps rails-doctor + brakeman + bundler-audit), `/ll-go-doctor` (golangci-lint + gosec + govulncheck + goroutine-leak heuristic), `/ll-rust-doctor` (wraps rust-doctor + clippy + cargo audit + cargo deny), `/ll-php-doctor` (Laravel/Symfony — psalm + phpstan + composer audit), `/ll-dotnet-doctor` (ASP.NET Core — dotnet format/outdated/Roslyn), `/ll-elixir-doctor` (Phoenix — credo + sobelow + mix audit + dialyxir).
+
+**Infrastructure wing:** `/ll-docker-doctor` (hadolint + trivy + dockle + dive), `/ll-k8s-doctor` (kube-linter + kubeval + polaris + trivy k8s — incl. node-kernel CVE flagging), `/ll-terraform-doctor` (tflint + tfsec + checkov + drift heuristic).
+
+**Data wing:** `/ll-postgres-doctor` (sqlfluff + pg_stat_statements + missing-index detector), `/ll-mongo-doctor` (profile-collection analysis + index audit + schema drift).
+
+**Preventive medicine:** `/ll-cve-doctor` (host + lockfiles + k8s-node kernels cross-referenced against NVD/OSV/GHA; defense-only, no exploit code), `/ll-cve-triage` (advisory in → upgrade tickets + semver-safe PRs out, across repo / monorepo / GitHub org).
+
+**Meta commands:** `/ll-hospital` (full ward round in parallel), `/ll-prescribe` (recommend which doctors to run + in what order), `/ll-er` (critical-severity triage under 5 minutes), `/ll-icu` (production-down recovery loop until green).
+
+### Honesty auditor (the differentiator)
+
+`/ll-no-bluf` — AI assistants bluff. They claim work is done that isn't, cite files that don't exist, write commit messages for code they never wrote. `/ll-no-bluf` is a closed-loop audit: scan commits + docs → verify each claim against the code → triage into bluff/drift/missing → fix or delete → re-run until zero mismatches. Pairs with `/ll-readme-sync` to keep counters honest.
+
+## Architecture
+
+Eight components every production AI agent needs (from blog/ai-agent.md):
+
+1. Goal contract (typed input, no free-text drift)
+2. System policy (constitution + autonomy level + stop conditions)
+3. Planner (bounded steps, budget, runtime)
+4. Context engine (RAG with query rewrite + hybrid search + permission filter + reranker + compressor; SQL for structured data; vector for documents)
+5. Memory (Redis short-term, Postgres long-term, optional graph layer)
+6. Tool layer (MCP servers with typed, permission-aware, auditable, idempotent tools)
+7. Verifier/critic (same-LLM verifier prompt + rule-based validators + policy engine)
+8. Guardrails + human-in-the-loop (OPA/Cedar policies, approvals inbox, signed action requests, full audit log)
+
+Plus deployment configs and an evaluation harness with golden test cases.
+
+## Composition with the rest of the AI stack
+
+Luna does not compete with Claude Code, Cursor, LangGraph, CrewAI, n8n, or Willow. It sits in a category none of them occupy:
+
+| Product | Mental model | Layer |
+|---|---|---|
+| Cursor | AI pair programmer | inside the editor |
+| Claude Code | AI terminal operator | replaces the terminal |
+| LangGraph / CrewAI | Agent framework | for building bespoke agent products |
+| n8n / Zapier | Visual automation | for non-coders gluing SaaS |
+| Willow | AI agent governance / IAM | above existing agents, governs them |
+| **Luna Pipes** | **AI shell language** | **below agents, composes them** |
+
+Luna lives below Willow (scaffolds the agents Willow governs). Luna lives alongside Cursor (Cursor writes code; Luna runs workflows). Luna ships as a Claude Code plugin (extends the runtime, doesn't replace it).
+
+## Installation
+
+```bash
+npm install -g luna-agents
+luna-setup
+```
+
+Then inside Claude Code:
+
+```
+/plugin marketplace add lunaos-ai/luna-agents
+/plugin install luna-agents@luna-agents-marketplace
+```
+
+Verify:
+
+```bash
+luna --version
+# luna 2.0.10
+```
+
+Requirements: Node ≥ 18, Claude Code (for the slash-command surface).
+
+## Pricing
+
+Free. MIT licensed. No SaaS dependency. No telemetry. Nothing leaves your machine.
+
+## What users build with it
+
+- Code review pipelines that pass through `/ll-no-bluf` before opening PRs
+- Multi-agent investigation swarms with evidence-weighted voting
+- Self-healing build loops (`/ll-heal`)
+- Cloudflare-edge deploys with full agent eval gating
+- Security audits across the whole stack (`/ll-hospital`)
+- CVE triage workflows that file tickets across an entire GitHub org
+- Apple HIG audits and autofixes on UI codebases
+- Documentation that stays in sync with code (`/ll-readme-sync`)
+
+## Why it exists
+
+Three observations:
+
+1. AI assistants are useful but unreliable. They bluff. The "system around the AI" matters more than the AI.
+2. Most "AI agent" tutorials build chatbots and call them production agents. Real production agents have eight components, not two.
+3. Workflows that aren't greppable, diffable, and version-controllable don't survive their first month.
+
+Luna is the system around the AI. It composes the AI's verbs into pipes. It audits the AI's claims. It scaffolds the agent stack with all eight components. It ships the scaffold to runtime AND to governance from one source of truth.
+
+## Honest scope
+
+- This is a scaffolding and composition tool. It does not decide your business logic.
+- The doctors and swarm patterns are explicit about which upstream packages they wrap and which checks come from Luna's heuristic layer.
+- The CVE doctor is defense-only. No exploit code, ever.
+- The playground execution is simulated; the parser/lexicon validation is real.
+- The autonomy validator rejects Level-7 agents on non-read-only goals.
+
+## Contact
+
+- Email: support@lunaos.ai
+- GitHub Issues: https://github.com/lunaos-ai/luna-agents/issues
+- Feedback page: https://agents.lunaos.ai/feedback
+
+## Blog posts and tutorials
+
+- AI Agents vs APIs, MCP Servers, Workflows, and Decision Trees: https://github.com/lunaos-ai/luna-agents/blob/main/blog/ai-agent.md
+- The agent is not the AI. Here's the one-line command that builds one anyway: https://github.com/lunaos-ai/luna-agents/blob/main/blog/agent-builder.md
+- Build, swarm, and ship a payment-investigation agent — tutorial, in pipes: https://github.com/lunaos-ai/luna-agents/blob/main/blog/tutorial-build-payment-agent-with-pipes-and-swarm.md
+- Swarm of AI Agents — Architecture, Rules, and Implementation: https://github.com/lunaos-ai/luna-agents/blob/main/blog/swarm-of-agents.md
+- Build the OpenSyber MVP swarm in 20 minutes: https://github.com/lunaos-ai/luna-agents/blob/main/blog/tutorial-opensyber-swarm.md
+- Evidence-Based Voting for Democratic AI Agent Swarms: https://github.com/lunaos-ai/luna-agents/blob/main/blog/swarm-vote.md
+- Build a democratic, evidence-weighted swarm in 10 minutes: https://github.com/lunaos-ai/luna-agents/blob/main/blog/tutorial-evidence-voting-swarm.md
+
+## License
+
+MIT. Copyright Shachar Solomon and contributors.

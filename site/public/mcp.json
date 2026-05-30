@@ -1,0 +1,92 @@
+{
+  "schema_version": "2025-06-18",
+  "name": "luna-agents",
+  "display_name": "Luna Agents",
+  "description": "MCP servers + Claude Code plugin with 358 slash-command verbs composed via the >> operator. AI honesty auditor, agent scaffolder, 21 stack-aware doctors, swarm patterns including evidence-weighted voting.",
+  "version": "2.0.10",
+  "homepage": "https://agents.lunaos.ai",
+  "repository": "https://github.com/lunaos-ai/luna-agents",
+  "license": "MIT",
+  "author": {
+    "name": "Shachar Solomon",
+    "email": "support@lunaos.ai"
+  },
+  "categories": [
+    "ai-agents",
+    "developer-tools",
+    "code-quality",
+    "security",
+    "automation",
+    "workflow",
+    "claude-code"
+  ],
+  "keywords": [
+    "claude-code",
+    "claude-code-plugin",
+    "mcp",
+    "mcp-server",
+    "ai-shell-language",
+    "ai-pipes",
+    "ai-agents",
+    "agent-scaffolding",
+    "agent-swarm",
+    "evidence-weighted-voting",
+    "no-bluff",
+    "ai-honesty",
+    "ai-audit",
+    "code-review",
+    "security-scan",
+    "cve-doctor",
+    "react-doctor",
+    "svelte-doctor",
+    "node-doctor",
+    "vertx-doctor",
+    "spring-doctor",
+    "django-doctor",
+    "fastapi-doctor",
+    "go-doctor",
+    "rust-doctor",
+    "docker-doctor",
+    "k8s-doctor",
+    "terraform-doctor",
+    "opentelemetry",
+    "open-policy-agent",
+    "langgraph"
+  ],
+  "servers": [
+    {
+      "name": "luna-nexa-rag",
+      "description": "Semantic code search MCP server powered by Nexa SDK embeddings.",
+      "transport": "stdio",
+      "install": "npm install -g luna-agents"
+    },
+    {
+      "name": "luna-glm-vision",
+      "description": "GLM-4V image-understanding MCP server for UI audits.",
+      "transport": "stdio",
+      "install": "npm install -g luna-agents"
+    },
+    {
+      "name": "luna-vision-rag-client",
+      "description": "Composes RAG + vision MCPs into one client.",
+      "transport": "stdio",
+      "install": "npm install -g luna-agents"
+    },
+    {
+      "name": "luna-lexicon",
+      "description": "Exposes the 358-entry Luna Pipes lexicon over MCP.",
+      "transport": "stdio",
+      "install": "npm install -g luna-agents"
+    }
+  ],
+  "plugin": {
+    "type": "claude-code",
+    "marketplace": "luna-agents-marketplace",
+    "install_commands": [
+      "/plugin marketplace add lunaos-ai/luna-agents",
+      "/plugin install luna-agents@luna-agents-marketplace"
+    ],
+    "verb_count": 358,
+    "agent_count": 45
+  }
+}

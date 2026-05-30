@@ -1,0 +1,15 @@
+{
+  "name": "luna-agents",
+  "displayName": "Luna Agents",
+  "description": "A concatenative AI shell language with 358 verbs composed via the >> operator. AI honesty auditor (/ll-no-bluf), agent scaffolder, 21 stack-aware doctors, swarm patterns including evidence-weighted voting. MIT, runs locally.",
+  "homepage": "https://agents.lunaos.ai",
+  "repository": "https://github.com/lunaos-ai/luna-agents",
+  "license": "MIT",
+  "categories": ["agents", "code-quality", "security", "developer-tools", "claude-code"],
+  "transport": "stdio",
+  "installation": {
+    "type": "npm",
+    "package": "luna-agents",
+    "command": "npm install -g luna-agents && luna-setup"
+  }
+}
