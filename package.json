@@ -1,6 +1,6 @@
 {
   "name": "luna-agents",
-  "version": "2.0.10",
+  "version": "2.0.11",
   "description": "Complete AI-powered development lifecycle management for Claude Code",
   "main": ".claude-plugin/index.js",
   "scripts": {
@@ -71,6 +71,7 @@
     "agents/",
     "skills/",
     "scripts/",
+    "blog/",
     "setup.sh",
     "README.md",
     "LICENSE",
