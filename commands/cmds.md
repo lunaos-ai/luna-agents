@@ -114,6 +114,22 @@ Quick reference for all shortcuts. Type any of these in Claude Code:
 | `/cf` | Cloudflare deploy | `/ll-cloudflare` |
 | `/sec` | Security audit | `/ll-365-secure` |
 
+## Beacon — Agentic Commerce (merchant onboarding)
+
+| Type | Does | Full command |
+|------|------|-------------|
+| `/beacon-shopify` | Onboard a real Shopify store onto Beacon | `/ll-beacon-merchant shopify` |
+| `/beacon-woo` | Onboard a WooCommerce store (WP plugin) | `/ll-beacon-merchant woocommerce` |
+| `/beacon-bigcommerce` | Onboard a BigCommerce store | `/ll-beacon-merchant bigcommerce` |
+| `/beacon-magento` | Onboard a Magento store | `/ll-beacon-merchant magento` |
+| `/beacon-wix` | Onboard a Wix store | `/ll-beacon-merchant wix` |
+| `/beacon-gmc` | Import a Google Merchant Center feed | `/ll-beacon-merchant gmc` |
+| `/beacon-hotel` | Onboard a hotel / travel merchant | `/ll-beacon-merchant hotel` |
+
+Full cycle each time: connect → catalog sync → integrity screening
+(injection + sanctions + licence) → publish gate → live agent discovery
+→ token-attributed conversion. See `/ll-beacon-merchant`.
+
 ## AI & Intelligence
 
 | Type | Does | Full command |
