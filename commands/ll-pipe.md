@@ -29,6 +29,28 @@ Compose Luna commands into powerful pipelines with variables, conditions, loops,
 
 **Every command in a pipe is a Luna command.**
 
+## Executable runner
+
+The Luna CLI now executes the core pipeline graph directly:
+
+```bash
+luna pipe 'req >> des >> plan >> (rev ~~ test) ?>> ship'
+```
+
+Supported by the executable runner: `>>`, `~~`, groups, `?>>`, and `!>>`.
+Advanced language constructs documented below remain available to the
+Claude `/pipe` orchestrator and are rejected explicitly by the CLI until their
+deterministic runtime implementations land.
+
+Protected steps such as `ship`, `deploy`, `release`, `publish`, `migrate`,
+secret access, and Git pushes are evaluated by PipeWarden before execution.
+Use `LUNA_POLICY_MODE=observe` (default), `enforce`, or `off`. Enforce mode
+requires `PIPEWARDEN_RECEIPT_KEY`; `--approve` issues a 15-minute approval
+bound to the exact receipt and input hash.
+
+Every run writes hash-linked execution events and a report under
+`.luna/<project>/`.
+
 ---
 
 ## Operators
