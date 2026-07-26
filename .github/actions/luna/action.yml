@@ -107,7 +107,7 @@ runs:
       run: |
         set +e
 
-        ARGS="${{ inputs.agent }}"
+        ARGS="${{ inputs.agent }} --provider ${{ inputs.provider }}"
         if [ -n "${{ inputs.model }}" ]; then
           ARGS="$ARGS --model ${{ inputs.model }}"
         fi
