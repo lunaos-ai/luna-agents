@@ -53,9 +53,15 @@ runs:
       with:
         node-version: '20'
 
-    - name: Install LunaOS CLI
+    - name: Build LunaOS CLI
       shell: bash
-      run: npm install -g @luna-agents/cli
+      run: |
+        CLI_ROOT="${{ github.action_path }}/../../../cli"
+        npm --prefix "$CLI_ROOT" ci
+        npm --prefix "$CLI_ROOT" run build
+        mkdir -p "$RUNNER_TEMP/luna-bin"
+        ln -sf "$CLI_ROOT/dist/index.cjs" "$RUNNER_TEMP/luna-bin/luna"
+        echo "$RUNNER_TEMP/luna-bin" >> "$GITHUB_PATH"
 
     - name: Get changed files
       if: inputs.files == 'true'
@@ -101,7 +107,7 @@ runs:
       run: |
         set +e
 
-        ARGS="${{ inputs.agent }}"
+        ARGS="${{ inputs.agent }} --provider ${{ inputs.provider }}"
         if [ -n "${{ inputs.model }}" ]; then
           ARGS="$ARGS --model ${{ inputs.model }}"
         fi

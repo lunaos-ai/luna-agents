@@ -353,7 +353,7 @@ describe('Context Builder — project detection', () => {
         const { buildContext } = await import('../src/core/context-builder.js');
 
         const ctx = await buildContext(path.resolve(import.meta.dirname, '../../'));
-        expect(ctx.projectName).toBe('luna-agents');
+        expect(ctx.projectName).toBe(path.basename(path.resolve(import.meta.dirname, '../../')));
     });
 
     it('should not include binary files', async () => {

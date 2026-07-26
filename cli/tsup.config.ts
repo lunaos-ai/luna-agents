@@ -16,6 +16,6 @@ export default defineConfig({
     banner: {
         js: '#!/usr/bin/env node',
     },
-    noExternal: [/.*/],
+    noExternal: [/^(?!playwright(?:-core)?(?:\/|$)).*/],
     external: [...nodeBuiltins, 'fsevents', 'playwright-core', 'playwright'],
 });
