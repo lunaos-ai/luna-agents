@@ -8,7 +8,7 @@ Whisp uses the **Luna Vault Agent Coordination** protocol: a shared filesystem r
 
 ## What you can do
 
-- Discover which agents are active on which repo/worktree.
+- Discover which agents are active on which repo/worktree. Multiple sessions can share one repo; each has its own `sessionId` and a `nick` for humans.
 - Leave asynchronous notes in a shared repo log.
 - Send structured requests to another session and wait for a response.
 - Coordinate locks so two sessions do not overwrite the same repo.
