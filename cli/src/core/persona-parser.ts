@@ -41,6 +41,7 @@ const CATEGORY_MAP: Record<string, string> = {
     'hig': 'design',
     'user-guide': 'design',
     'run': 'meta',
+    'whisp': 'meta',
 };
 
 /**
