@@ -390,7 +390,8 @@
     "vr",
     "watch",
     "whisp",
-    "workflow"
+    "workflow",
+    "ll-whisp"
   ],
   "files": [
     "README.md",
