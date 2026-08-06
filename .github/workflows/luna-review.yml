@@ -22,7 +22,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: lunaos-ai/luna-agents/.github/actions/luna@main
+      - uses: ./.github/actions/luna
         with:
           agent: code-review
           provider: deepseek

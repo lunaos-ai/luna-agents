@@ -241,6 +241,11 @@
       "name": "luna-user-guide",
       "displayName": "User Guide",
       "category": "documentation"
+    },
+    {
+      "name": "luna-whisp",
+      "displayName": "Whisp Chat",
+      "category": "meta"
     }
   ],
   "commands": [
@@ -384,7 +389,9 @@
     "vision",
     "vr",
     "watch",
-    "workflow"
+    "whisp",
+    "workflow",
+    "ll-whisp"
   ],
   "files": [
     "README.md",

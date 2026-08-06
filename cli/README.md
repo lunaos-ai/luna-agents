@@ -23,6 +23,7 @@ luna run code-review
 
 - 🤖 **28+ AI Agents** — specialists for every stage of the software development lifecycle
 - 🔗 **Agent Chains** — multi-agent workflows (e.g., review → test → document)
+- 🛡️ **Governed Pipes** — compose agents while PipeWarden gates protected actions
 - 📚 **RAG Indexing** — index your codebase for context-aware analysis
 - 🌐 **Multi-Provider** — Anthropic, OpenAI, Google, DeepSeek, Groq, Mistral, and more
 - ☁️ **Cloud Mode** — optional cloud execution via LunaOS API
@@ -36,6 +37,7 @@ luna run code-review
 | `luna list` | List all available agents |
 | `luna run <agent>` | Run an agent on your project |
 | `luna chain <preset>` | Run a multi-agent chain |
+| `luna pipe '<expression>'` | Run a governed agent pipeline |
 | `luna index` | Index project for RAG context |
 | `luna config` | View and manage configuration |
 | `luna keys` | Manage API keys |
@@ -66,6 +68,19 @@ luna chain deploy            # Code Review → Testing → Deployment
 luna chain security-audit    # Security Scan → Code Review
 luna chain api-design        # API Generator → Database → Documentation
 ```
+
+## Governed Pipes
+
+```bash
+luna pipe 'req >> des >> plan >> (rev ~~ test) ?>> ship'
+LUNA_POLICY_MODE=enforce PIPEWARDEN_RECEIPT_KEY=... \
+  luna pipe --approve 'test >> ship'
+```
+
+The executable runner supports sequential, parallel, grouped, success, and
+failure branches. Deployments, releases, migrations, secret operations, and
+Git pushes are evaluated by PipeWarden before execution. Runs produce
+hash-linked events and reports under `.luna/<project>/`.
 
 ## Configuration
 

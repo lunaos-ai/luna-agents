@@ -18,12 +18,14 @@ on:
     paths:
       - "site/**"
       - "commands/**"          # lexicon regenerates from these
+      - "agents/**"          # lexicon also surfaces agent personas
       - ".pushci.yml"
   pull_request:
     branches: [main]
     paths:
       - "site/**"
       - "commands/**"
+      - "agents/**"
   workflow_dispatch:           # manual trigger
 
 # Reusable env
