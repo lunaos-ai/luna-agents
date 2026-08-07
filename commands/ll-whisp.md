@@ -68,8 +68,15 @@ machine without editing its repo directly.
 /ll-whisp repo=/Users/me/project-x action=discover
 ```
 
+## Requirements
+
+- `LUNA_SESSION` must be exported and stable for the whole session, otherwise
+  every call gets a fresh id and locks can never be released.
+- The runner is `scripts/luna-vault-agent.py`, bundled with this plugin.
+  There is **no `vibevault agent` subcommand** — `vibevault` is a secret manager.
+
 ## See also
 
 - `/whisp` — shortcut for this command.
-- `vibevault agent` — the underlying registry/lock/inbox CLI.
+- `scripts/luna-vault-agent.py` — the underlying registry/lock/inbox CLI.
 - `luna run whisp` — run the Whisp agent persona in the terminal.
