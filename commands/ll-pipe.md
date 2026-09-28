@@ -51,6 +51,17 @@ bound to the exact receipt and input hash.
 Every run writes hash-linked execution events and a report under
 `.luna/<project>/`.
 
+Native requirements lifecycle verbs run directly in this executable graph:
+
+```bash
+luna pipe 'reconcile >> gaps >> cycle P07 >> sync-github P07'
+```
+
+The native set is `reconcile`, `status`, `gaps`, `cycle`, `sync-github`,
+`evidence`, and `verify-requirement`. GitHub synchronization is dry-run unless
+`--apply` is present; apply maps to the protected `github.sync` policy verb.
+Closed issues and checked tasks never advance evidence-derived state.
+
 ---
 
 ## Operators

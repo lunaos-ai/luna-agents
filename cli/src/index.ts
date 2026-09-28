@@ -14,6 +14,7 @@ import { ragCommand } from './commands/rag.js';
 import { secCommand } from './commands/sec.js';
 import { keystoreCommand } from './commands/keystore.js';
 import { pipeCommand } from './commands/pipe.js';
+import { lifecycleCommands } from './commands/lifecycle.js';
 import { handleError } from './utils/error-handler.js';
 
 const program = new Command();
@@ -65,6 +66,7 @@ program.addCommand(createAgentCommand);
 program.addCommand(secCommand);
 program.addCommand(keystoreCommand);
 program.addCommand(pipeCommand);
+for (const command of lifecycleCommands) program.addCommand(command);
 
 // Global error handler — catches unhandled rejections
 process.on('uncaughtException', (error) => {

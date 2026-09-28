@@ -1,8 +1,8 @@
 ---
 name: plan
 displayName: Plan (shortcut)
-description: "Shortcut: Break design into ordered implementation tasks → /luna-plan"
-version: 1.0.0
+description: "Shortcut: Create stable cycles and evidence-targeted tasks → /ll-plan"
+version: 2.0.0
 category: planning
 agent: luna-task-planner
 parameters:
@@ -22,8 +22,9 @@ Break the technical design into ordered, actionable implementation tasks.
 ## What it does
 
 1. Reads design from `.luna/{project}/design.md`
-2. Creates task breakdown with dependencies
-3. Generates `.luna/{project}/implementation-plan.md`
+2. Preserves exact requirement IDs in every task
+3. Creates stable phase/epic and task IDs with evidence targets
+4. Generates `.luna/{project}/implementation-plan.md`
 
 ## Usage
 
@@ -34,5 +35,5 @@ Break the technical design into ordered, actionable implementation tasks.
 ## Next
 
 ```
-/go → /rev → /test → /ship
+/reconcile → /go → /evidence → /verify-requirement
 ```

@@ -38,6 +38,12 @@ luna run code-review
 | `luna run <agent>` | Run an agent on your project |
 | `luna chain <preset>` | Run a multi-agent chain |
 | `luna pipe '<expression>'` | Run a governed agent pipeline |
+| `luna reconcile` | Derive requirement and cycle state from evidence |
+| `luna gaps` | Show missing or stale lifecycle evidence |
+| `luna cycle [id]` | Show corrected phase or epic state |
+| `luna sync-github` | Dry-run idempotent GitHub issue synchronization |
+| `luna evidence <id>` | Attach evidence to a stable requirement ID |
+| `luna verify-requirement <id>` | Verify one evidence chain and its history |
 | `luna index` | Index project for RAG context |
 | `luna config` | View and manage configuration |
 | `luna keys` | Manage API keys |
@@ -81,6 +87,30 @@ The executable runner supports sequential, parallel, grouped, success, and
 failure branches. Deployments, releases, migrations, secret operations, and
 Git pushes are evaluated by PipeWarden before execution. Runs produce
 hash-linked events and reports under `.luna/<project>/`.
+
+## Requirements Lifecycle and GitHub Cycles
+
+Requirements use stable IDs and evidence-derived states:
+
+```text
+PLANNED → IMPLEMENTING → IMPLEMENTED → VERIFIED → DEPLOYED → E2E_VERIFIED → DONE
+```
+
+```bash
+# Existing .luna files are read, never overwritten
+luna init --import-existing --dry-run
+luna reconcile
+luna gaps
+luna cycle P07
+
+# GitHub sync is dry-run by default
+luna sync-github --repo owner/project
+luna sync-github --repo owner/project --apply
+```
+
+Checkboxes and closed issues are claims. They cannot mark a requirement
+`DONE`. File evidence is digest-bound, stale evidence regresses derived state,
+and transition history remains append-only under `.luna/lifecycle/`.
 
 ## Configuration
 

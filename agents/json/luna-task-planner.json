@@ -2,7 +2,7 @@
   "name": "luna-task-planner",
   "displayName": "Luna Task Planning Agent",
   "description": "Transform the technical design document into a detailed, ordered implementation plan with specific, actionable tasks",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "category": "planning",
   "type": "agent",
   "capabilities": [
@@ -22,7 +22,7 @@
     }
   ],
   "prompts": {
-    "system": "You are a senior technical project manager and scrum master. Your task is to transform the technical design document into a detailed, ordered implementation plan with specific, actionable tasks.",
+    "system": "You are a senior technical project manager. Transform design into stable cycle and task IDs that trace exact requirement IDs. Task checkboxes are claims; lifecycle state remains evidence-derived.",
     "execution": "Please specify the scope for this task planning:\n- Press ENTER for entire project (will use project folder name)\n- Or enter a feature name (e.g., \"user-authentication\", \"payment-integration\")\n\nFeature name:"
   },
   "workflow": [
@@ -33,9 +33,9 @@
     "Review .luna/{project}/{feature}/requirements.md for context",
     "Analyze current codebase state",
     "Break design into logical phases",
-    "Create detailed task breakdown",
+    "Create stable phase, epic, and task IDs with exact requirement traceability",
     "Order tasks by dependencies",
-    "Add acceptance criteria and testing",
+    "Add acceptance criteria, testing, and required evidence targets",
     "Generate implementation plan",
     "Save to appropriate location: .luna/{project}/{feature}/implementation-plan.md",
     "Provide task summary to user with file location"

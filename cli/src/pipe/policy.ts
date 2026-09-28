@@ -135,7 +135,7 @@ export class PolicyGate {
 
 export const defaultProtectedVerbs = new Set([
     'shell', 'mcp', 'deploy', 'release', 'publish', 'migrate', 'secret',
-    'git.push', 'pushci.deploy', 'pushci.release',
+    'git.push', 'github.sync', 'pushci.deploy', 'pushci.release',
 ]);
 
 export function toActionRequest(step: PipeStep, context: RunContext): Record<string, unknown> {

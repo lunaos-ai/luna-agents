@@ -27,6 +27,7 @@ const agentSet = new Set(
 function classifyStatus(fm, body, hasFrontmatter) {
   if (!hasFrontmatter) return "unknown";
   if (fm.shortcut_for) return "aux";
+  if (fm.runtime?.replace(/['"]/g, "").trim() === "native") return "stable";
   const agent = fm.agent?.replace(/['"]/g, "").trim();
   if (!agent) return "stub";
   if (!agentSet.has(agent)) return "planned";

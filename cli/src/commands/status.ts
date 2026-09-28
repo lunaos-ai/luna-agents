@@ -4,18 +4,45 @@ import fs from 'node:fs';
 import path from 'node:path';
 import yaml from 'yaml';
 import { loadCredentials, getApiUrl, loadConfig } from '../utils/config-store.js';
+import { executeLifecycleVerb } from '../lifecycle/verbs.js';
+
+interface LifecycleStatus {
+    project: string;
+    requirementCount: number;
+    cycleCount: number;
+    sourceFiles: string[];
+    counts: Record<string, number>;
+    claimMismatchCount: number;
+    staleEvidenceCount: number;
+}
 
 export const statusCommand = new Command('status')
     .aliases(['s', 'stat'])
     .description('Show LunaOS project status, plan, and usage')
+    .option('--json', 'Print evidence-derived lifecycle status as JSON')
+    .option('--lifecycle-only', 'Show only requirements lifecycle status')
     .addHelpText('after', `
 Examples:
   luna status                  Show project config, plan, usage, and recent reports
 `)
-    .action(async () => {
+    .action(async (command) => {
+        const options = typeof command.opts === 'function' ? command.opts() : command;
         const lunaDir = path.join(process.cwd(), '.luna');
         const configPath = path.join(lunaDir, 'config.yaml');
         const reportsDir = path.join(lunaDir, 'reports');
+        const lifecycle = await executeLifecycleVerb('status', [], {
+            cwd: process.cwd(),
+            forceDryRun: true,
+        }) as LifecycleStatus;
+
+        if (options.json) {
+            console.log(JSON.stringify(lifecycle, null, 2));
+            return;
+        }
+        if (options.lifecycleOnly) {
+            printLifecycleStatus(lifecycle);
+            return;
+        }
 
         console.log('');
         console.log(chalk.hex('#E8A317')('🌙 LunaOS Status'));
@@ -24,18 +51,16 @@ Examples:
         // ─── Project Config ──────────────────────
         if (!fs.existsSync(configPath)) {
             console.log(chalk.yellow('  ⚠️  Not initialized'));
-            console.log(chalk.dim('  Run ') + chalk.cyan('luna init') + chalk.dim(' to get started'));
-            console.log('');
-            return;
-        }
-
-        try {
-            const config = yaml.parse(fs.readFileSync(configPath, 'utf-8'));
-            console.log(`  ${chalk.dim('Project:')}   ${chalk.white(config.project)}`);
-            console.log(`  ${chalk.dim('Provider:')}  ${chalk.white(config.provider)}`);
-            console.log(`  ${chalk.dim('Model:')}    ${chalk.white(config.model)}`);
-        } catch {
-            console.log(chalk.dim('  Could not read config'));
+            console.log(chalk.dim('  Run ') + chalk.cyan('luna init') + chalk.dim(' for provider setup'));
+        } else {
+            try {
+                const config = yaml.parse(fs.readFileSync(configPath, 'utf-8'));
+                console.log(`  ${chalk.dim('Project:')}   ${chalk.white(config.project)}`);
+                console.log(`  ${chalk.dim('Provider:')}  ${chalk.white(config.provider)}`);
+                console.log(`  ${chalk.dim('Model:')}    ${chalk.white(config.model)}`);
+            } catch {
+                console.log(chalk.dim('  Could not read config'));
+            }
         }
 
         // ─── Cloud Auth & Usage ──────────────────
@@ -151,8 +176,23 @@ Examples:
         const hasKey = !!(creds[envVar] || process.env[envVar]);
         console.log(`  ${chalk.dim(`${provider}:`)} ${hasKey ? chalk.green('✓ configured') : chalk.red('✗ missing')}`);
 
+        printLifecycleStatus(lifecycle);
         console.log('');
     });
+
+function printLifecycleStatus(status: LifecycleStatus): void {
+    console.log('');
+    console.log(chalk.white.bold('  Requirements lifecycle'));
+    console.log(`  ${chalk.dim('Requirements:')} ${status.requirementCount}`);
+    console.log(`  ${chalk.dim('Cycles:')}       ${status.cycleCount}`);
+    const stateLine = Object.entries(status.counts)
+        .filter(([, count]) => count > 0)
+        .map(([state, count]) => `${state}=${count}`)
+        .join('  ');
+    if (stateLine) console.log(`  ${chalk.dim('States:')}       ${stateLine}`);
+    console.log(`  ${chalk.dim('Claim gaps:')}   ${status.claimMismatchCount}`);
+    console.log(`  ${chalk.dim('Stale evidence:')} ${status.staleEvidenceCount}`);
+}
 
 function timeAgo(date: Date): string {
     const seconds = Math.floor((Date.now() - date.getTime()) / 1000);

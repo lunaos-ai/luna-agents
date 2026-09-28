@@ -2,6 +2,7 @@ import { spawn } from 'node:child_process';
 import { createHash } from 'node:crypto';
 import path from 'node:path';
 import type { CommandNode, PipeStep, RunContext } from './types.js';
+import { executeLifecycleVerb, isLifecycleVerb } from '../lifecycle/verbs.js';
 
 const agentByCommand: Record<string, string> = {
     req: 'requirements-analyzer',
@@ -40,10 +41,13 @@ const governedVerbs: Record<string, { verb: string; environment: string; riskSco
     'git-push': { verb: 'git.push', environment: 'protected', riskScore: 70 },
     shell: { verb: 'shell', environment: 'local', riskScore: 50 },
     mcp: { verb: 'mcp', environment: 'local', riskScore: 50 },
+    'sync-github': { verb: 'github.sync', environment: 'remote', riskScore: 65 },
 };
 
 export function toPipeStep(node: CommandNode, repository: string): PipeStep {
-    const governed = governedVerbs[node.command] || {
+    const governed = node.command === 'sync-github' && !node.args.includes('--apply')
+        ? { verb: 'github.read', environment: 'remote', riskScore: 0 }
+        : governedVerbs[node.command] || {
         verb: node.command,
         environment: 'local',
         riskScore: 0,
@@ -73,6 +77,12 @@ export function createCommandExecutor(options: {
         if (step.command === 'approve') {
             if (process.env.LUNA_APPROVE !== '1') throw new Error('Manual approval requires LUNA_APPROVE=1');
             return { approved: true };
+        }
+        if (isLifecycleVerb(step.command)) {
+            return executeLifecycleVerb(step.command, step.args, {
+                cwd: options.cwd,
+                forceDryRun: options.dryRun,
+            });
         }
         const agent = agentByCommand[step.command] || step.command;
         if (options.dryRun) return { dryRun: true, agent };
