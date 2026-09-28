@@ -1,8 +1,8 @@
 ---
 name: ll-plan
 displayName: Luna Task Planning
-description: Break down design into ordered, actionable implementation tasks
-version: 1.0.0
+description: Build stable cycles and tasks that trace exact requirement IDs and evidence targets
+version: 2.0.0
 category: planning
 agent: luna-task-planner
 parameters:
@@ -14,7 +14,9 @@ parameters:
 workflow:
   - read_design_and_requirements
   - create_task_hierarchy_dependencies
+  - preserve_requirement_ids_and_assign_cycle_ids
   - define_acceptance_criteria_per_task
+  - define_evidence_target_per_task
   - generate_implementation_plan_with_checkboxes
 output:
   - .luna/{current-project}/implementation-plan.md (project-level)
@@ -69,12 +71,19 @@ The implementation plan includes:
 - Acceptance criteria for each task
 - Estimated effort and complexity indicators
 - Clear sequencing for systematic implementation
+- Stable phase/epic and task IDs
+- Exact requirement IDs and intended lifecycle evidence for every task
+
+A checked task does not mark a requirement `DONE`. Native reconciliation uses
+validated implementation, verification, deployment, E2E, and completion
+evidence; GitHub closure is synchronization state only.
 
 ## Next Steps in Workflow
 
 Start implementing tasks:
 ```
 /luna-execute
+luna reconcile
 ```
 
 Run the execute command repeatedly to complete tasks one by one.

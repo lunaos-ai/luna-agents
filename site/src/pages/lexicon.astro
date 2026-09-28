@@ -5,13 +5,25 @@ import LexiconCategory from "../components/lexicon/LexiconCategory.astro";
 import LexiconFilter from "../components/lexicon/LexiconFilter.astro";
 import data from "../data/skills.json";
 
-const categories = Object.entries(data.byCategory)
+type Entry = {
+  word: string;
+  display: string;
+  gloss: string;
+  category: string;
+  shortcutFor: string | null;
+  status?: "stable" | "beta" | "planned" | "stub" | "aux" | "unknown";
+  caps?: { reads: string[]; writes: string[]; network: boolean; secrets: string[] };
+  call: string;
+};
+
+const lexicon = data as { count: number; byCategory: Record<string, Entry[]>; entries: Entry[] };
+const categories = Object.entries(lexicon.byCategory)
   .filter(([cat]) => cat !== "shortcut")
   .sort((a, b) => a[0].localeCompare(b[0]));
-const shortcutEntries = data.byCategory.shortcut ?? [];
+const shortcutEntries = lexicon.byCategory.shortcut ?? [];
 
 const statusCounts: Record<string, number> = {};
-for (const e of data.entries) {
+for (const e of lexicon.entries) {
   const s = (e as any).status ?? "unknown";
   statusCounts[s] = (statusCounts[s] ?? 0) + 1;
 }
@@ -20,9 +32,9 @@ for (const e of data.entries) {
 <Book
   title="Lexicon"
   chapter="lexicon"
-  description={`The ${data.count}-entry standard library of the Luna Pipes language.`}
+  description={`The ${lexicon.count}-entry standard library of the Luna Pipes language.`}
 >
-  <LexiconHeader count={data.count} categories={Object.keys(data.byCategory)} statusCounts={statusCounts} />
+  <LexiconHeader count={lexicon.count} categories={Object.keys(lexicon.byCategory)} statusCounts={statusCounts} />
   <LexiconFilter />
 
   <div class="wrap">

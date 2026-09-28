@@ -1,8 +1,8 @@
 ---
 name: ll-requirements
 displayName: Luna Requirements Analysis
-description: Analyze the project codebase and generate comprehensive requirements document
-version: 1.0.0
+description: Generate traceable requirements with stable IDs and evidence-derived lifecycle gates
+version: 2.0.0
 category: analysis
 agent: luna-requirements-analyzer
 parameters:
@@ -15,7 +15,9 @@ workflow:
   - prompt_for_scope
   - scan_project_structure
   - identify_gaps_missing_functionality
+  - preserve_or_assign_stable_requirement_ids
   - generate_requirements_document
+  - reconcile_evidence_lifecycle
 output:
   - .luna/{current-project}/requirements.md (project-level)
   - .luna/{current-project}/{feature}/requirements.md (feature-level)
@@ -54,12 +56,19 @@ The requirements document includes:
 - Non-functional requirements
 - User stories and use cases
 - Technical constraints and dependencies
+- Stable IDs that are never renumbered by later planning
+- Evidence expectations for `PLANNED → IMPLEMENTING → IMPLEMENTED → VERIFIED → DEPLOYED → E2E_VERIFIED → DONE`
+
+Checkboxes and GitHub issue state are claims, not lifecycle evidence. Run
+`luna reconcile` after generation. Existing `.luna` artifacts are imported by
+sidecar and are not overwritten by lifecycle bootstrap.
 
 ## Next Steps in Workflow
 
 After requirements are generated, proceed with:
 ```
 /luna-design
+luna reconcile
 ```
 
 This will transform your requirements into a comprehensive technical design specification.

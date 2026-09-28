@@ -6,7 +6,7 @@
 </p>
 
 <p align="center">
-  <strong>45 specialized AI agents · 358 slash commands for every stage of your software development lifecycle.</strong>
+  <strong>46 specialized AI agents · 368 slash commands for every stage of your software development lifecycle.</strong>
   <br>
   One CLI. One API. From requirements to production.
 </p>
@@ -29,14 +29,14 @@ npm install -g luna-agents
 luna-setup
 ```
 
-Then in Claude Code, any of **358 slash commands** work:
+Then in Claude Code, any of **368 slash commands** work:
 
 ```
 /luna-agents:plan       # Break a feature into tasks
 /luna-agents:go         # Implement next task
 /luna-agents:test       # Run tests
 /luna-agents:ship       # Deploy
-/luna-agents:cmds       # See all 358 commands
+/luna-agents:cmds       # See all 368 commands
 ```
 
 That's it. The plugin reads your codebase, routes work to specialized AI agents, and streams results back.
@@ -100,9 +100,9 @@ luna agents list
 luna rag search "How does authentication work?"
 ```
 
-### Claude Code Commands (358)
+### Claude Code Commands (368)
 
-Luna Agents includes 358 slash commands for Claude Code. Type `/cmds` to see all.
+Luna Agents includes 368 slash commands for Claude Code. Type `/cmds` to see all.
 
 #### Dev Workflow (sequential)
 
@@ -223,6 +223,33 @@ Use `/pipe` to chain commands with operators:
 # Full project from scratch
 /pipe req >> des >> plan >> @before:rules @after:test go *10! >> rev >> sec >> ship >> docs >> watch
 ```
+
+### Requirements Lifecycle and GitHub Cycles
+
+Luna Pipes now has native lifecycle verbs. Requirements keep stable IDs while
+state is derived from current evidence, never from a checkbox or GitHub issue
+closure:
+
+```text
+PLANNED → IMPLEMENTING → IMPLEMENTED → VERIFIED → DEPLOYED → E2E_VERIFIED → DONE
+```
+
+```bash
+luna pipe 'reconcile >> gaps >> cycle P07 >> sync-github P07'
+luna evidence PAY-001 --kind implementation --source file:src/payments.ts
+luna verify-requirement PAY-001
+luna jev-shadow PHASE-6 --dry-run --json
+```
+
+`sync-github` is idempotent and dry-run by default. `--apply` is a protected
+pipe action. Existing `.luna` artifacts can be imported with
+`luna init --import-existing --dry-run`; lifecycle sidecars are added without
+overwriting the source documents.
+
+`jev-shadow` is a separate, early-access observation layer. It sends only a
+sanitized lifecycle summary and returns a typed Choice, Score, and Noul
+probability. It cannot write code, change lifecycle state, make AML/sanctions
+or authorization decisions, mutate GitHub, or bypass human review.
 
 | Operator | Meaning | Example |
 |:---------|:--------|:--------|
@@ -391,8 +418,8 @@ MIT © [Shachar Solomon](https://github.com/shacharsol)
 
 <!-- LUNA:COUNTERS-START -->
 <!-- counters: command/agent/skill totals are updated by sync-readme.mjs -->
-- **Commands:** 358
-- **Agents:** 45
+- **Commands:** 368
+- **Agents:** 46
 - **Skills:** 0
 <!-- LUNA:COUNTERS-END -->
 
@@ -442,6 +469,7 @@ MIT © [Shachar Solomon](https://github.com/shacharsol)
 | `/luna-agents:curb` | Shortcut: Turn your marketing into Curb Your Enthusiasm-style content -> /ll-curb |
 | `/luna-agents:cve-doctor` | Shortcut: Defensive CVE scanner — host + lockfiles + k8s nodes, cross-referenced against NVD/OSV/GHA -> /ll-cve-doctor |
 | `/luna-agents:cve-triage` | Shortcut: Defense-only disclosure-triage. Advisory in, upgrade tickets + PRs out across repo / monorepo / GitHub org -> /ll-cve-triage |
+| `/luna-agents:cycle` | Compute corrected phase and epic state from their requirements |
 | `/luna-agents:des` | Project or feature scope |
 | `/luna-agents:desktop-tauri` | Shortcut: Tauri 2.0 + shadcn desktop scaffold with Apple HIG compliance -> /ll-desktop-tauri |
 | `/luna-agents:devto` | Shortcut: Write & publish Dev.to articles with comedy styles (Curb, Seinfeld, Office, Silicon Valley) -> /ll-devto-publish |
@@ -456,6 +484,7 @@ MIT © [Shachar Solomon](https://github.com/shacharsol)
 | `/luna-agents:elixir-doctor` | Shortcut: Elixir / Phoenix doctor — credo, sobelow, mix audit, dialyxir -> /ll-elixir-doctor |
 | `/luna-agents:email-routing` | Shortcut: Set up free email forwarding via Cloudflare → /ll-email-routing |
 | `/luna-agents:er` | Shortcut: Critical-severity triage in under 5 minutes — Is anything on fire? -> /ll-er |
+| `/luna-agents:evidence` | Attach digest-bound or attested evidence to a stable requirement ID |
 | `/luna-agents:export-governance` | Shortcut: Emit agent manifests for Willow / Backstage / generic IAM / OPA / OpenAPI from a Luna scaffold -> /ll-export-governance |
 | `/luna-agents:fastapi-doctor` | Shortcut: FastAPI / Starlette doctor — async blocking, DI cycles, response leaks -> /ll-fastapi-doctor |
 | `/luna-agents:feature` | Shortcut: Full feature lifecycle until done -> /ll-feature |
@@ -464,6 +493,7 @@ MIT © [Shachar Solomon](https://github.com/shacharsol)
 | `/luna-agents:flaky` | Shortcut: Detect flaky tests under stress → /ll-flaky |
 | `/luna-agents:flow-record` | Shortcut: Record browser flows as demo videos → /ll-flow-record |
 | `/luna-agents:gamify` | Shortcut: → /ll-gamify |
+| `/luna-agents:gaps` | Explain the next missing or stale evidence gate for each requirement |
 | `/luna-agents:ghost` | Shortcut: → /ll-ghost |
 | `/luna-agents:git-insights` | Shortcut: Repository analytics and visualization → /ll-git-insights |
 | `/luna-agents:go-doctor` | Shortcut: Go doctor — golangci-lint + gosec + govulncheck + goroutine-leak heuristics -> /ll-go-doctor |
@@ -480,6 +510,7 @@ MIT © [Shachar Solomon](https://github.com/shacharsol)
 | `/luna-agents:idea` | Shortcut: → /ll-idea |
 | `/luna-agents:imagine` | Shortcut: → /ll-imagine |
 | `/luna-agents:inbox` | Shortcut: AI email management → /ll-inbox |
+| `/luna-agents:jev-shadow` | Compare evidence-derived lifecycle state with a typed Jev signal without taking action |
 | `/luna-agents:k8s-doctor` | Shortcut: Kubernetes doctor — kube-linter, kubeval, polaris, trivy k8s -> /ll-k8s-doctor |
 | `/luna-agents:lam` | Shortcut: Goal-driven autonomous actions -> /ll-lam |
 | `/luna-agents:landing` | Shortcut: Generate HeyGen-quality marketing landing page → /ll-landing |
@@ -688,6 +719,7 @@ MIT © [Shachar Solomon](https://github.com/shacharsol)
 | `/luna-agents:ll-voice` | Output format: mp3, wav, ogg, flac (default: mp3) |
 | `/luna-agents:ll-watch` | Luna pipeline to run on change |
 | `/luna-agents:ll-webhook-setup` | Where to write secrets (cloudflare-workers \| vercel \| dotenv). Default - cloudflare-workers. |
+| `/luna-agents:ll-whisp` | Note text when action=note. |
 | `/luna-agents:ll-workflow` | Workflow name |
 | `/luna-agents:ll-zen` | Aggressive mode: auto-fix everything without asking (default: false) |
 | `/luna-agents:llm-seo` | Shortcut: Generate llms.txt + ai-plugin.json + robots.txt + sitemap + JSON-LD + Cloudflare bot-allow for any project -> /ll-llm-seo |
@@ -726,6 +758,7 @@ MIT © [Shachar Solomon](https://github.com/shacharsol)
 | `/luna-agents:rails-doctor` | Shortcut: Wraps rails-doctor + brakeman + bundler-audit + rubocop -> /ll-rails-doctor |
 | `/luna-agents:react-doctor` | Shortcut: Wraps `npx react-doctor@latest` — security, perf, correctness, a11y, bundle-size, architecture -> /ll-react-doctor |
 | `/luna-agents:readme-sync` | Shortcut: Regenerate README.md + website skills data from commands/, agents/, skills/ -> /ll-readme-sync |
+| `/luna-agents:reconcile` | Derive requirement and cycle state from current, validated evidence |
 | `/luna-agents:record` | Shortcut: → /ll-record |
 | `/luna-agents:refactor` | Shortcut: Smart refactoring with file splitting -> /ll-refactor |
 | `/luna-agents:req` | Project or feature scope |
@@ -740,17 +773,20 @@ MIT © [Shachar Solomon](https://github.com/shacharsol)
 | `/luna-agents:skill-radar` | Shortcut: Scan awesome-claude-code lists, surface high-value new skills -> /ll-skill-radar |
 | `/luna-agents:smart-route` | Shortcut: Self-learning agent routing -> /ll-smart-route |
 | `/luna-agents:spring-doctor` | Shortcut: Spring Boot doctor — n+1, actuator exposure, transactional gaps -> /ll-spring-doctor |
+| `/luna-agents:status` | Summarize evidence-derived requirement and cycle states |
 | `/luna-agents:svelte-doctor` | Shortcut: Wraps `npx svelte-doctor-cli@latest` (or `svelte-doctor`) — state, perf, sec, a11y, dead-code -> /ll-svelte-doctor |
 | `/luna-agents:swarm-blackboard` | Shortcut: Scaffold a blackboard-pattern swarm — typed shared case file in Postgres with row-level perms -> /ll-swarm-blackboard |
 | `/luna-agents:swarm-debate` | Shortcut: Scaffold a primary + critic + verifier debate swarm — recommended for fintech / security / billing -> /ll-swarm-debate |
 | `/luna-agents:swarm-supervisor` | Shortcut: Scaffold a supervisor/manager-pattern multi-agent swarm — safest production pattern -> /ll-swarm-supervisor |
 | `/luna-agents:swarm-vote` | Shortcut: Evidence-weighted democratic swarm — independent answers, peer review, vote-with-evidence, verifier veto -> /ll-swarm-vote |
 | `/luna-agents:swarm` | Shortcut: → /ll-swarm |
+| `/luna-agents:sync-github` | Dry-run or apply idempotent requirement and cycle synchronization to GitHub issues |
 | `/luna-agents:terraform-doctor` | Shortcut: Terraform / IaC doctor — tflint, tfsec, checkov -> /ll-terraform-doctor |
 | `/luna-agents:test` | Project or feature scope |
 | `/luna-agents:time-machine` | Shortcut: → /ll-time-machine |
 | `/luna-agents:tokens` | Shortcut: Multi-brand design token engine — Style Dictionary, CSS vars, Tailwind, Figma, iOS, Android -> /ll-tokens |
 | `/luna-agents:ui` | Component or page to convert |
+| `/luna-agents:verify-requirement` | Validate one requirement's evidence chain, gaps, and transition history |
 | `/luna-agents:vertx-doctor` | Shortcut: Vert.x (Java/Kotlin) doctor — event-loop blocking, codec misuse, cluster config -> /ll-vertx-doctor |
 | `/luna-agents:video` | Shortcut: → /ll-video |
 | `/luna-agents:vision` | Shortcut: Screenshot-to-code and UI analysis -> /ll-vision |
@@ -758,6 +794,7 @@ MIT © [Shachar Solomon](https://github.com/shacharsol)
 | `/luna-agents:vr` | Shortcut: Compare screenshots before/after changes -> /ll-visual-regression |
 | `/luna-agents:watch` | Project or feature scope |
 | `/luna-agents:webhook-setup` | Shortcut: Generate copy-paste webhook bridge setup guides (Slack, Discord, WhatsApp, Telegram, Email, Jira) -> /ll-webhook-setup |
+| `/luna-agents:whisp` | Shortcut: Cross-session agent chat → /ll-whisp |
 | `/luna-agents:workflow` | Shortcut: Save, load, list named pipelines -> /ll-workflow |
 | `/luna-agents:zen` | Shortcut: → /ll-zen |
 <!-- LUNA:COMMAND-INDEX-END -->
@@ -798,17 +835,18 @@ MIT © [Shachar Solomon](https://github.com/shacharsol)
 | `post-launch-review` | ``` 🎯 Feature/Project Scope Please specify the scope for this post-launch review: - Press ENTER for entire project (will use project fol... |
 | `rag-enhanced` | **Enhanced Context Extraction**: ```javascript // lib/enhanced-context-extractor.js import * as ts from 'typescript'; import * as parser ... |
 | `rag` | ``` 🧠 Luna RAG - Context Intelligence System |
-| `requirements-analyzer` | ``` 🎯 Feature/Project Scope Please specify the scope for this post-launch review: - Press ENTER for entire project (will use project fol... |
+| `requirements-analyzer` | You are a senior requirements engineer and product analyst. Analyze the current code, documentation, roadmap, and constraints, then produ... |
 | `run` | ``` 🚀 Luna Run - Project Execution & Testing |
 | `sec-orchestrator` | Orchestrates open-source security tools across the full DevSecOps lifecycle — secrets, SAST, deps, IaC, container, SBOM, signing, DAST, fuzz, threat model. Wires hooks + CI + cron. |
 | `seo` | ``` 🔍 SEO Focus 1. Complete SEO setup (recommended) 2. Meta tags & Open Graph only 3. Sitemap & robots.txt only 4. Structured data (Sche... |
 | `skill-radar` | You produce reports without bluffing — every claim is checked against the GitHub API in real time. |
 | `task-executor` | ``` 🎯 Feature/Project Scope Please specify the scope for task execution: - Press ENTER for entire project (will use project folder name)... |
-| `task-planner` | ``` 🎯 Feature/Project Scope Please specify the scope for this task planning: - Press ENTER for entire project (will use project folder n... |
+| `task-planner` | The plan consumes stable requirement IDs and defines cycles, phases, and tasks. It does not decide requirement completion. A checked task... |
 | `testing-validation` | ``` 🎯 Feature/Project Scope Please specify the scope for testing and validation: - Press ENTER for entire project (will use project fold... |
 | `tokens` | You build small files, strict types, and zero hex codes outside `tokens/source/`. |
 | `ui-fix` | ``` 🔧 UI Fix Scope Please specify what you'd like to fix: - Press ENTER for full project UI audit and fixes - Or enter specific area (e.... |
 | `ui-test` | ``` 🧪 UI/UX Testing Scope Please specify what you'd like to test: - Press ENTER for full UI test suite - Or enter specific area (e.g., "... |
 | `user-guide` | ``` 📚 User Guide Scope Please specify the documentation scope: - Press ENTER for complete user guide - Or enter specific section (e.g., ... |
+| `whisp` | You are **Luna Whisp**, a coordination specialist for AI-agent sessions. Your job is to let one Claude/Cursor/Devin session talk to anoth... |
 | `site-auditor` | You are acting as a brutal senior product auditor, QA lead, conversion strategist, UX expert, security reviewer, growth marketer, and tec... |
 <!-- LUNA:AGENT-LIST-END -->

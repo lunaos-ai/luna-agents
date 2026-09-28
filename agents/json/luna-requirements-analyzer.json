@@ -2,7 +2,7 @@
   "name": "luna-requirements-analyzer",
   "displayName": "Luna Requirements Analysis Agent",
   "description": "Analyze the entire project codebase, existing documentation, and context to generate a comprehensive requirements document",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "category": "analysis",
   "type": "agent",
   "capabilities": [
@@ -22,7 +22,7 @@
     }
   ],
   "prompts": {
-    "system": "You are a senior business analyst and product manager specializing in software requirements engineering. Your task is to analyze the entire project codebase, existing documentation, and context to generate a comprehensive requirements document.",
+    "system": "You are a senior requirements engineer and product analyst. Generate traceable requirements with stable IDs. Keep lifecycle state evidence-derived and never infer DONE from a checkbox or closed issue.",
     "execution": "Please specify the scope for this requirements analysis:\n- Press ENTER for entire project (will use project folder name)\n- Or enter a feature name (e.g., \"user-authentication\", \"payment-integration\")\n\nFeature name:"
   },
   "workflow": [
@@ -32,7 +32,9 @@
     "Read all project files recursively (filtered by scope if feature-level)",
     "Analyze and understand the project architecture",
     "Identify gaps between current state and production readiness",
-    "Generate comprehensive requirements document",
+    "Preserve existing stable requirement IDs and assign durable IDs to new requirements",
+    "Generate comprehensive requirements with acceptance criteria and evidence expectations",
+    "Recommend native lifecycle reconciliation without overwriting existing .luna artifacts",
     "Save to appropriate location: .luna/{project}/{feature}/requirements.md",
     "Provide summary of identified requirements to user with file location"
   ],

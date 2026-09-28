@@ -7,6 +7,8 @@ import yaml from 'yaml';
 import { createInterface } from 'node:readline';
 import { exec } from 'node:child_process';
 import { PROVIDERS, type Provider } from '../core/llm-client.js';
+import { executeLifecycleVerb } from '../lifecycle/verbs.js';
+import { printLifecycleResult } from './lifecycle.js';
 
 /**
  * Open a URL in the user's default browser
@@ -58,6 +60,8 @@ Examples:
     .option('--cloud', 'Configure cloud mode (sign up / log in to LunaOS)')
     .option('--open', 'Auto-open provider\'s API key page in browser')
     .option('--auto-key', 'Auto-extract API key using browser automation')
+    .option('--import-existing', 'Bootstrap lifecycle sidecars from existing .luna artifacts without overwriting them')
+    .option('--dry-run', 'Preview an existing .luna import without writing sidecars')
     .action(async (options) => {
         const projectName = path.basename(process.cwd());
         const lunaDir = path.join(process.cwd(), '.luna');
@@ -70,6 +74,16 @@ Examples:
         console.log(chalk.hex('#E8A317')('🌙 LunaOS Setup'));
         console.log(chalk.dim(`  Project: ${projectName}`));
         console.log('');
+
+        if (options.importExisting) {
+            const result = await executeLifecycleVerb(
+                'reconcile',
+                options.dryRun ? ['--dry-run'] : [],
+                { cwd: process.cwd() },
+            );
+            printLifecycleResult('reconcile', result);
+            return;
+        }
 
         // --- CLOUD MODE ---
         if (options.cloud) {
@@ -256,14 +270,20 @@ Examples:
             output: { dir: '.luna/reports', format: 'markdown' },
         };
 
-        fs.writeFileSync(configPath, yaml.stringify(config), 'utf-8');
-        fs.writeFileSync(path.join(lunaDir, '.gitignore'), 'reports/\n*.log\n', 'utf-8');
+        const gitignorePath = path.join(lunaDir, '.gitignore');
+        const configCreated = !fs.existsSync(configPath);
+        if (configCreated) fs.writeFileSync(configPath, yaml.stringify(config), 'utf-8');
+        if (!fs.existsSync(gitignorePath)) {
+            fs.writeFileSync(gitignorePath, 'reports/\n*.log\n', 'utf-8');
+        }
 
         console.log('');
         console.log(chalk.hex('#E8A317')('🌙 LunaOS initialized!'));
         console.log('');
         console.log(chalk.dim('  Created:'));
-        console.log(`    ${chalk.green('✓')} .luna/config.yaml  ${chalk.dim(`(${providerInfo.name}, ${model})`)}`);
+        console.log(`    ${chalk.green('✓')} .luna/config.yaml  ${configCreated
+            ? chalk.dim(`(${providerInfo.name}, ${model})`)
+            : chalk.dim('(preserved existing file)')}`);
         console.log(`    ${chalk.green('✓')} .luna/reports/`);
         console.log('');
         console.log(chalk.dim('  Try it now:'));

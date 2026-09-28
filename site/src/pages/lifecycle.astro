@@ -1,0 +1,89 @@
+---
+import Book from "../layouts/Book.astro";
+import PipeBlock from "../components/PipeBlock.astro";
+---
+
+<Book
+  title="Requirements Lifecycle"
+  chapter="lifecycle"
+  description="Stable requirement IDs, evidence-derived state, cycles, and idempotent GitHub synchronization in Luna Pipes."
+>
+  <section class="wrap chapter">
+    <p class="kicker">Requirements · evidence · cycles</p>
+    <h1>Done is derived, not declared.</h1>
+    <p class="lede">
+      Luna keeps requirements stable while evidence changes. A checked box or a
+      closed GitHub issue is a claim. State advances only through a valid chain
+      of implementation, verification, deployment, live E2E, and acceptance
+      evidence.
+    </p>
+
+    <pre class="state" aria-label="Requirement lifecycle states"><code>PLANNED → IMPLEMENTING → IMPLEMENTED → VERIFIED → DEPLOYED → E2E_VERIFIED → DONE</code></pre>
+
+    <h2>The native verbs</h2>
+    <dl class="verbs">
+      <div><dt><code>reconcile</code></dt><dd>Import artifacts and derive current state.</dd></div>
+      <div><dt><code>status</code></dt><dd>Count requirements and cycles by state.</dd></div>
+      <div><dt><code>gaps</code></dt><dd>Name the next missing or stale evidence gate.</dd></div>
+      <div><dt><code>cycle</code></dt><dd>Aggregate phases and epics from requirement truth.</dd></div>
+      <div><dt><code>sync-github</code></dt><dd>Dry-run or apply idempotent issue synchronization.</dd></div>
+      <div><dt><code>evidence</code></dt><dd>Append digest-bound or attested evidence.</dd></div>
+      <div><dt><code>verify-requirement</code></dt><dd>Inspect one requirement and its history.</dd></div>
+      <div><dt><code>jev-shadow</code></dt><dd>Compare a sanitized snapshot with typed Jev signals.</dd></div>
+    </dl>
+
+    <PipeBlock code={'reconcile >> gaps >> cycle P07 >> sync-github P07'} />
+
+    <h2>Import without replacement</h2>
+    <p>
+      <code>luna init --import-existing --dry-run</code> discovers existing
+      <code>.luna/**/requirements.md</code> and implementation plans. Luna adds
+      sidecars under <code>.luna/lifecycle/</code>; it does not rewrite the
+      source documents. Existing IDs are preserved, and documents without IDs
+      receive deterministic IDs in the sidecar.
+    </p>
+
+    <h2>Evidence can regress state</h2>
+    <p>
+      File evidence is bound to a SHA-256 digest. If the file changes, the
+      evidence becomes stale on the next reconciliation and the requirement
+      moves back to the highest state still supported. The transition history
+      remains append-only, so the regression is visible rather than erased.
+    </p>
+
+    <h2>GitHub is an adapter</h2>
+    <p>
+      Lifecycle logic speaks to a provider-neutral work-item interface. The
+      GitHub adapter owns CLI response shapes and mutations. Synchronization is
+      dry-run by default, uses stable hidden keys to avoid duplicate issues,
+      and reopens an issue whose closure is ahead of evidence-derived state.
+    </p>
+    <pre><code>luna sync-github --repo owner/project
+# review the actions, then:
+luna sync-github --repo owner/project --apply</code></pre>
+
+    <h2>Jev observes; it never governs</h2>
+    <p>
+      <code>jev-shadow</code> sends a sanitized lifecycle summary to a pinned
+      TypeSafe Jev model and returns a Choice, Score, and Noul probability. The
+      observation cannot change evidence, lifecycle state, authorization,
+      AML/sanctions outcomes, GitHub, or releases. Missing, malformed, or timed
+      out responses become an advisory <code>unavailable</code> result.
+    </p>
+    <pre><code>luna jev-shadow PHASE-6 --dry-run --json
+vibevault run --only AMLIQ_JEV_API_KEY -- \
+  luna jev-shadow PHASE-6 --api-key-env AMLIQ_JEV_API_KEY --json</code></pre>
+  </section>
+</Book>
+
+<style>
+  .chapter { padding: var(--t-12) clamp(1rem, 5vw, 4rem) var(--t-12); }
+  .kicker { font-family: var(--font-mono); color: var(--muted); text-transform: uppercase; letter-spacing: .16em; }
+  h1 { font-family: var(--font-display); font-style: italic; font-size: clamp(2.8rem, 8vw, 6rem); line-height: .95; }
+  .lede { max-width: 62ch; font-size: var(--step-2); }
+  .state { overflow-x: auto; padding: var(--t-3); border: 1px solid var(--rule); }
+  .verbs { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: var(--t-2) var(--t-4); }
+  .verbs div { border-top: 1px solid var(--rule); padding-top: var(--t-2); }
+  .verbs dt { font-weight: 600; }
+  .verbs dd { margin: .35rem 0 0; color: var(--muted); }
+</style>
