@@ -8,6 +8,7 @@ import { buildDrafts, syncLifecycleWorkItems } from '../src/lifecycle/sync.js';
 import type { WorkItem, WorkItemDraft, WorkItemProvider } from '../src/lifecycle/types.js';
 import { createCommandExecutor, toPipeStep } from '../src/pipe/commands.js';
 import { executeLifecycleVerb } from '../src/lifecycle/verbs.js';
+import { buildJevShadowRequest, observeLifecycleWithJev } from '../src/lifecycle/jev-shadow.js';
 
 const fixtureRoots: string[] = [];
 
@@ -214,6 +215,115 @@ describe('requirements lifecycle', () => {
         }, '/repo');
         expect(apply).toMatchObject({ verb: 'github.sync', environment: 'remote', riskScore: 65 });
         expect(preview).toMatchObject({ verb: 'github.read', environment: 'remote', riskScore: 0 });
+    });
+
+    it('keeps live Jev observation behind pipe governance while dry-run stays local', () => {
+        const live = toPipeStep({
+            type: 'command', id: 'jev-1', command: 'jev-shadow', args: ['REQ-001'],
+        }, '/repo');
+        const preview = toPipeStep({
+            type: 'command', id: 'jev-2', command: 'jev-shadow', args: ['REQ-001', '--dry-run'],
+        }, '/repo');
+        expect(live).toMatchObject({ verb: 'jev.shadow', environment: 'remote', riskScore: 20 });
+        expect(preview).toMatchObject({ verb: 'jev.plan', environment: 'local', riskScore: 0 });
+    });
+
+    it('builds a sanitized Jev shadow request without granting authority', async () => {
+        const root = await fixtureProject();
+        const reconciled = await reconcileProject({ root, dryRun: true });
+        const before = JSON.stringify(reconciled.manifest);
+        const request = buildJevShadowRequest(reconciled, { scope: 'REQ-001' });
+        const observation = await observeLifecycleWithJev({
+            result: reconciled,
+            scope: 'REQ-001',
+            dryRun: true,
+            now: new Date('2026-09-28T10:00:00.000Z'),
+        });
+
+        expect(request.state.deterministic_lifecycle.selected_requirements).toEqual([
+            expect.objectContaining({ id: 'REQ-001', state: 'PLANNED' }),
+        ]);
+        expect(JSON.stringify(request)).not.toContain('Ship widget');
+        expect(JSON.stringify(request)).not.toContain('.luna/demo/requirements.md');
+        expect(observation).toMatchObject({
+            status: 'planned', mode: 'shadow', authoritative: false, applied: false,
+        });
+        expect(JSON.stringify(reconciled.manifest)).toBe(before);
+    });
+
+    it('validates typed Jev answers and never exposes the API key', async () => {
+        const root = await fixtureProject();
+        const reconciled = await reconcileProject({ root, dryRun: true });
+        let authorization = '';
+        const observation = await observeLifecycleWithJev({
+            result: reconciled,
+            scope: 'REQ-001',
+            apiKey: 'test-secret-key',
+            fetchImpl: async (_input, init) => {
+                authorization = new Headers(init?.headers).get('authorization') || '';
+                return new Response(JSON.stringify({
+                    model: 'jev-1.13.0',
+                    answers: {
+                        review_lane: {
+                            type: 'choice', choice: 'human_review', confidence: 0.96,
+                            probabilities: { observe_only: 0.03, human_review: 0.97, no_signal: 0 },
+                        },
+                        claim_risk: {
+                            type: 'score', score: 2, confidence: 0.99,
+                            probabilities: { 0: 0, 1: 0, 2: 0.99, 3: 0.01 },
+                        },
+                        needs_human_review: { type: 'noul', noul: 0.95 },
+                    },
+                    usage: { input_tokens: 100, output_tokens: 20 },
+                }), { status: 200, headers: { 'Content-Type': 'application/json' } });
+            },
+            now: new Date('2026-09-28T10:00:00.000Z'),
+        });
+
+        expect(authorization).toBe('Bearer test-secret-key');
+        expect(observation).toMatchObject({
+            status: 'observed', authoritative: false, applied: false,
+            observedModel: 'jev-1.13.0',
+            answers: {
+                review_lane: { choice: 'human_review' },
+                claim_risk: { score: 2 },
+                needs_human_review: { noul: 0.95 },
+            },
+        });
+        expect(JSON.stringify(observation)).not.toContain('test-secret-key');
+    });
+
+    it('degrades safely when Jev is unavailable or returns an invalid response', async () => {
+        const root = await fixtureProject();
+        const reconciled = await reconcileProject({ root, dryRun: true });
+        const missing = await observeLifecycleWithJev({ result: reconciled });
+        const invalid = await observeLifecycleWithJev({
+            result: reconciled,
+            apiKey: 'test-secret-key',
+            fetchImpl: async () => new Response('{"answers":{}}', { status: 200 }),
+        });
+        const invalidEndpoint = await observeLifecycleWithJev({
+            result: reconciled,
+            endpoint: 'https://user:secret@example.test/v1/systemone',
+            dryRun: true,
+        });
+        const alternateEndpoint = await observeLifecycleWithJev({
+            result: reconciled,
+            endpoint: 'https://example.test/v1/systemone',
+            dryRun: true,
+        });
+
+        expect(missing).toMatchObject({ status: 'unavailable', unavailableReason: 'missing_api_key' });
+        expect(invalid).toMatchObject({ status: 'unavailable', unavailableReason: 'invalid_response' });
+        expect(invalidEndpoint).toMatchObject({
+            status: 'unavailable', endpoint: 'invalid', unavailableReason: 'invalid_endpoint',
+        });
+        expect(alternateEndpoint).toMatchObject({
+            status: 'unavailable', endpoint: 'invalid', unavailableReason: 'invalid_endpoint',
+        });
+        expect(JSON.stringify(invalidEndpoint)).not.toContain('secret');
+        expect(missing.authoritative).toBe(false);
+        expect(invalid.applied).toBe(false);
     });
 
     it('treats a stable sync scope as an exact ID rather than a prefix', async () => {

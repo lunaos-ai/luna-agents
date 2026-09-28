@@ -44,6 +44,7 @@ luna run code-review
 | `luna sync-github` | Dry-run idempotent GitHub issue synchronization |
 | `luna evidence <id>` | Attach evidence to a stable requirement ID |
 | `luna verify-requirement <id>` | Verify one evidence chain and its history |
+| `luna jev-shadow [id]` | Observe typed lifecycle signals without changing state |
 | `luna index` | Index project for RAG context |
 | `luna config` | View and manage configuration |
 | `luna keys` | Manage API keys |
@@ -106,11 +107,18 @@ luna cycle P07
 # GitHub sync is dry-run by default
 luna sync-github --repo owner/project
 luna sync-github --repo owner/project --apply
+
+# Jev remains advisory and receives a sanitized lifecycle snapshot only
+luna jev-shadow PHASE-6 --dry-run --json
+vibevault run --only AMLIQ_JEV_API_KEY -- \
+  luna jev-shadow PHASE-6 --api-key-env AMLIQ_JEV_API_KEY --json
 ```
 
 Checkboxes and closed issues are claims. They cannot mark a requirement
 `DONE`. File evidence is digest-bound, stale evidence regresses derived state,
 and transition history remains append-only under `.luna/lifecycle/`.
+Jev shadow observations return choices, scores, and probabilities but cannot
+change lifecycle, authorization, AML/sanctions, GitHub, or release state.
 
 ## Configuration
 

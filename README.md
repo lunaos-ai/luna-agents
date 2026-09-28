@@ -6,7 +6,7 @@
 </p>
 
 <p align="center">
-  <strong>46 specialized AI agents · 367 slash commands for every stage of your software development lifecycle.</strong>
+  <strong>46 specialized AI agents · 368 slash commands for every stage of your software development lifecycle.</strong>
   <br>
   One CLI. One API. From requirements to production.
 </p>
@@ -29,14 +29,14 @@ npm install -g luna-agents
 luna-setup
 ```
 
-Then in Claude Code, any of **367 slash commands** work:
+Then in Claude Code, any of **368 slash commands** work:
 
 ```
 /luna-agents:plan       # Break a feature into tasks
 /luna-agents:go         # Implement next task
 /luna-agents:test       # Run tests
 /luna-agents:ship       # Deploy
-/luna-agents:cmds       # See all 367 commands
+/luna-agents:cmds       # See all 368 commands
 ```
 
 That's it. The plugin reads your codebase, routes work to specialized AI agents, and streams results back.
@@ -100,9 +100,9 @@ luna agents list
 luna rag search "How does authentication work?"
 ```
 
-### Claude Code Commands (367)
+### Claude Code Commands (368)
 
-Luna Agents includes 367 slash commands for Claude Code. Type `/cmds` to see all.
+Luna Agents includes 368 slash commands for Claude Code. Type `/cmds` to see all.
 
 #### Dev Workflow (sequential)
 
@@ -238,12 +238,18 @@ PLANNED → IMPLEMENTING → IMPLEMENTED → VERIFIED → DEPLOYED → E2E_VERIF
 luna pipe 'reconcile >> gaps >> cycle P07 >> sync-github P07'
 luna evidence PAY-001 --kind implementation --source file:src/payments.ts
 luna verify-requirement PAY-001
+luna jev-shadow PHASE-6 --dry-run --json
 ```
 
 `sync-github` is idempotent and dry-run by default. `--apply` is a protected
 pipe action. Existing `.luna` artifacts can be imported with
 `luna init --import-existing --dry-run`; lifecycle sidecars are added without
 overwriting the source documents.
+
+`jev-shadow` is a separate, early-access observation layer. It sends only a
+sanitized lifecycle summary and returns a typed Choice, Score, and Noul
+probability. It cannot write code, change lifecycle state, make AML/sanctions
+or authorization decisions, mutate GitHub, or bypass human review.
 
 | Operator | Meaning | Example |
 |:---------|:--------|:--------|
@@ -412,7 +418,7 @@ MIT © [Shachar Solomon](https://github.com/shacharsol)
 
 <!-- LUNA:COUNTERS-START -->
 <!-- counters: command/agent/skill totals are updated by sync-readme.mjs -->
-- **Commands:** 367
+- **Commands:** 368
 - **Agents:** 46
 - **Skills:** 0
 <!-- LUNA:COUNTERS-END -->
@@ -504,6 +510,7 @@ MIT © [Shachar Solomon](https://github.com/shacharsol)
 | `/luna-agents:idea` | Shortcut: → /ll-idea |
 | `/luna-agents:imagine` | Shortcut: → /ll-imagine |
 | `/luna-agents:inbox` | Shortcut: AI email management → /ll-inbox |
+| `/luna-agents:jev-shadow` | Compare evidence-derived lifecycle state with a typed Jev signal without taking action |
 | `/luna-agents:k8s-doctor` | Shortcut: Kubernetes doctor — kube-linter, kubeval, polaris, trivy k8s -> /ll-k8s-doctor |
 | `/luna-agents:lam` | Shortcut: Goal-driven autonomous actions -> /ll-lam |
 | `/luna-agents:landing` | Shortcut: Generate HeyGen-quality marketing landing page → /ll-landing |

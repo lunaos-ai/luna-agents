@@ -42,16 +42,20 @@ const governedVerbs: Record<string, { verb: string; environment: string; riskSco
     shell: { verb: 'shell', environment: 'local', riskScore: 50 },
     mcp: { verb: 'mcp', environment: 'local', riskScore: 50 },
     'sync-github': { verb: 'github.sync', environment: 'remote', riskScore: 65 },
+    'jev-shadow': { verb: 'jev.shadow', environment: 'remote', riskScore: 20 },
 };
 
 export function toPipeStep(node: CommandNode, repository: string): PipeStep {
-    const governed = node.command === 'sync-github' && !node.args.includes('--apply')
-        ? { verb: 'github.read', environment: 'remote', riskScore: 0 }
-        : governedVerbs[node.command] || {
+    let governed = governedVerbs[node.command] || {
         verb: node.command,
         environment: 'local',
         riskScore: 0,
     };
+    if (node.command === 'sync-github' && !node.args.includes('--apply')) {
+        governed = { verb: 'github.read', environment: 'remote', riskScore: 0 };
+    } else if (node.command === 'jev-shadow' && node.args.includes('--dry-run')) {
+        governed = { verb: 'jev.plan', environment: 'local', riskScore: 0 };
+    }
     return {
         ...node,
         verb: governed.verb,

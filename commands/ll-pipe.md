@@ -58,9 +58,11 @@ luna pipe 'reconcile >> gaps >> cycle P07 >> sync-github P07'
 ```
 
 The native set is `reconcile`, `status`, `gaps`, `cycle`, `sync-github`,
-`evidence`, and `verify-requirement`. GitHub synchronization is dry-run unless
-`--apply` is present; apply maps to the protected `github.sync` policy verb.
-Closed issues and checked tasks never advance evidence-derived state.
+`evidence`, `verify-requirement`, and `jev-shadow`. GitHub synchronization is
+dry-run unless `--apply` is present; apply maps to the protected `github.sync`
+policy verb. A live Jev observation maps to protected `jev.shadow`; its dry-run
+only builds the sanitized request locally. Closed issues, checked tasks, and
+Jev outputs never advance evidence-derived state.
 
 ---
 

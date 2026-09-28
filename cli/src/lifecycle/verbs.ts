@@ -4,6 +4,7 @@ import { GitHubCliWorkItemProvider, resolveGitHubRepository } from './github-cli
 import { LifecycleStore } from './store.js';
 import { addRequirementEvidence, reconcileProject, verifyRequirement } from './service.js';
 import { syncLifecycleWorkItems } from './sync.js';
+import { observeLifecycleWithJev } from './jev-shadow.js';
 
 export const lifecycleVerbs = [
     'reconcile',
@@ -13,6 +14,7 @@ export const lifecycleVerbs = [
     'sync-github',
     'evidence',
     'verify-requirement',
+    'jev-shadow',
 ] as const;
 
 export type LifecycleVerb = typeof lifecycleVerbs[number];
@@ -92,6 +94,22 @@ export async function executeLifecycleVerb(
             dryRun: forcedDryRun || parsed.boolean('dry-run'),
         });
     }
+    if (verb === 'jev-shadow') {
+        const apiKeyEnvironment = parsed.value('api-key-env') || 'TYPESAFE_API_KEY';
+        if (!/^[A-Z][A-Z0-9_]*$/.test(apiKeyEnvironment)) {
+            throw new Error('jev-shadow --api-key-env must be an uppercase environment variable name');
+        }
+        const timeoutMs = numberOption(parsed.value('timeout-ms'), 15_000, 100, 60_000, 'timeout-ms');
+        const result = await reconcileProject({ root, dryRun: true });
+        return observeLifecycleWithJev({
+            result,
+            scope: parsed.positionals[0] || parsed.value('scope'),
+            model: parsed.value('model'),
+            apiKey: process.env[apiKeyEnvironment],
+            timeoutMs,
+            dryRun: forcedDryRun || parsed.boolean('dry-run'),
+        });
+    }
 
     const manifest = await reconcileProject({ root, dryRun: true });
     const repository = await resolveGitHubRepository(root, parsed.value('repo'));
@@ -114,6 +132,21 @@ export async function executeLifecycleVerb(
         });
     }
     return result;
+}
+
+function numberOption(
+    value: string | undefined,
+    fallback: number,
+    minimum: number,
+    maximum: number,
+    name: string,
+): number {
+    if (value === undefined) return fallback;
+    const parsed = Number(value);
+    if (!Number.isInteger(parsed) || parsed < minimum || parsed > maximum) {
+        throw new Error(`${name} must be an integer between ${minimum} and ${maximum}`);
+    }
+    return parsed;
 }
 
 function parseArgs(args: string[]): {

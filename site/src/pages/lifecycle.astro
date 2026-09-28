@@ -29,6 +29,7 @@ import PipeBlock from "../components/PipeBlock.astro";
       <div><dt><code>sync-github</code></dt><dd>Dry-run or apply idempotent issue synchronization.</dd></div>
       <div><dt><code>evidence</code></dt><dd>Append digest-bound or attested evidence.</dd></div>
       <div><dt><code>verify-requirement</code></dt><dd>Inspect one requirement and its history.</dd></div>
+      <div><dt><code>jev-shadow</code></dt><dd>Compare a sanitized snapshot with typed Jev signals.</dd></div>
     </dl>
 
     <PipeBlock code={'reconcile >> gaps >> cycle P07 >> sync-github P07'} />
@@ -60,6 +61,18 @@ import PipeBlock from "../components/PipeBlock.astro";
     <pre><code>luna sync-github --repo owner/project
 # review the actions, then:
 luna sync-github --repo owner/project --apply</code></pre>
+
+    <h2>Jev observes; it never governs</h2>
+    <p>
+      <code>jev-shadow</code> sends a sanitized lifecycle summary to a pinned
+      TypeSafe Jev model and returns a Choice, Score, and Noul probability. The
+      observation cannot change evidence, lifecycle state, authorization,
+      AML/sanctions outcomes, GitHub, or releases. Missing, malformed, or timed
+      out responses become an advisory <code>unavailable</code> result.
+    </p>
+    <pre><code>luna jev-shadow PHASE-6 --dry-run --json
+vibevault run --only AMLIQ_JEV_API_KEY -- \
+  luna jev-shadow PHASE-6 --api-key-env AMLIQ_JEV_API_KEY --json</code></pre>
   </section>
 </Book>
 

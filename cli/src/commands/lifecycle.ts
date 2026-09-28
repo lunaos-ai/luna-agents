@@ -2,6 +2,7 @@ import { Command } from 'commander';
 import chalk from 'chalk';
 import { executeLifecycleVerb, type LifecycleVerb } from '../lifecycle/verbs.js';
 import type { ReconcileResult, SyncResult } from '../lifecycle/types.js';
+import type { JevShadowObservation } from '../lifecycle/jev-shadow.js';
 
 export const reconcileCommand = new Command('reconcile')
     .description('Derive requirement and cycle state from current evidence')
@@ -74,6 +75,20 @@ export const verifyRequirementCommand = new Command('verify-requirement')
         await run('verify-requirement', positional(requirementId, flags(values)), Boolean(values.json));
     });
 
+export const jevShadowCommand = new Command('jev-shadow')
+    .description('Observe lifecycle claim risk with Jev without changing state or taking action')
+    .argument('[scope]', 'Stable requirement or cycle ID')
+    .option('--api-key-env <name>', 'Environment variable containing the TypeSafe key', 'TYPESAFE_API_KEY')
+    .option('--model <model>', 'Pinned Jev model', 'jev-1.13.0')
+    .option('--timeout-ms <milliseconds>', 'Request timeout between 100 and 60000', '15000')
+    .option('--dry-run', 'Print the sanitized request without calling Jev')
+    .option('--root <path>', 'Project root', process.cwd())
+    .option('--json', 'Print JSON')
+    .action(async (scope, options) => {
+        const values = commandOptions(options);
+        await run('jev-shadow', positional(scope, flags(values)), Boolean(values.json));
+    });
+
 export const lifecycleCommands = [
     reconcileCommand,
     gapsCommand,
@@ -81,6 +96,7 @@ export const lifecycleCommands = [
     syncGitHubCommand,
     evidenceCommand,
     verifyRequirementCommand,
+    jevShadowCommand,
 ];
 
 async function run(verb: LifecycleVerb, args: string[], json: boolean): Promise<void> {
@@ -108,6 +124,21 @@ export function printLifecycleResult(verb: LifecycleVerb, result: unknown): void
         console.log(`  ${chalk.dim('Claim gaps:')} ${value.claimMismatches.length}`);
         for (const action of value.actions.slice(0, 20)) {
             console.log(`    ${chalk.cyan(action.kind.padEnd(6))} ${action.key} — ${action.reason}`);
+        }
+    } else if (verb === 'jev-shadow') {
+        const value = result as JevShadowObservation;
+        console.log(`  ${chalk.dim('Status:')}        ${value.status}`);
+        console.log(`  ${chalk.dim('Mode:')}          shadow / advisory only`);
+        console.log(`  ${chalk.dim('Authoritative:')} no`);
+        console.log(`  ${chalk.dim('Applied:')}       no`);
+        console.log(`  ${chalk.dim('Model:')}         ${value.observedModel || value.requestedModel}`);
+        if (value.answers) {
+            console.log(`  ${chalk.dim('Review lane:')}   ${value.answers.review_lane.choice}`);
+            console.log(`  ${chalk.dim('Claim risk:')}    ${value.answers.claim_risk.score}`);
+            console.log(`  ${chalk.dim('Human review:')}  ${value.answers.needs_human_review.noul}`);
+        }
+        if (value.unavailableReason) {
+            console.log(`  ${chalk.dim('Unavailable:')}   ${value.unavailableReason}`);
         }
     } else {
         console.log(JSON.stringify(result, null, 2));
