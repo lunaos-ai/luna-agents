@@ -191,7 +191,11 @@ function normalizeBody(body: string): string {
 
 function matchesScope(key: string, title: string, scope?: string): boolean {
     if (!scope) return true;
-    return key.toUpperCase().includes(scope) || title.toUpperCase().includes(scope);
+    const normalizedKey = key.toUpperCase();
+    const stableId = normalizedKey.split(':').slice(1).join(':');
+    if (normalizedKey === scope || stableId === scope) return true;
+    const looksLikeStableId = /^(?:[A-Z][A-Z0-9]*(?:-[A-Z0-9]+)+|P\d+(?:\.\d+)*)$/.test(scope);
+    return !looksLikeStableId && title.toUpperCase().includes(scope);
 }
 
 function desiredStates(manifest: LifecycleManifest): Map<string, RequirementState> {

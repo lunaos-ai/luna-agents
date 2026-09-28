@@ -4,7 +4,7 @@ import os from 'node:os';
 import path from 'node:path';
 import { reconcileProject, addRequirementEvidence } from '../src/lifecycle/service.js';
 import { LifecycleStore } from '../src/lifecycle/store.js';
-import { syncLifecycleWorkItems } from '../src/lifecycle/sync.js';
+import { buildDrafts, syncLifecycleWorkItems } from '../src/lifecycle/sync.js';
 import type { WorkItem, WorkItemDraft, WorkItemProvider } from '../src/lifecycle/types.js';
 import { createCommandExecutor, toPipeStep } from '../src/pipe/commands.js';
 import { executeLifecycleVerb } from '../src/lifecycle/verbs.js';
@@ -127,6 +127,19 @@ describe('requirements lifecycle', () => {
         ))).toMatchObject({ schemaVersion: 'lunaos.ai/requirements-lifecycle/v1' });
     });
 
+    it('keeps generated requirement IDs stable when requirement wording changes', async () => {
+        const root = await fixtureProject(false);
+        const requirementFile = path.join(root, '.luna', 'demo', 'requirements.md');
+        await writeFile(requirementFile, '- [ ] **Ship widget:** The widget must ship safely.\n');
+        const first = await reconcileProject({ root });
+
+        await writeFile(requirementFile, '- [ ] **Ship safer widget:** The widget must ship safely.\n');
+        const second = await reconcileProject({ root, dryRun: true });
+
+        expect(first.manifest.requirements[0].explicitId).toBe(false);
+        expect(second.manifest.requirements[0].id).toBe(first.manifest.requirements[0].id);
+    });
+
     it('previews evidence-derived advancement without writing sidecars in dry-run mode', async () => {
         const root = await fixtureProject(false);
         const artifact = path.join(root, 'src', 'widget.ts');
@@ -201,6 +214,27 @@ describe('requirements lifecycle', () => {
         }, '/repo');
         expect(apply).toMatchObject({ verb: 'github.sync', environment: 'remote', riskScore: 65 });
         expect(preview).toMatchObject({ verb: 'github.read', environment: 'remote', riskScore: 0 });
+    });
+
+    it('treats a stable sync scope as an exact ID rather than a prefix', async () => {
+        const root = await fixtureProject(false);
+        const reconciled = await reconcileProject({ root, dryRun: true });
+        reconciled.manifest.requirements = [];
+        reconciled.manifest.cycles = ['PHASE-6', 'PHASE-60'].map(id => ({
+            id,
+            title: id,
+            requirementIds: [],
+            taskIds: [],
+            checkedTaskCount: 0,
+            taskCount: 0,
+            roadmapChecked: false,
+            sourcePaths: [],
+            state: 'PLANNED',
+            claimMismatch: false,
+        }));
+
+        expect(buildDrafts(reconciled.manifest, 'PHASE-6').map(draft => draft.key))
+            .toEqual(['cycle:PHASE-6']);
     });
 });
 
